@@ -319,89 +319,120 @@
       margin: 0 2px;
     }
 
-    /* 右側貼邊按鈕 (桌機 & 平板) */
+    /* ========================================================
+       🎛️ 可隨意拖曳、自由吸附側邊的浮動齒輪按鈕 (Draggable Knob)
+       ======================================================== */
     .sidebar-trigger-btn {
       position: fixed;
-      right: 0;
       top: 50%;
-      width: 50px;
-      height: 50px;
-      border-radius: 25px 0 0 25px;
-      background: rgba(255, 255, 255, 0.7);
+      right: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--dock-border);
-      border-right: none;
-      box-shadow: -4px 6px 16px rgba(45, 35, 25, 0.06);
+      box-shadow: 0 4px 16px rgba(45, 35, 25, 0.08);
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      padding-left: 10px;
-      cursor: pointer;
-      z-index: 100;
-      opacity: 0.45;
-      transform: translateY(-50%) translateX(25px);
-      transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2),
-                  opacity 0.25s ease,
-                  background-color 0.2s ease;
+      justify-content: center;
+      cursor: grab;
+      z-index: 120;
+      opacity: 0.5;
+      user-select: none;
+      touch-action: none; /* 防止手機觸控畫面滾動干擾拖曳 */
+      transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .sidebar-trigger-btn:hover {
+    .sidebar-trigger-btn:active {
+      cursor: grabbing;
+    }
+
+    .sidebar-trigger-btn.is-dragging {
+      opacity: 1 !important;
+      transition: none !important; /* 拖曳過程中取消平滑延遲，跟手度 100% */
+      transform: scale(1.12) !important;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.2) !important;
+    }
+
+    /* 停留在右邊時的半隱藏與 Hover */
+    .sidebar-trigger-btn.dock-right {
+      transform: translateX(20px);
+      border-right: none;
+      border-radius: 24px 0 0 24px;
+    }
+    .sidebar-trigger-btn.dock-right:hover {
       opacity: 1;
-      transform: translateY(-50%) translateX(0);
+      transform: translateX(0);
       background: #ffffff;
-      box-shadow: -8px 10px 24px rgba(45, 35, 25, 0.12);
+      box-shadow: -4px 6px 18px rgba(0,0,0,0.12);
+    }
+
+    /* 停留在左邊時的半隱藏與 Hover */
+    .sidebar-trigger-btn.dock-left {
+      transform: translateX(-20px);
+      border-left: none;
+      border-radius: 0 24px 24px 0;
+    }
+    .sidebar-trigger-btn.dock-left:hover {
+      opacity: 1;
+      transform: translateX(0);
+      background: #ffffff;
+      box-shadow: 4px 6px 18px rgba(0,0,0,0.12);
     }
 
     .sidebar-trigger-btn svg {
       transition: transform 0.35s ease;
       color: #2b2825;
+      pointer-events: none;
     }
 
     .sidebar-trigger-btn:hover svg {
-      transform: rotate(30deg);
-    }
-
-    .sidebar-trigger-btn.open {
-      right: 330px;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      padding-left: 0;
-      justify-content: center;
-      border-right: 1px solid var(--dock-border);
-      opacity: 1;
-      transform: translateY(-50%) translateX(50%);
-      background: #ffffff;
+      transform: rotate(35deg);
     }
 
     .sidebar-trigger-btn.open svg {
       transform: rotate(90deg);
     }
 
-    /* 右側抽屜面板 (桌機 & 平板) */
+    /* 抽屜面板 (支援左右兩側自適應滑出) */
     .sidebar-panel {
       position: fixed;
-      right: -350px;
       top: 0;
       bottom: 0;
       width: 330px;
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border-left: 1px solid var(--dock-border);
-      box-shadow: -12px 0 40px rgba(45, 35, 25, 0.08);
+      box-shadow: 0 0 45px rgba(45, 35, 25, 0.12);
       z-index: 105;
       padding: 26px 20px;
       display: flex;
       flex-direction: column;
       gap: 22px;
       overflow-y: auto;
-      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .sidebar-panel.open {
+    /* 預設由右側滑出 */
+    .sidebar-panel.panel-right {
+      right: -350px;
+      left: auto;
+      border-left: 1px solid var(--dock-border);
+    }
+    .sidebar-panel.panel-right.open {
       right: 0;
+    }
+
+    /* 當按鈕吸在左側時，抽屜從左側滑出 */
+    .sidebar-panel.panel-left {
+      left: -350px;
+      right: auto;
+      border-right: 1px solid var(--dock-border);
+    }
+    .sidebar-panel.panel-left.open {
+      left: 0;
     }
 
     .sidebar-header {
@@ -587,16 +618,13 @@
       line-height: 1.2;
     }
 
-    /* ========================================================
-       📱 手機專屬響應式重構 (螢幕寬度 <= 768px 生效)
-       ======================================================== */
+    /* 手機專屬響應式 */
     @media (max-width: 768px) {
       body {
         justify-content: flex-start;
         padding-bottom: 140px;
       }
 
-      /* 1. 頂部狀態列精簡 */
       .top-status-bar {
         position: relative;
         top: 0;
@@ -613,7 +641,6 @@
         font-size: 11px;
       }
 
-      /* 2. 核心舞台：滿版無邊框，留出指板橫向滑動空間 */
       .stage-container {
         padding: 10px 0 20px;
         width: 100vw;
@@ -628,10 +655,9 @@
         width: 100%;
       }
       svg {
-        margin-left: 12px; /* 留出琴枕呼吸感 */
+        margin-left: 12px;
       }
 
-      /* 3. 雙層獨立浮動 Dock (徹底消除切邊擠壓) */
       .floating-dock {
         bottom: 16px;
         left: 12px;
@@ -645,7 +671,7 @@
       }
 
       .dock-divider {
-        display: none; /* 手機端改用分層排列，隱藏豎線 */
+        display: none;
       }
 
       .dock-row-primary {
@@ -697,40 +723,30 @@
         justify-content: center;
       }
 
-      /* 4. 側邊齒輪開關：移至右側中央略偏上，防止誤觸 Dock */
+      /* 手機上齒輪稍微調小，操作更靈敏 */
       .sidebar-trigger-btn {
-        top: 36%;
         width: 44px;
         height: 44px;
-        transform: translateY(-50%) translateX(20px);
-      }
-      .sidebar-trigger-btn:hover {
-        transform: translateY(-50%) translateX(0);
-      }
-      .sidebar-trigger-btn.open {
-        top: 24px;
-        right: 18px;
-        transform: none;
       }
 
-      /* 5. 側邊設定面板改為「底部向上展開的抽屜 (Bottom Sheet)」 */
-      .sidebar-panel {
-        top: auto;
-        bottom: -100%;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 75vh;
-        border-radius: 24px 24px 0 0;
-        border-left: none;
-        border-top: 1px solid var(--dock-border);
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
-        transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        padding: 20px 18px 36px;
+      /* 手機上維持由下往上滑出的底部抽屜 */
+      .sidebar-panel.panel-right,
+      .sidebar-panel.panel-left {
+        top: auto !important;
+        bottom: -100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 75vh !important;
+        border-radius: 24px 24px 0 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: 1px solid var(--dock-border) !important;
+        transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        padding: 20px 18px 36px !important;
       }
       .sidebar-panel.open {
-        bottom: 0;
-        right: 0;
+        bottom: 0 !important;
       }
     }
   </style>
@@ -760,9 +776,8 @@
     </div>
   </main>
 
-  <!-- 底部 Dock (在手機端自動轉為雙排) -->
+  <!-- 底部 Dock -->
   <footer class="floating-dock">
-    <!-- 第一排：視角模式、Key、Scale -->
     <div class="dock-row-primary">
       <div class="dock-group">
         <button class="dock-btn active" id="btn-degree" onclick="setDisplayMode('degree')">首調</button>
@@ -816,7 +831,6 @@
 
     <div class="dock-divider"></div>
 
-    <!-- 第二排：顯示調內音開關、清除、PNG 匯出 -->
     <div class="dock-row-secondary">
       <button class="dock-btn-sync" id="btn-scale-sync" onclick="toggleScaleSync()">
         <span class="sync-led"></span>
@@ -831,16 +845,16 @@
     </div>
   </footer>
 
-  <!-- 右側貼邊按鈕 (手機端向上展開抽屜) -->
-  <button class="sidebar-trigger-btn" id="sidebar-trigger-btn" onclick="toggleSidebar()" title="外觀與幾何設定">
+  <!-- 可任意拖曳、智慧吸附兩側的懸浮齒輪鈕 -->
+  <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
     </svg>
   </button>
 
-  <!-- 抽屜面板 -->
-  <aside class="sidebar-panel" id="sidebar-panel">
+  <!-- 抽屜面板 (自適應左右側) -->
+  <aside class="sidebar-panel panel-right" id="sidebar-panel">
     <div class="sidebar-header">
       <div class="sidebar-title">外觀與幾何設定</div>
       <button class="close-btn" onclick="toggleSidebar()">✕</button>
@@ -1483,13 +1497,103 @@
       renderBoard();
     }
 
+    // ========================================================
+    // 🧲 全螢幕邊緣拖曳與智慧吸附引擎
+    // ========================================================
+    const dragBtn = document.getElementById('sidebar-trigger-btn');
+    const panel = document.getElementById('sidebar-panel');
+    let isDragging = false;
+    let startPointerX = 0, startPointerY = 0;
+    let initialBtnX = 0, initialBtnY = 0;
+    let hasMoved = false;
+    let dockedSide = 'right'; // 'left' 或 'right'
+
     function toggleSidebar() {
-      const panel = document.getElementById('sidebar-panel');
-      const triggerBtn = document.getElementById('sidebar-trigger-btn');
-      panel.classList.toggle('open');
-      triggerBtn.classList.toggle('open');
+      const isOpen = panel.classList.toggle('open');
+      dragBtn.classList.toggle('open', isOpen);
     }
 
+    // 指標事件 (相容滑鼠、平板 Apple Pencil 與手指觸控)
+    dragBtn.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      hasMoved = false;
+      startPointerX = e.clientX;
+      startPointerY = e.clientY;
+
+      const rect = dragBtn.getBoundingClientRect();
+      initialBtnX = rect.left;
+      initialBtnY = rect.top;
+
+      dragBtn.setPointerCapture(e.pointerId);
+    });
+
+    dragBtn.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+
+      const deltaX = e.clientX - startPointerX;
+      const deltaY = e.clientY - startPointerY;
+
+      // 移動超過 6px 判定為拖曳，避免與純點擊衝突
+      if (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6) {
+        hasMoved = true;
+        dragBtn.classList.add('is-dragging');
+        dragBtn.classList.remove('dock-left', 'dock-right');
+
+        let nextX = initialBtnX + deltaX;
+        let nextY = initialBtnY + deltaY;
+
+        // 螢幕四周邊界限制保護
+        const btnW = dragBtn.offsetWidth;
+        const btnH = dragBtn.offsetHeight;
+        nextX = Math.max(8, Math.min(window.innerWidth - btnW - 8, nextX));
+        nextY = Math.max(20, Math.min(window.innerHeight - btnH - 80, nextY));
+
+        dragBtn.style.left = `${nextX}px`;
+        dragBtn.style.top = `${nextY}px`;
+        dragBtn.style.right = 'auto';
+      }
+    });
+
+    dragBtn.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      dragBtn.releasePointerCapture(e.pointerId);
+      dragBtn.classList.remove('is-dragging');
+
+      if (!hasMoved) {
+        // 單純點擊，正常切換抽屜開關
+        toggleSidebar();
+      } else {
+        // 拖曳結束：智慧磁吸至距離最近的邊緣 (左或右)
+        const btnRect = dragBtn.getBoundingClientRect();
+        const screenMid = window.innerWidth / 2;
+        const btnCenter = btnRect.left + btnRect.width / 2;
+
+        if (btnCenter < screenMid) {
+          // 吸附至左側
+          dockedSide = 'left';
+          dragBtn.style.left = '0px';
+          dragBtn.style.right = 'auto';
+          dragBtn.classList.add('dock-left');
+          
+          // 讓側邊抽屜切換為從左邊滑出
+          panel.classList.remove('panel-right');
+          panel.classList.add('panel-left');
+        } else {
+          // 吸附至右側
+          dockedSide = 'right';
+          dragBtn.style.left = 'auto';
+          dragBtn.style.right = '0px';
+          dragBtn.classList.add('dock-right');
+
+          // 讓側邊抽屜切換為從右邊滑出
+          panel.classList.remove('panel-left');
+          panel.classList.add('panel-right');
+        }
+      }
+    });
+
+    // 匯出 PNG 功能
     function exportFretboardPNG() {
       const scale = 2;
       const boardW = FRETS * fretWidth;
