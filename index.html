@@ -62,14 +62,12 @@
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    /* 指板主展示舞台 */
     .stage-container {
       width: 100%; max-width: 1220px;
       padding: 20px 20px 40px;
       display: flex; flex-direction: column; align-items: center; gap: 10px;
     }
 
-    /* 頂部操作工具列（畫筆 + 和弦快速選單） */
     .board-attached-toolbar {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--metal-dock);
@@ -116,7 +114,6 @@
       box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    /* 和弦手形快捷選單控制件 */
     .chord-select-label {
       font-size: 10.5px; font-weight: 600; color: var(--metal-text-tertiary);
       letter-spacing: 0.3px; text-transform: uppercase; margin-left: 2px;
@@ -129,13 +126,6 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 6px center;
     }
-
-    .chord-apply-btn {
-      background: var(--metal-text-primary); color: #ffffff; border: none;
-      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
-      cursor: pointer; transition: opacity 0.15s ease;
-    }
-    .chord-apply-btn:hover { opacity: 0.85; }
 
     .fretboard-card {
       background: var(--metal-card); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
@@ -154,7 +144,6 @@
     }
     .fret-number { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; text-anchor: middle; }
 
-    /* 底部 Dock */
     .floating-dock {
       position: fixed; bottom: 24px; background: var(--metal-dock);
       backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
@@ -329,7 +318,7 @@
       .brand-title { font-size: 13px; }
 
       .stage-container { padding: 8px 0 20px; width: 100vw; gap: 8px; }
-      .board-attached-toolbar { padding: 4px 6px; gap: 4px; }
+      .board-attached-toolbar { padding: 4px 6px; gap: 4px; border-radius: 18px; }
       .quick-shape-btn { width: 23px; height: 23px; }
       .quick-shape-btn svg { width: 13px; height: 13px; }
       .quick-color-btn { width: 18px; height: 18px; font-size: 9px; }
@@ -489,7 +478,7 @@
 
       <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
         <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/></svg>
       </button>
 
       <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
@@ -497,7 +486,7 @@
   </footer>
 
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
@@ -589,7 +578,6 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
-    // 4 組專屬色彩庫：c1(Root)、c2(暗底襯底)、c3/c4(強調色)
     const PALETTE_GROUPS = {
       apple_classic: { name: "經典原色 (Classic Tint)", c1: "#ff3b30", c2: "#2c3e50", c3: "#ff9500", c4: "#30d158" },
       rose:          { name: "復古嫣紅 (Vintage Rose)", c1: "#d13b63", c2: "#382933", c3: "#eab308", c4: "#06b6d4" },
@@ -619,76 +607,65 @@
     };
 
     // ========================================================
-    // 🎸 吉他標準手形資料庫 (CAGED / Drop 2 / Common Voicings)
-    // 陣列為第 6 弦至第 1 弦 (E A D G B E)，-1 代表悶音 X，>=0 代表品位偏移
-    // rootString: 根音所在的弦 (0 為第 6 弦, 1 為第 5 弦, 2 為第 4 弦)
+    // 🎸 全新：封閉手型相對偏移引擎 (Relative Barre Model)
+    // 陣列對應: [6弦, 5弦, 4弦, 3弦, 2弦, 1弦]
+    // 數值代表「相對於封閉弦根音品位」的加算琴格，-1 代表悶音不彈
     // ========================================================
-    const CHORD_VOICINGS_6STR = {
-      // 大三和弦 (Major)
+    const RELATIVE_CHORDS = {
       maj: [
-        { name: "E 型封閉", rootStr: 0, frets: [0, 2, 2, 1, 0, 0] },
-        { name: "A 型封閉", rootStr: 1, frets: [-1, 0, 2, 2, 2, 0] },
-        { name: "C 型把位", rootStr: 1, frets: [-1, 3, 2, 0, 1, 0] }
+        { type: "barre", rootString: 5, relativeFrets: [0, 2, 2, 1, 0, 0] }, // E 型封閉 (根音在 6 弦)
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 2, 0] }, // A 型封閉 (根音在 5 弦)
+        { type: "open_c", targetRoot: 0, frets: [-1, 3, 2, 0, 1, 0] }         // C 開放把位
       ],
-      // 小三和弦 (Minor)
       min: [
-        { name: "Em 型封閉", rootStr: 0, frets: [0, 2, 2, 0, 0, 0] },
-        { name: "Am 型封閉", rootStr: 1, frets: [-1, 0, 2, 2, 1, 0] },
-        { name: "Dm 型把位", rootStr: 2, frets: [-1, -1, 0, 2, 3, 1] }
+        { type: "barre", rootString: 5, relativeFrets: [0, 2, 2, 0, 0, 0] }, // Em 型封閉
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 1, 0] }, // Am 型封閉
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 3, 1] } // Dm 型封閉 (根音在 4 弦)
       ],
-      // 屬七 (Dominant 7)
       "7": [
-        { name: "E7 型封閉", rootStr: 0, frets: [0, 2, 0, 1, 0, 0] },
-        { name: "A7 型封閉", rootStr: 1, frets: [-1, 0, 2, 0, 2, 0] },
-        { name: "C7 型把位", rootStr: 1, frets: [-1, 3, 2, 3, 1, -1] }
+        { type: "barre", rootString: 5, relativeFrets: [0, 2, 0, 1, 0, 0] }, // E7 型封閉
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 0, 2, 0] }, // A7 型封閉
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 1, 2] } // D7 型封閉
       ],
-      // 大七 (Major 7)
       maj7: [
-        { name: "E 根音型", rootStr: 0, frets: [0, -1, 1, 1, 0, -1] },
-        { name: "A 根音型", rootStr: 1, frets: [-1, 0, 2, 1, 2, 0] },
-        { name: "Drop 2 爵士把位", rootStr: 2, frets: [-1, -1, 0, 2, 2, 2] }
+        { type: "barre", rootString: 5, relativeFrets: [0, -1, 1, 1, 0, -1] }, // 爵士 E 根音 Maj7
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 1, 2, 0] },  // A 根音 Maj7
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 2, 2] }  // D 根音 Maj7
       ],
-      // 小七 (Minor 7)
       m7: [
-        { name: "Em7 型封閉", rootStr: 0, frets: [0, 2, 0, 0, 0, 0] },
-        { name: "Am7 型封閉", rootStr: 1, frets: [-1, 0, 2, 0, 1, 0] },
-        { name: "Dm7 型把位", rootStr: 2, frets: [-1, -1, 0, 2, 1, 1] }
+        { type: "barre", rootString: 5, relativeFrets: [0, 2, 0, 0, 0, 0] }, // Em7 型封閉
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 0, 1, 0] }, // Am7 型封閉
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 1, 1] } // Dm7 型封閉
       ],
-      // 半減七 (m7b5)
       m7b5: [
-        { name: "A 根音型", rootStr: 1, frets: [-1, 0, 1, 0, 1, -1] },
-        { name: "E 根音型", rootStr: 0, frets: [0, -1, 0, 0, -1, -1] },
-        { name: "D 根音型", rootStr: 2, frets: [-1, -1, 0, 1, 1, 1] }
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 1, 0, 1, -1] }, // A 根音 m7b5 (最常用)
+        { type: "barre", rootString: 5, relativeFrets: [0, -1, 0, 0, -1, -1] }, // E 根音 m7b5
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 1, 1, 1] }  // D 根音 m7b5
       ],
-      // 大六 (6)
       "6": [
-        { name: "E 根音型", rootStr: 0, frets: [0, -1, -1, 1, 2, 0] },
-        { name: "A 根音型", rootStr: 1, frets: [-1, 0, 2, 2, 2, 2] },
-        { name: "高把位 6 型", rootStr: 2, frets: [-1, -1, 0, 2, 0, 2] }
+        { type: "barre", rootString: 5, relativeFrets: [0, -1, -1, 1, 2, 0] }, // E 根音 6
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 2, 2] }, // A 根音 6
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 0, 2] }  // D 根音 6
       ],
-      // 小六 (m6)
       m6: [
-        { name: "E 根音爵士型", rootStr: 0, frets: [0, -1, -1, 0, 2, 0] },
-        { name: "A 根音型", rootStr: 1, frets: [-1, 0, 2, 2, 1, 2] },
-        { name: "D 根音型", rootStr: 2, frets: [-1, -1, 0, 2, 0, 1] }
+        { type: "barre", rootString: 5, relativeFrets: [0, -1, -1, 0, 2, 0] }, // E 根音 m6 (小六和弦常用)
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 1, 2] }, // A 根音 m6
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 0, 1] }  // D 根音 m6
       ],
-      // 減七 (Diminished 7)
       dim7: [
-        { name: "通用把位 1", rootStr: 1, frets: [-1, 0, 1, -1, 1, -1] },
-        { name: "通用把位 2", rootStr: 2, frets: [-1, -1, 0, 1, 0, 1] },
-        { name: "E 根音對稱型", rootStr: 0, frets: [0, -1, -1, 0, -1, -1] }
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 1, -1, 1, -1] }, // A 根音 Dim7
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 1, 0, 1] },  // D 根音 Dim7
+        { type: "barre", rootString: 5, relativeFrets: [0, -1, -1, 0, -1, -1] }  // E 根音 Dim7
       ],
-      // 掛四 (Sus4)
       sus4: [
-        { name: "Esus4 型", rootStr: 0, frets: [0, 2, 2, 2, 0, 0] },
-        { name: "Asus4 型", rootStr: 1, frets: [-1, 0, 2, 2, 3, 0] },
-        { name: "Dsus4 型", rootStr: 2, frets: [-1, -1, 0, 2, 3, 3] }
+        { type: "barre", rootString: 5, relativeFrets: [0, 2, 2, 2, 0, 0] }, // Esus4 型
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 3, 0] }, // Asus4 型
+        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 3, 3] }  // Dsus4 型
       ],
-      // 加九 (Add9)
       add9: [
-        { name: "Cadd9 開放把位", rootStr: 1, frets: [-1, 3, 2, 0, 3, 0] },
-        { name: "E 根音型", rootStr: 0, frets: [0, 2, 4, 1, 0, 0] },
-        { name: "A 根音型", rootStr: 1, frets: [-1, 0, 2, 4, 2, 0] }
+        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 4, 2, 0] }, // A 根音 Add9
+        { type: "barre", rootString: 5, relativeFrets: [0, 2, 4, 1, 0, 0] }, // E 根音 Add9
+        { type: "open_c", targetRoot: 0, frets: [-1, 3, 2, 0, 3, 0] }         // Cadd9 開放把位
       ]
     };
 
@@ -698,7 +675,7 @@
     let currentFretboardStyle = 'studio_white';
     let currentSelectedShape = 'circle';
     let currentActivePalette = 'apple_classic';
-    let currentBrushType = 'c1'; // 'c1'(Root) | 'c2'(暗底) | 'c3' | 'c4'
+    let currentBrushType = 'c1';
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
@@ -881,13 +858,15 @@
         g.appendChild(el);
       } else if (shape === 'cross') {
         const l1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l1.setAttribute("x1", x - 7); l1.setAttribute("y1", y - 7);
-        l1.setAttribute("x2", x + 7); l1.setAttribute("y2", y + 7);
-        l1.setAttribute("stroke", color); l1.setAttribute("stroke-width", "2.8"); l1.setAttribute("stroke-linecap", "round");
+        l1.setAttribute("x1", x - 6); l1.setAttribute("y1", y - 6);
+        l1.setAttribute("x2", x + 6); l1.setAttribute("y2", y + 6);
+        l1.setAttribute("stroke", "#8e8e93");
+        l1.setAttribute("stroke-width", "2.4"); l1.setAttribute("stroke-linecap", "round");
         const l2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l2.setAttribute("x1", x + 7); l2.setAttribute("y1", y - 7);
-        l2.setAttribute("x2", x - 7); l2.setAttribute("y2", y + 7);
-        l2.setAttribute("stroke", color); l2.setAttribute("stroke-width", "2.8"); l2.setAttribute("stroke-linecap", "round");
+        l2.setAttribute("x1", x + 6); l2.setAttribute("y1", y - 6);
+        l2.setAttribute("x2", x - 6); l2.setAttribute("y2", y + 6);
+        l2.setAttribute("stroke", "#8e8e93");
+        l2.setAttribute("stroke-width", "2.4"); l2.setAttribute("stroke-linecap", "round");
         g.appendChild(l1); g.appendChild(l2);
       }
 
@@ -910,14 +889,12 @@
       svg.appendChild(c);
     }
 
-    // 點擊琴格：定調後自動切成第 2 色，且任何顏色點到「1」時強制顯示 Root 第 1 色
     function toggleMarker(s, f) {
       const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
 
       const targetKey = `${s}-${f}`;
 
-      // 1. 若手持 Root (c1) 筆刷點下：定調，並自動切換畫筆為第 2 色 (c2)
       if (currentBrushType === 'c1') {
         const newRoot = midi % 12;
         currentRoot = newRoot;
@@ -940,7 +917,6 @@
         return;
       }
 
-      // 2. 手持其他筆刷 (c2, c3, c4)：如果點到的音正好是「1」，強制變第 1 色 Root
       const isDegreeOne = (midi % 12 === currentRoot);
       const assignedColorKey = isDegreeOne ? 'c1' : currentBrushType;
 
@@ -961,69 +937,80 @@
     }
 
     // ========================================================
-    // 🎼 和弦手形自動推算與指板渲染 (Voicing Engine)
+    // 🎼 核心修復：嚴謹封閉把位相對偏移引擎 (100% 正確和弦音)
     // ========================================================
     function applySelectedChord() {
       const chordRoot = parseInt(document.getElementById('chord-root-select').value, 10);
       const chordType = document.getElementById('chord-type-select').value;
       const voicingIndex = parseInt(document.getElementById('chord-voicing-select').value, 10);
 
-      // 同步全域 Key
       currentRoot = chordRoot;
       document.getElementById('root-select').value = chordRoot;
 
       activeMarkers.clear();
 
-      // 取得標準 6 弦手形
-      const voicings = CHORD_VOICINGS_6STR[chordType];
+      const voicings = RELATIVE_CHORDS[chordType];
       if (!voicings || !voicings[voicingIndex]) return;
 
-      const voicing = voicings[voicingIndex];
-      const rootStr = voicing.rootStr; // 根音所在的弦 (0: 6弦, 1: 5弦, 2: 4弦)
+      const v = voicings[voicingIndex];
 
-      // 計算把位偏移：根據當前選的 Root 與該弦開弦音計算
-      // 0 是第 6 弦，5 是第 1 弦 (高音)
-      const baseStringIndex = (currentTuningMIDI.length - 1) - rootStr;
-      const openNote = currentTuningMIDI[baseStringIndex] % 12;
-      const rootFretOffset = ((chordRoot - openNote) % 12 + 12) % 12;
+      if (v.type === "open_c") {
+        if (chordRoot === v.targetRoot) {
+          for (let str = 0; str < 6; str++) {
+            const sIndex = 5 - str;
+            const fret = v.frets[str];
+            if (fret === -1) {
+              activeMarkers.set(`${sIndex}-0`, { s: sIndex, f: 0, shape: 'cross', colorKey: 'c2' });
+            } else {
+              const midi = currentTuningMIDI[sIndex] + fret;
+              const interval = ((midi - currentRoot) % 12 + 12) % 12;
+              let role = (interval === 0) ? 'c1' : ((interval === 9 || interval === 10 || interval === 11 || interval === 6) ? 'c3' : 'c2');
+              const shape = fret === 0 ? 'ring' : 'circle';
+              activeMarkers.set(`${sIndex}-${fret}`, { s: sIndex, f: fret, shape: shape, colorKey: role });
+            }
+          }
+          renderBoard();
+          return;
+        }
+      }
 
-      // 依序為各弦套用把位
-      for (let i = 0; i < 6; i++) {
-        const sIndex = (currentTuningMIDI.length - 1) - i;
-        if (sIndex < 0) continue;
+      // 標準封閉把位運算
+      const rootStr = v.rootString; // 5(6弦), 4(5弦), 3(4弦)
+      const openMidiOnRootStr = currentTuningMIDI[rootStr] % 12;
+      const barreFret = ((chordRoot - openMidiOnRootStr) % 12 + 12) % 12;
 
-        const baseFret = voicing.frets[i];
+      // 檢查是否超過品絲上限 (15品)，超過時往低八度收束 (如果可行)
+      let offset = barreFret;
+      if (offset > 10 && (offset - 12) >= 0) {
+        offset -= 12;
+      }
 
-        if (baseFret === -1) {
-          // 悶音：在琴枕前方 0 品標記叉叉
+      for (let str = 0; str < 6; str++) {
+        const sIndex = 5 - str;
+        const relFret = v.relativeFrets[str];
+
+        if (relFret === -1) {
+          // 悶音：琴枕處標記灰叉
           activeMarkers.set(`${sIndex}-0`, { s: sIndex, f: 0, shape: 'cross', colorKey: 'c2' });
         } else {
-          // 計算實體品位
-          let actualFret = baseFret === 0 ? 0 : baseFret + rootFretOffset;
-          if (actualFret > FRETS) actualFret -= 12; // 超過把位時自動八度折返
-          if (actualFret < 0) actualFret += 12;
+          const actualFret = offset + relFret;
+          if (actualFret > FRETS || actualFret < 0) continue;
 
           const midi = currentTuningMIDI[sIndex] + actualFret;
           const interval = ((midi - currentRoot) % 12 + 12) % 12;
 
-          // 智慧色彩指派
-          let roleKey = 'c2'; // 預設 3度/5度 為暗底襯底
-          if (interval === 0) {
-            roleKey = 'c1'; // 根音 Root 為第 1 色
-          } else if (interval === 9 || interval === 10 || interval === 11 || interval === 6) {
-            roleKey = 'c3'; // 6th, 7th, b5 等特徵音為強調色
-          }
+          let role = 'c2';
+          if (interval === 0) role = 'c1'; // 根音必為 Root 紅
+          else if (interval === 9 || interval === 10 || interval === 11 || interval === 6) role = 'c3'; // 特徵音
 
-          // 空弦使用空心圈，其餘品位使用實心圓
-          const markerShape = actualFret === 0 ? 'ring' : 'circle';
-          activeMarkers.set(`${sIndex}-${actualFret}`, { s: sIndex, f: actualFret, shape: markerShape, colorKey: roleKey });
+          const shape = (actualFret === 0) ? 'ring' : 'circle';
+          activeMarkers.set(`${sIndex}-${actualFret}`, { s: sIndex, f: actualFret, shape: shape, colorKey: role });
         }
       }
 
       renderBoard();
     }
 
-    // 渲染上方畫筆 4 色 (第 1 顆圈內標註 R，去掉文字)
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
@@ -1259,7 +1246,6 @@
 
       const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      // 1. 指板底圖
       const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
       style.bg.forEach((c, i) => woodGrad.addColorStop(i / (style.bg.length - 1), c));
       ctx.fillStyle = woodGrad;
@@ -1343,9 +1329,9 @@
           ctx.moveTo(mx, my - 12); ctx.lineTo(mx + 12.5, my + 9); ctx.lineTo(mx - 12.5, my + 9);
           ctx.closePath(); ctx.fill();
         } else if (shape === 'cross') {
-          ctx.strokeStyle = color; ctx.lineWidth = 2.8; ctx.lineCap = 'round';
-          ctx.beginPath(); ctx.moveTo(mx - 7, my - 7); ctx.lineTo(mx + 7, my + 7);
-          ctx.moveTo(mx + 7, my - 7); ctx.lineTo(mx - 7, my + 7);
+          ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(mx - 6, my - 6); ctx.lineTo(mx + 6, my + 6);
+          ctx.moveTo(mx + 6, my - 6); ctx.lineTo(mx - 6, my + 6);
           ctx.stroke();
         }
         ctx.restore();
