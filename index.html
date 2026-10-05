@@ -40,7 +40,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 頂部標頭 */
+    /* 頂部標頭 (桌機 & 平板) */
     .top-status-bar {
       position: fixed;
       top: 24px;
@@ -120,6 +120,7 @@
       box-shadow: 0 10px 30px rgba(45, 35, 25, 0.04);
       overflow-x: auto;
       max-width: 100%;
+      -webkit-overflow-scrolling: touch;
     }
 
     svg {
@@ -158,7 +159,7 @@
       text-anchor: middle;
     }
 
-    /* 底部 Dock */
+    /* 底部 Dock (桌機 & 平板) */
     .floating-dock {
       position: fixed;
       bottom: 26px;
@@ -376,7 +377,7 @@
       transform: rotate(90deg);
     }
 
-    /* 右側抽屜面板 */
+    /* 右側抽屜面板 (桌機版固定 330px) */
     .sidebar-panel {
       position: fixed;
       right: -350px;
@@ -472,7 +473,7 @@
       border-color: #b8ab94;
     }
 
-    /* 配對色彩群組卡片 */
+    /* 配對色彩卡片 */
     .palette-group-card {
       background: #ffffff;
       border: 1px solid var(--dock-border);
@@ -603,6 +604,90 @@
       color: var(--text-muted);
       line-height: 1.2;
     }
+
+    /* ========================================================
+       📱 專為手機端打造的獨立排版 (僅在螢幕寬度 <= 768px 生效)
+       ======================================================== */
+    @media (max-width: 768px) {
+      body {
+        justify-content: flex-start;
+      }
+
+      /* 頂部縮減邊距，直向排列或收納 */
+      .top-status-bar {
+        top: 14px;
+        left: 16px;
+        right: 16px;
+      }
+      .brand-title {
+        font-size: 13px;
+      }
+      .current-brush-pill {
+        padding: 4px 10px;
+        font-size: 11px;
+      }
+
+      /* 指板主區塊適配：減小外距，左右滑動看把位更流暢 */
+      .stage-container {
+        padding: 64px 8px 100px;
+      }
+      .fretboard-card {
+        padding: 16px 10px;
+        border-radius: 16px;
+      }
+
+      /* 底部 Dock 在手機上改為柔順橫向滾動條，不擋畫面 */
+      .floating-dock {
+        bottom: 14px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-width: none;
+        padding: 6px 10px;
+        border-radius: 30px;
+        gap: 8px;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .dock-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .dock-select-pill select {
+        padding: 6px 24px 6px 10px;
+        font-size: 12px;
+      }
+      .dock-btn-sync {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+      .dock-btn-action, .dock-btn-export {
+        padding: 6px 10px;
+        font-size: 11.5px;
+      }
+
+      /* 右側按鈕：在手機上稍微下移並縮小一點，避免擋到底部操作 */
+      .sidebar-trigger-btn {
+        top: 42%;
+        width: 44px;
+        height: 44px;
+        transform: translateY(-50%) translateX(22px);
+      }
+      .sidebar-trigger-btn.open {
+        right: 85vw; /* 隨著手機側邊欄寬度滑動 */
+      }
+
+      /* 側邊欄抽屜：在手機上自適應佔螢幕 85%，不再死板 330px */
+      .sidebar-panel {
+        width: 85vw;
+        right: -90vw;
+        padding: 20px 16px;
+      }
+      .sidebar-panel.open {
+        right: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -615,9 +700,9 @@
     </div>
 
     <div class="current-brush-pill">
-      <span>當前畫筆色彩：</span>
+      <span>畫筆：</span>
       <span class="brush-preview-dot" id="header-brush-preview" style="background-color: #d84328;"></span>
-      <span id="header-brush-label" style="font-weight: 600; color: #1c1917;">Root (高飽和磚紅)</span>
+      <span id="header-brush-label">Root (磚紅)</span>
     </div>
   </header>
 
@@ -704,7 +789,7 @@
   <button class="sidebar-trigger-btn" id="sidebar-trigger-btn" onclick="toggleSidebar()" title="外觀與幾何色彩設定">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1z"></path>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
     </svg>
   </button>
 
@@ -752,7 +837,6 @@
     <div>
       <div class="section-label">經典配色庫（可點選組內單色畫筆）</div>
 
-      <!-- 配色組 1: 陶土磚紅 ✕ 鼠尾草綠 -->
       <div class="palette-group-card active-group" id="pal-card-terracotta">
         <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
           <span class="palette-name">陶土磚紅 ✕ 鼠尾草綠</span>
@@ -770,7 +854,6 @@
         </div>
       </div>
 
-      <!-- 配色組 2: 暖焙琥珀 ✕ 迷霧灰藍 -->
       <div class="palette-group-card" id="pal-card-caramel">
         <div class="palette-header" onclick="selectPaletteGroup('caramel')">
           <span class="palette-name">暖焙琥珀 ✕ 迷霧灰藍</span>
@@ -788,7 +871,6 @@
         </div>
       </div>
 
-      <!-- 配色組 3: 嫣紅玫瑰 ✕ 頁岩深灰 -->
       <div class="palette-group-card" id="pal-card-rose">
         <div class="palette-header" onclick="selectPaletteGroup('rose')">
           <span class="palette-name">嫣紅玫瑰 ✕ 頁岩墨灰</span>
@@ -806,7 +888,6 @@
         </div>
       </div>
 
-      <!-- 配色組 4: 鮮草橄欖 ✕ 深焙燕麥 -->
       <div class="palette-group-card" id="pal-card-olive">
         <div class="palette-header" onclick="selectPaletteGroup('olive')">
           <span class="palette-name">冷萃橄欖 ✕ 深焙燕麥</span>
@@ -916,28 +997,11 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
-    // 4 組經典調性配色（Root 高飽和區隔、Other 低飽和襯底）
     const PALETTE_GROUPS = {
-      terracotta: {
-        root: "#d84328",  // 鮮明高飽和磚紅
-        other: "#5d7465", // 霧感鼠尾草綠
-        out: "#8c827a"
-      },
-      caramel: {
-        root: "#e07622",  // 高飽和暖焦糖橙
-        other: "#586f84", // 迷霧灰藍
-        out: "#8a949e"
-      },
-      rose: {
-        root: "#d13b63",  // 鮮豔嫣紅
-        other: "#475569", // 頁岩墨灰
-        out: "#918b8b"
-      },
-      olive: {
-        root: "#829c38",  // 飽和草綠橄欖
-        other: "#7d6555", // 深焙燕麥棕
-        out: "#9c968f"
-      }
+      terracotta: { root: "#d84328", other: "#5d7465", out: "#8c827a" },
+      caramel:    { root: "#e07622", other: "#586f84", out: "#8a949e" },
+      rose:       { root: "#d13b63", other: "#475569", out: "#918b8b" },
+      olive:      { root: "#829c38", other: "#7d6555", out: "#9c968f" }
     };
 
     const FRETBOARD_STYLES = {
@@ -1009,9 +1073,9 @@
     let currentFretboardStyle = 'rosewood';
     let currentSelectedShape = 'circle';
     let currentActivePalette = 'terracotta'; 
-    let currentBrushColor = '#d84328';        // 當前畫筆手動色彩
+    let currentBrushColor = '#d84328';
     let isScaleSyncActive = false;
-    const activeMarkers = new Map();         // key => { s, f, shape, color }
+    const activeMarkers = new Map();
 
     const svg = document.getElementById('fretboard');
     const startX = 64, startY = 32, fretWidth = 62, stringSpacing = 28;
@@ -1248,7 +1312,6 @@
       svg.appendChild(c);
     }
 
-    // 點擊弦品標記
     function toggleMarker(s, f) {
       const midi = STRING_TUNING_MIDI[s] + f;
       playGuitarTone(midi);
@@ -1269,16 +1332,13 @@
       renderBoard();
     }
 
-    // 從配對組中選取特定顏色（Root 或 Other）作為畫筆
     function pickColorFromPalette(groupKey, type, hexColor, labelName) {
       currentActivePalette = groupKey;
       currentBrushColor = hexColor;
 
-      // 更新頂部畫筆提示
       document.getElementById('header-brush-preview').style.backgroundColor = hexColor;
       document.getElementById('header-brush-label').textContent = labelName;
 
-      // 更新卡片外觀選取狀態
       document.querySelectorAll('.palette-group-card').forEach(c => c.classList.remove('active-group'));
       const activeCard = document.getElementById(`pal-card-${groupKey}`);
       if (activeCard) activeCard.classList.add('active-group');
@@ -1287,14 +1347,12 @@
       const activeChip = document.getElementById(`chip-${groupKey}-${type}`);
       if (activeChip) activeChip.classList.add('active-chip');
 
-      // 若目前為連動模式，自動重刷所有調內音的主副色
       if (isScaleSyncActive) {
         populateScaleNotes();
         renderBoard();
       }
     }
 
-    // 點擊整個配對組卡片切換
     function selectPaletteGroup(groupKey) {
       const group = PALETTE_GROUPS[groupKey];
       pickColorFromPalette(groupKey, 'root', group.root, 'Root (高飽和)');
@@ -1315,7 +1373,6 @@
       renderBoard();
     }
 
-    // 自動填滿調內音（嚴格依照選取組別：Root 用高飽和、Other 用低飽和）
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
@@ -1387,11 +1444,8 @@
       triggerBtn.classList.toggle('open');
     }
 
-    // ========================================================
-    // 徹底解決「指板木頭蒸發」的 Canvas 完整渲染匯出引擎 (2x Retina)
-    // ========================================================
     function exportFretboardPNG() {
-      const scale = 2; // 2x 高畫質
+      const scale = 2;
       const boardW = FRETS * fretWidth;
       const boardH = (STRINGS - 1) * stringSpacing + 20;
       const totalW = 1030;
@@ -1405,7 +1459,6 @@
 
       const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      // 1. 在底層繪製實體木質漸層
       const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
       woodGrad.addColorStop(0, style.bgGradient[0]);
       woodGrad.addColorStop(0.25, style.bgGradient[1]);
@@ -1416,23 +1469,19 @@
       ctx.fillStyle = woodGrad;
       ctx.fillRect(startX, startY - 10, boardW, boardH);
 
-      // 包邊線條
       ctx.strokeStyle = style.binding[0];
       ctx.lineWidth = 1.5;
       ctx.strokeRect(startX, startY - 10, boardW, boardH);
 
-      // 2. 琴枕
       ctx.fillStyle = style.nut.fill;
       ctx.strokeStyle = style.nut.stroke;
       ctx.lineWidth = 1;
       ctx.fillRect(startX - 7, startY - 10, 7, boardH);
       ctx.strokeRect(startX - 7, startY - 10, 7, boardH);
 
-      // 3. 弦與品絲透過 SVG 轉圖疊加
       const svgElement = document.getElementById('fretboard');
       const svgClone = svgElement.cloneNode(true);
 
-      // 確保漸層定義顯式內聯
       const svgString = new XMLSerializer().serializeToString(svgClone);
       const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
       const URL = window.URL || window.webkitURL || window;
@@ -1442,7 +1491,6 @@
       img.onload = function() {
         ctx.drawImage(img, 0, 0);
 
-        // 下載 PNG
         const pngURL = canvas.toDataURL('image/png');
         const downloadLink = document.createElement('a');
         const rootName = NOTE_NAMES[currentRoot];
