@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>指板幾何視覺化 - Studio Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-base: #f4f1ea;
+      --dock-bg: rgba(255, 255, 255, 0.85);
+      --dock-border: rgba(214, 208, 196, 0.75);
+      --text-main: #2b2825;
+      --text-muted: #857e75;
+      --shadow-float: 0 14px 40px rgba(45, 35, 25, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: var(--bg-base);
+      background-image: radial-gradient(rgba(120, 113, 108, 0.1) 1.2px, transparent 0);
+      background-size: 24px 24px;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 頂部標頭 */
+    .top-status-bar {
+      position: fixed;
+      top: 24px;
+      left: 32px;
+      right: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .brand-stamp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .brand-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #2b2825;
+      color: #f5f2eb;
+      font-weight: 600;
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #3b3530;
+      letter-spacing: -0.2px;
+    }
+
+    .current-brush-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(10px);
+      padding: 5px 14px;
+      border-radius: 24px;
+      border: 1px solid var(--dock-border);
+      pointer-events: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .brush-preview-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+
+    /* 指板主展示區 */
+    .stage-container {
+      width: 100%;
+      max-width: 1180px;
+      padding: 70px 20px 110px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fretboard-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--dock-border);
+      border-radius: 22px;
+      padding: 30px 24px;
+      box-shadow: 0 10px 30px rgba(45, 35, 25, 0.04);
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    svg {
+      display: block;
+      margin: 0 auto;
+      user-select: none;
+    }
+
+    .clickable-area {
+      fill: transparent;
+      cursor: pointer;
+    }
+
+    .clickable-area:hover {
+      fill: rgba(255, 255, 255, 0.06);
+    }
+
+    .marker-shape {
+      transition: fill 0.15s ease, stroke 0.15s ease;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+    }
+
+    .marker-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+    }
+
+    .fret-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 400;
+      text-anchor: middle;
+    }
+
+    /* 底部 Dock */
+    .floating-dock {
+      position: fixed;
+      bottom: 26px;
+      background: var(--dock-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--dock-border);
+      border-radius: 40px;
+      padding: 6px 12px;
+      box-shadow: var(--shadow-float);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 90;
+      max-width: calc(100vw - 32px);
+      overflow-x: auto;
+    }
+
+    .dock-group {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(230, 224, 214, 0.65);
+      border-radius: 30px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .dock-btn {
+      background: transparent;
+      border: none;
+      padding: 7px 13px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn.active {
+      background: #ffffff;
+      color: var(--text-main);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .dock-select-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 4px;
+    }
+
+    .dock-select-pill label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dock-select-pill select {
+      appearance: none;
+      background: #ffffff;
+      border: 1px solid var(--dock-border);
+      padding: 7px 28px 7px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+
+    .dock-btn-sync {
+      background: #2b2825;
+      color: #f5f2eb;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 24px;
+      font-size: 12.5px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn-sync.sync-active {
+      background: #3a342e;
+    }
+
+    .sync-led {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      background: #78716c;
+      transition: all 0.2s ease;
+    }
+
+    .dock-btn-sync.sync-active .sync-led {
+      background: #6ee7b7;
+      box-shadow: 0 0 7px #6ee7b7;
+    }
+
+    .dock-btn-action {
+      background: transparent;
+      border: 1px solid var(--dock-border);
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn-action:hover {
+      background: rgba(230, 224, 214, 0.5);
+      color: var(--text-main);
+    }
+
+    .dock-btn-export {
+      background: #3f3a34;
+      color: #f5f2eb;
+      border: 1px solid #2b2825;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn-export:hover {
+      background: #23201d;
+    }
+
+    .dock-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--dock-border);
+      margin: 0 2px;
+    }
+
+    /* 右側貼邊懸浮按鈕 */
+    .sidebar-trigger-btn {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      width: 50px;
+      height: 50px;
+      border-radius: 25px 0 0 25px;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--dock-border);
+      border-right: none;
+      box-shadow: -4px 6px 16px rgba(45, 35, 25, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 10px;
+      cursor: pointer;
+      z-index: 100;
+      opacity: 0.45;
+      transform: translateY(-50%) translateX(25px);
+      transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2),
+                  opacity 0.25s ease,
+                  background-color 0.2s ease,
+                  box-shadow 0.28s ease,
+                  border-radius 0.2s ease;
+    }
+
+    .sidebar-trigger-btn:hover {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      background: #ffffff;
+      box-shadow: -8px 10px 24px rgba(45, 35, 25, 0.12);
+    }
+
+    .sidebar-trigger-btn svg {
+      transition: transform 0.35s ease;
+      color: #2b2825;
+    }
+
+    .sidebar-trigger-btn:hover svg {
+      transform: rotate(30deg);
+    }
+
+    .sidebar-trigger-btn.open {
+      right: 330px;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      padding-left: 0;
+      justify-content: center;
+      border-right: 1px solid var(--dock-border);
+      opacity: 1;
+      transform: translateY(-50%) translateX(50%);
+      background: #ffffff;
+      box-shadow: 0 4px 16px rgba(45, 35, 25, 0.12);
+    }
+
+    .sidebar-trigger-btn.open svg {
+      transform: rotate(90deg);
+    }
+
+    /* 右側抽屜面板 */
+    .sidebar-panel {
+      position: fixed;
+      right: -350px;
+      top: 0;
+      bottom: 0;
+      width: 330px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-left: 1px solid var(--dock-border);
+      box-shadow: -12px 0 40px rgba(45, 35, 25, 0.08);
+      z-index: 105;
+      padding: 26px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      overflow-y: auto;
+      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-panel.open {
+      right: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--dock-border);
+    }
+
+    .sidebar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      background: rgba(230, 224, 214, 0.6);
+      color: var(--text-main);
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+
+    /* 幾何形狀 */
+    .shape-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .shape-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: #ede8df;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .shape-btn:hover {
+      background: #e3dccd;
+    }
+
+    .shape-btn.active {
+      background: #ded5c2;
+      border-color: #b8ab94;
+    }
+
+    /* 配對色彩群組卡片 */
+    .palette-group-card {
+      background: #ffffff;
+      border: 1px solid var(--dock-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.15s;
+    }
+
+    .palette-group-card.active-group {
+      border-color: #2b2825;
+      background: #faf8f5;
+    }
+
+    .palette-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .palette-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .palette-radio-label {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .palette-swatches-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .swatch-chip {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 7px;
+      border-radius: 8px;
+      border: 1.5px solid transparent;
+      background: #f5f2eb;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .swatch-chip:hover {
+      background: #ece7dc;
+      transform: translateY(-1px);
+    }
+
+    .swatch-chip.active-chip {
+      border-color: #2b2825;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .swatch-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .swatch-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #44403c;
+    }
+
+    /* 6 種指板風格卡片 */
+    .wood-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .wood-card {
+      border: 1px solid var(--dock-border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #ffffff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      transition: all 0.18s ease;
+      text-align: left;
+    }
+
+    .wood-card:hover {
+      border-color: #a8a29e;
+      transform: translateY(-1px);
+    }
+
+    .wood-card.active {
+      border-color: #2b2825;
+      background: #fbf9f5;
+      box-shadow: 0 0 0 1.5px #2b2825;
+    }
+
+    .wood-preview {
+      width: 100%;
+      height: 20px;
+      border-radius: 5px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .wood-name {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .wood-desc {
+      font-size: 9.5px;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部標頭 -->
+  <header class="top-status-bar">
+    <div class="brand-stamp">
+      <span class="brand-badge">STUDIO</span>
+      <span class="brand-title">指板幾何視覺化</span>
+    </div>
+
+    <div class="current-brush-pill">
+      <span>當前畫筆色彩：</span>
+      <span class="brush-preview-dot" id="header-brush-preview" style="background-color: #d84328;"></span>
+      <span id="header-brush-label" style="font-weight: 600; color: #1c1917;">Root (高飽和磚紅)</span>
+    </div>
+  </header>
+
+  <!-- 指板主舞台 -->
+  <main class="stage-container">
+    <div class="fretboard-card">
+      <svg id="fretboard" width="1030" height="210">
+        <defs id="svg-defs"></defs>
+      </svg>
+    </div>
+  </main>
+
+  <!-- 底部精簡 Dock -->
+  <footer class="floating-dock">
+    <div class="dock-group">
+      <button class="dock-btn active" id="btn-degree" onclick="setDisplayMode('degree')">首調</button>
+      <button class="dock-btn" id="btn-note" onclick="setDisplayMode('note')">音名</button>
+      <button class="dock-btn" id="btn-dot" onclick="setDisplayMode('dot')">點</button>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <div class="dock-select-pill">
+      <label>Key</label>
+      <select id="root-select" onchange="changeRoot(this.value)">
+        <option value="0">C</option>
+        <option value="1">C# / D♭</option>
+        <option value="2">D</option>
+        <option value="3">D# / E♭</option>
+        <option value="4">E</option>
+        <option value="5">F</option>
+        <option value="6">F# / G♭</option>
+        <option value="7">G</option>
+        <option value="8">G# / A♭</option>
+        <option value="9">A</option>
+        <option value="10">A# / B♭</option>
+        <option value="11">B</option>
+      </select>
+    </div>
+
+    <div class="dock-select-pill">
+      <label>Scale</label>
+      <select id="scale-type" onchange="changeScaleType(this.value)">
+        <optgroup label="自然大小調與五聲">
+          <option value="major">大調 (Major / Ionian)</option>
+          <option value="minor">自然小調 (Natural Minor)</option>
+          <option value="major_pentatonic">大調五聲 (Major Pentatonic)</option>
+          <option value="minor_pentatonic">小調五聲 (Minor Pentatonic)</option>
+        </optgroup>
+        <optgroup label="教會調式 (Church Modes)">
+          <option value="ionian">1. Ionian</option>
+          <option value="dorian">2. Dorian</option>
+          <option value="phrygian">3. Phrygian</option>
+          <option value="lydian">4. Lydian</option>
+          <option value="mixolydian">5. Mixolydian</option>
+          <option value="aeolian">6. Aeolian</option>
+          <option value="locrian">7. Locrian</option>
+        </optgroup>
+        <optgroup label="小調衍生音階">
+          <option value="harmonic_minor">和聲小調 (Harmonic Minor)</option>
+          <option value="melodic_minor">爵士旋律小調 (Melodic Minor)</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <button class="dock-btn-sync" id="btn-scale-sync" onclick="toggleScaleSync()">
+      <span class="sync-led"></span>
+      <span>顯示調內音</span>
+    </button>
+
+    <button class="dock-btn-action" onclick="clearMarkers()">清除</button>
+
+    <div class="dock-divider"></div>
+
+    <!-- PNG 匯出按鈕 -->
+    <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">
+      <span>📷 匯出 PNG</span>
+    </button>
+  </footer>
+
+  <!-- 右側貼邊懸浮按鈕 -->
+  <button class="sidebar-trigger-btn" id="sidebar-trigger-btn" onclick="toggleSidebar()" title="外觀與幾何色彩設定">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1z"></path>
+    </svg>
+  </button>
+
+  <!-- 右側滑入式自訂面板 -->
+  <aside class="sidebar-panel" id="sidebar-panel">
+    <div class="sidebar-header">
+      <div class="sidebar-title">外觀與幾何設定</div>
+      <button class="close-btn" onclick="toggleSidebar()">✕</button>
+    </div>
+
+    <!-- 1. 幾何形狀 -->
+    <div>
+      <div class="section-label">標記幾何形狀</div>
+      <div class="shape-grid">
+        <button class="shape-btn active" id="shape-circle" onclick="setShape('circle')" title="實心圓">
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="7.5" fill="#44403c" />
+          </svg>
+        </button>
+        <button class="shape-btn" id="shape-ring" onclick="setShape('ring')" title="空心圓圈">
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="6.5" fill="none" stroke="#44403c" stroke-width="2.5" />
+          </svg>
+        </button>
+        <button class="shape-btn" id="shape-diamond" onclick="setShape('diamond')" title="菱形">
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#44403c" />
+          </svg>
+        </button>
+        <button class="shape-btn" id="shape-triangle" onclick="setShape('triangle')" title="三角形">
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#44403c" />
+          </svg>
+        </button>
+        <button class="shape-btn" id="shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <line x1="5" y1="5" x2="15" y2="15" stroke="#44403c" stroke-width="2.6" stroke-linecap="round" />
+            <line x1="15" y1="5" x2="5" y2="15" stroke="#44403c" stroke-width="2.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. 配對色票庫與組內點選 -->
+    <div>
+      <div class="section-label">經典配色庫（可點選組內單色畫筆）</div>
+
+      <!-- 配色組 1: 陶土磚紅 ✕ 鼠尾草綠 -->
+      <div class="palette-group-card active-group" id="pal-card-terracotta">
+        <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
+          <span class="palette-name">陶土磚紅 ✕ 鼠尾草綠</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-row">
+          <div class="swatch-chip active-chip" id="chip-terracotta-root" onclick="pickColorFromPalette('terracotta', 'root', '#d84328', 'Root (鮮明磚紅)')">
+            <span class="swatch-dot" style="background: #d84328;"></span>
+            <span class="swatch-label">Root (1)</span>
+          </div>
+          <div class="swatch-chip" id="chip-terracotta-other" onclick="pickColorFromPalette('terracotta', 'other', '#5d7465', '副音 (鼠尾草綠)')">
+            <span class="swatch-dot" style="background: #5d7465;"></span>
+            <span class="swatch-label">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配色組 2: 暖焙琥珀 ✕ 迷霧灰藍 -->
+      <div class="palette-group-card" id="pal-card-caramel">
+        <div class="palette-header" onclick="selectPaletteGroup('caramel')">
+          <span class="palette-name">暖焙琥珀 ✕ 迷霧灰藍</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-row">
+          <div class="swatch-chip" id="chip-caramel-root" onclick="pickColorFromPalette('caramel', 'root', '#e07622', 'Root (飽和琥珀橙)')">
+            <span class="swatch-dot" style="background: #e07622;"></span>
+            <span class="swatch-label">Root (1)</span>
+          </div>
+          <div class="swatch-chip" id="chip-caramel-other" onclick="pickColorFromPalette('caramel', 'other', '#586f84', '副音 (迷霧藍)')">
+            <span class="swatch-dot" style="background: #586f84;"></span>
+            <span class="swatch-label">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配色組 3: 嫣紅玫瑰 ✕ 頁岩深灰 -->
+      <div class="palette-group-card" id="pal-card-rose">
+        <div class="palette-header" onclick="selectPaletteGroup('rose')">
+          <span class="palette-name">嫣紅玫瑰 ✕ 頁岩墨灰</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-row">
+          <div class="swatch-chip" id="chip-rose-root" onclick="pickColorFromPalette('rose', 'root', '#d13b63', 'Root (嫣紅玫瑰)')">
+            <span class="swatch-dot" style="background: #d13b63;"></span>
+            <span class="swatch-label">Root (1)</span>
+          </div>
+          <div class="swatch-chip" id="chip-rose-other" onclick="pickColorFromPalette('rose', 'other', '#475569', '副音 (頁岩灰)')">
+            <span class="swatch-dot" style="background: #475569;"></span>
+            <span class="swatch-label">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配色組 4: 鮮草橄欖 ✕ 深焙燕麥 -->
+      <div class="palette-group-card" id="pal-card-olive">
+        <div class="palette-header" onclick="selectPaletteGroup('olive')">
+          <span class="palette-name">冷萃橄欖 ✕ 深焙燕麥</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-row">
+          <div class="swatch-chip" id="chip-olive-root" onclick="pickColorFromPalette('olive', 'root', '#829c38', 'Root (亮青橄欖)')">
+            <span class="swatch-dot" style="background: #829c38;"></span>
+            <span class="swatch-label">Root (1)</span>
+          </div>
+          <div class="swatch-chip" id="chip-olive-other" onclick="pickColorFromPalette('olive', 'other', '#7d6555', '副音 (深焙燕麥)')">
+            <span class="swatch-dot" style="background: #7d6555;"></span>
+            <span class="swatch-label">Other</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 指板材質風格 -->
+    <div>
+      <div class="section-label">指板木質風格</div>
+      <div class="wood-grid">
+        <div class="wood-card active" id="fret-btn-rosewood" onclick="changeFretboardStyle('rosewood')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #2a1a13, #1f120d);"></div>
+          <div class="wood-name">巴西玫瑰木</div>
+          <div class="wood-desc">深邃紅褐 ✕ 象牙邊</div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-roasted_maple" onclick="changeFretboardStyle('roasted_maple')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #be894e, #996631);"></div>
+          <div class="wood-name">烘烤楓木</div>
+          <div class="wood-desc">金黃焦糖 ✕ 黑點標記</div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-ebony" onclick="changeFretboardStyle('ebony')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #18181b, #0f0f11);"></div>
+          <div class="wood-name">黑夜黑檀木</div>
+          <div class="wood-desc">純黑緻密 ✕ 冷銀亮絲</div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-vintage_maple" onclick="changeFretboardStyle('vintage_maple')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #e4c282, #c99e57);"></div>
+          <div class="wood-name">復古奶油楓木</div>
+          <div class="wood-desc">50s暖黃 ✕ 經典黑點</div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-walnut" onclick="changeFretboardStyle('walnut')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #3d3028, #2a201a);"></div>
+          <div class="wood-name">深焙核桃木</div>
+          <div class="wood-desc">冷調灰褐 ✕ 灰白包邊</div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-carbon" onclick="changeFretboardStyle('carbon')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #24272c, #16181b);"></div>
+          <div class="wood-name">石墨碳纖維</div>
+          <div class="wood-desc">現代霧灰 ✕ 夜光點</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    const STRINGS = 6;
+    const FRETS = 15;
+    const STRING_TUNING_MIDI = [64, 59, 55, 50, 45, 40];
+    const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const DEGREE_NAMES = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"];
+
+    // Web Audio API
+    let audioCtx = null;
+    function playGuitarTone(midiNote) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      const now = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 1.3);
+    }
+
+    const SCALES = {
+      major:             { notes: [0, 2, 4, 5, 7, 9, 11] },
+      minor:             { notes: [0, 2, 3, 5, 7, 8, 10] },
+      major_pentatonic:  { notes: [0, 2, 4, 7, 9] },
+      minor_pentatonic:  { notes: [0, 3, 5, 7, 10] },
+      ionian:            { notes: [0, 2, 4, 5, 7, 9, 11] },
+      dorian:            { notes: [0, 2, 3, 5, 7, 9, 10] },
+      phrygian:          { notes: [0, 1, 3, 5, 7, 8, 10] },
+      lydian:            { notes: [0, 2, 4, 6, 7, 9, 11] },
+      mixolydian:        { notes: [0, 2, 4, 5, 7, 9, 10] },
+      aeolian:           { notes: [0, 2, 3, 5, 7, 8, 10] },
+      locrian:           { notes: [0, 1, 3, 5, 6, 8, 10] },
+      harmonic_minor:    { notes: [0, 2, 3, 5, 7, 8, 11] },
+      melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
+    };
+
+    // 4 組經典調性配色（Root 高飽和區隔、Other 低飽和襯底）
+    const PALETTE_GROUPS = {
+      terracotta: {
+        root: "#d84328",  // 鮮明高飽和磚紅
+        other: "#5d7465", // 霧感鼠尾草綠
+        out: "#8c827a"
+      },
+      caramel: {
+        root: "#e07622",  // 高飽和暖焦糖橙
+        other: "#586f84", // 迷霧灰藍
+        out: "#8a949e"
+      },
+      rose: {
+        root: "#d13b63",  // 鮮豔嫣紅
+        other: "#475569", // 頁岩墨灰
+        out: "#918b8b"
+      },
+      olive: {
+        root: "#829c38",  // 飽和草綠橄欖
+        other: "#7d6555", // 深焙燕麥棕
+        out: "#9c968f"
+      }
+    };
+
+    const FRETBOARD_STYLES = {
+      rosewood: {
+        bgGradient: ['#2a1a13', '#382218', '#261711', '#331f16', '#1f120d'],
+        binding: ['#d6cebd', '#c5bcab'],
+        nut: { fill: '#eae3d2', stroke: '#cfc4af' },
+        inlay: '#e3ded6',
+        inlayOpacity: 0.88,
+        wire: '#c8c1b5',
+        shadow: '#160c07',
+        fretNum: '#8c827a'
+      },
+      roasted_maple: {
+        bgGradient: ['#be894e', '#c79255', '#a9733a', '#b78044', '#996631'],
+        binding: ['#925c27', '#804f1e'],
+        nut: { fill: '#241a12', stroke: '#150f09' },
+        inlay: '#261a11',
+        inlayOpacity: 0.85,
+        wire: '#d4af7a',
+        shadow: '#4d3013',
+        fretNum: '#6e451d'
+      },
+      ebony: {
+        bgGradient: ['#1c1c1f', '#242429', '#151518', '#1e1e23', '#0e0e10'],
+        binding: ['#e2ded6', '#ccc6bc'],
+        nut: { fill: '#f2eee5', stroke: '#ded8ce' },
+        inlay: '#f0ecdf',
+        inlayOpacity: 0.95,
+        wire: '#e2e8f0',
+        shadow: '#060608',
+        fretNum: '#78716c'
+      },
+      vintage_maple: {
+        bgGradient: ['#e4c282', '#eccf91', '#dab370', '#e3c07f', '#c99e57'],
+        binding: ['#be8f45', '#a77931'],
+        nut: { fill: '#2d2319', stroke: '#1c150e' },
+        inlay: '#1c140e',
+        inlayOpacity: 0.9,
+        wire: '#cfb989',
+        shadow: '#664c1e',
+        fretNum: '#735522'
+      },
+      walnut: {
+        bgGradient: ['#3d3028', '#473930', '#342922', '#3f322a', '#261e18'],
+        binding: ['#b4aba2', '#9f958b'],
+        nut: { fill: '#e6ded4', stroke: '#c7bcb0' },
+        inlay: '#ded7ce',
+        inlayOpacity: 0.82,
+        wire: '#b8b2a8',
+        shadow: '#1c1511',
+        fretNum: '#80776e'
+      },
+      carbon: {
+        bgGradient: ['#282c34', '#323741', '#21252c', '#2c313a', '#181a1f'],
+        binding: ['#4b5563', '#374151'],
+        nut: { fill: '#111827', stroke: '#030712' },
+        inlay: '#6ee7b7',
+        inlayOpacity: 0.9,
+        wire: '#94a3b8',
+        shadow: '#090d16',
+        fretNum: '#94a3b8'
+      }
+    };
+
+    let displayMode = 'degree';
+    let currentRoot = 0; 
+    let currentScale = 'major';
+    let currentFretboardStyle = 'rosewood';
+    let currentSelectedShape = 'circle';
+    let currentActivePalette = 'terracotta'; 
+    let currentBrushColor = '#d84328';        // 當前畫筆手動色彩
+    let isScaleSyncActive = false;
+    const activeMarkers = new Map();         // key => { s, f, shape, color }
+
+    const svg = document.getElementById('fretboard');
+    const startX = 64, startY = 32, fretWidth = 62, stringSpacing = 28;
+
+    function renderDefs() {
+      const defs = document.getElementById('svg-defs');
+      const style = FRETBOARD_STYLES[currentFretboardStyle];
+
+      defs.innerHTML = `
+        <linearGradient id="dynamic-fretboard-grain" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="${style.bgGradient[0]}" />
+          <stop offset="25%" stop-color="${style.bgGradient[1]}" />
+          <stop offset="50%" stop-color="${style.bgGradient[2]}" />
+          <stop offset="75%" stop-color="${style.bgGradient[3]}" />
+          <stop offset="100%" stop-color="${style.bgGradient[4]}" />
+        </linearGradient>
+        <linearGradient id="dynamic-binding" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="${style.binding[0]}" />
+          <stop offset="100%" stop-color="${style.binding[1]}" />
+        </linearGradient>
+      `;
+    }
+
+    function renderBoard() {
+      renderDefs();
+      const style = FRETBOARD_STYLES[currentFretboardStyle];
+      const defs = document.getElementById('svg-defs');
+      
+      svg.innerHTML = '';
+      if (defs) svg.appendChild(defs);
+
+      const boardW = FRETS * fretWidth;
+      const boardH = (STRINGS - 1) * stringSpacing + 20;
+
+      // 1. 指板木質底圖
+      const woodRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      woodRect.setAttribute("x", startX);
+      woodRect.setAttribute("y", startY - 10);
+      woodRect.setAttribute("width", boardW);
+      woodRect.setAttribute("height", boardH);
+      woodRect.setAttribute("rx", "2");
+      woodRect.setAttribute("fill", "url(#dynamic-fretboard-grain)");
+      woodRect.setAttribute("stroke", "url(#dynamic-binding)");
+      woodRect.setAttribute("stroke-width", "1.5");
+      svg.appendChild(woodRect);
+
+      // 2. 琴枕
+      const nut = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      nut.setAttribute("x", startX - 7);
+      nut.setAttribute("y", startY - 10);
+      nut.setAttribute("width", 7);
+      nut.setAttribute("height", boardH);
+      nut.setAttribute("rx", "1.5");
+      nut.setAttribute("fill", style.nut.fill);
+      nut.setAttribute("stroke", style.nut.stroke);
+      nut.setAttribute("stroke-width", "1");
+      svg.appendChild(nut);
+
+      // 3. 把位點 (Inlays)
+      const inlays = [3, 5, 7, 9, 12, 15];
+      inlays.forEach(f => {
+        if (f > FRETS) return;
+        const x = startX + (f - 0.5) * fretWidth;
+        if (f === 12) {
+          drawCircle(x, startY + stringSpacing * 1.5, 4.2, style.inlay, style.inlayOpacity);
+          drawCircle(x, startY + stringSpacing * 3.5, 4.2, style.inlay, style.inlayOpacity);
+        } else {
+          drawCircle(x, startY + stringSpacing * 2.5, 4.6, style.inlay, style.inlayOpacity);
+        }
+      });
+
+      // 4. 品絲與數字
+      for (let f = 1; f <= FRETS; f++) {
+        const x = startX + f * fretWidth;
+
+        const shadow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        shadow.setAttribute("x1", x + 1);
+        shadow.setAttribute("y1", startY - 10);
+        shadow.setAttribute("x2", x + 1);
+        shadow.setAttribute("y2", startY - 10 + boardH);
+        shadow.setAttribute("stroke", style.shadow);
+        shadow.setAttribute("stroke-width", "1.2");
+        svg.appendChild(shadow);
+
+        const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        wire.setAttribute("x1", x);
+        wire.setAttribute("y1", startY - 10);
+        wire.setAttribute("x2", x);
+        wire.setAttribute("y2", startY - 10 + boardH);
+        wire.setAttribute("stroke", style.wire);
+        wire.setAttribute("stroke-width", "2.0");
+        svg.appendChild(wire);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x - fretWidth / 2);
+        text.setAttribute("y", startY + boardH + 16);
+        text.setAttribute("class", "fret-number");
+        text.setAttribute("fill", style.fretNum);
+        text.textContent = f;
+        svg.appendChild(text);
+      }
+
+      // 5. 琴弦
+      const stringProps = [
+        { stroke: "#dcd8cf", width: 0.95 },
+        { stroke: "#ccc5b8", width: 1.25 },
+        { stroke: "#9b9487", width: 1.6 },
+        { stroke: "#b89771", width: 2.1 },
+        { stroke: "#ab8860", width: 2.6 },
+        { stroke: "#99754f", width: 3.1 }
+      ];
+
+      for (let s = 0; s < STRINGS; s++) {
+        const y = startY + s * stringSpacing;
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", startX - 22);
+        line.setAttribute("y1", y);
+        line.setAttribute("x2", startX + boardW);
+        line.setAttribute("y2", y);
+        line.setAttribute("stroke", stringProps[s].stroke);
+        line.setAttribute("stroke-width", stringProps[s].width);
+        line.setAttribute("stroke-linecap", "round");
+        svg.appendChild(line);
+      }
+
+      // 6. 點擊感應區與標記點渲染
+      for (let s = 0; s < STRINGS; s++) {
+        for (let f = 0; f <= FRETS; f++) {
+          const x = f === 0 ? startX - 16 : startX + (f - 0.5) * fretWidth;
+          const y = startY + s * stringSpacing;
+          const key = `${s}-${f}`;
+
+          const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          hitArea.setAttribute("x", x - (f === 0 ? 12 : fretWidth / 2));
+          hitArea.setAttribute("y", y - stringSpacing / 2);
+          hitArea.setAttribute("width", f === 0 ? 24 : fretWidth);
+          hitArea.setAttribute("height", stringSpacing);
+          hitArea.setAttribute("class", "clickable-area");
+          hitArea.onclick = () => toggleMarker(s, f);
+          svg.appendChild(hitArea);
+
+          if (activeMarkers.has(key)) {
+            const markerData = activeMarkers.get(key);
+            renderMarker(x, y, s, f, markerData.shape, markerData.color);
+          }
+        }
+      }
+    }
+
+    function renderMarker(x, y, s, f, shape = 'circle', color = '#d84328') {
+      const midi = STRING_TUNING_MIDI[s] + f;
+      const noteName = NOTE_NAMES[midi % 12];
+      const interval = ((midi - currentRoot) % 12 + 12) % 12;
+      const degreeName = DEGREE_NAMES[interval];
+
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+      if (shape === 'circle') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        el.setAttribute("cx", x);
+        el.setAttribute("cy", y);
+        el.setAttribute("r", 11.2);
+        el.setAttribute("fill", color);
+        el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'ring') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        el.setAttribute("cx", x);
+        el.setAttribute("cy", y);
+        el.setAttribute("r", 9.8);
+        el.setAttribute("fill", "rgba(0,0,0,0.3)");
+        el.setAttribute("stroke", color);
+        el.setAttribute("stroke-width", "2.8");
+        el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'diamond') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        el.setAttribute("points", `${x},${y - 13} ${x + 13},${y} ${x},${y + 13} ${x - 13},${y}`);
+        el.setAttribute("fill", color);
+        el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'triangle') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        el.setAttribute("points", `${x},${y - 12} ${x + 12.5},${y + 9} ${x - 12.5},${y + 9}`);
+        el.setAttribute("fill", color);
+        el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'cross') {
+        const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line1.setAttribute("x1", x - 7);
+        line1.setAttribute("y1", y - 7);
+        line1.setAttribute("x2", x + 7);
+        line1.setAttribute("y2", y + 7);
+        line1.setAttribute("stroke", color);
+        line1.setAttribute("stroke-width", "2.8");
+        line1.setAttribute("stroke-linecap", "round");
+        line1.setAttribute("class", "marker-shape");
+
+        const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line2.setAttribute("x1", x + 7);
+        line2.setAttribute("y1", y - 7);
+        line2.setAttribute("x2", x - 7);
+        line2.setAttribute("y2", y + 7);
+        line2.setAttribute("stroke", color);
+        line2.setAttribute("stroke-width", "2.8");
+        line2.setAttribute("stroke-linecap", "round");
+        line2.setAttribute("class", "marker-shape");
+
+        g.appendChild(line1);
+        g.appendChild(line2);
+      }
+
+      if (displayMode !== 'dot' && shape !== 'cross') {
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", shape === 'triangle' ? y + 2 : y);
+        text.setAttribute("class", "marker-text");
+        text.setAttribute("fill", "#ffffff");
+        text.textContent = displayMode === 'note' ? noteName : degreeName;
+        g.appendChild(text);
+      }
+
+      g.onclick = () => toggleMarker(s, f);
+      svg.appendChild(g);
+    }
+
+    function drawCircle(cx, cy, r, fill, opacity) {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", cx);
+      c.setAttribute("cy", cy);
+      c.setAttribute("r", r);
+      c.setAttribute("fill", fill);
+      c.setAttribute("opacity", opacity);
+      svg.appendChild(c);
+    }
+
+    // 點擊弦品標記
+    function toggleMarker(s, f) {
+      const midi = STRING_TUNING_MIDI[s] + f;
+      playGuitarTone(midi);
+
+      const key = `${s}-${f}`;
+      if (activeMarkers.has(key)) {
+        const current = activeMarkers.get(key);
+        if (current.shape === currentSelectedShape && current.color === currentBrushColor) {
+          activeMarkers.delete(key);
+        } else {
+          current.shape = currentSelectedShape;
+          current.color = currentBrushColor;
+          activeMarkers.set(key, current);
+        }
+      } else {
+        activeMarkers.set(key, { s, f, shape: currentSelectedShape, color: currentBrushColor });
+      }
+      renderBoard();
+    }
+
+    // 從配對組中選取特定顏色（Root 或 Other）作為畫筆
+    function pickColorFromPalette(groupKey, type, hexColor, labelName) {
+      currentActivePalette = groupKey;
+      currentBrushColor = hexColor;
+
+      // 更新頂部畫筆提示
+      document.getElementById('header-brush-preview').style.backgroundColor = hexColor;
+      document.getElementById('header-brush-label').textContent = labelName;
+
+      // 更新卡片外觀選取狀態
+      document.querySelectorAll('.palette-group-card').forEach(c => c.classList.remove('active-group'));
+      const activeCard = document.getElementById(`pal-card-${groupKey}`);
+      if (activeCard) activeCard.classList.add('active-group');
+
+      document.querySelectorAll('.swatch-chip').forEach(chip => chip.classList.remove('active-chip'));
+      const activeChip = document.getElementById(`chip-${groupKey}-${type}`);
+      if (activeChip) activeChip.classList.add('active-chip');
+
+      // 若目前為連動模式，自動重刷所有調內音的主副色
+      if (isScaleSyncActive) {
+        populateScaleNotes();
+        renderBoard();
+      }
+    }
+
+    // 點擊整個配對組卡片切換
+    function selectPaletteGroup(groupKey) {
+      const group = PALETTE_GROUPS[groupKey];
+      pickColorFromPalette(groupKey, 'root', group.root, 'Root (高飽和)');
+    }
+
+    function setShape(shapeName) {
+      currentSelectedShape = shapeName;
+      document.querySelectorAll('.shape-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`shape-${shapeName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function changeFretboardStyle(styleKey) {
+      currentFretboardStyle = styleKey;
+      document.querySelectorAll('.wood-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById(`fret-btn-${styleKey}`);
+      if (activeCard) activeCard.classList.add('active');
+      renderBoard();
+    }
+
+    // 自動填滿調內音（嚴格依照選取組別：Root 用高飽和、Other 用低飽和）
+    function populateScaleNotes() {
+      activeMarkers.clear();
+      const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
+      const currentPal = PALETTE_GROUPS[currentActivePalette];
+
+      for (let s = 0; s < STRINGS; s++) {
+        for (let f = 0; f <= FRETS; f++) {
+          const midi = STRING_TUNING_MIDI[s] + f;
+          const interval = ((midi - currentRoot) % 12 + 12) % 12;
+          if (scaleNotes.includes(interval)) {
+            const markColor = (interval === 0) ? currentPal.root : currentPal.other;
+            activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, color: markColor });
+          }
+        }
+      }
+    }
+
+    function toggleScaleSync() {
+      isScaleSyncActive = !isScaleSyncActive;
+      updateSyncButtonUI();
+      if (isScaleSyncActive) {
+        populateScaleNotes();
+      } else {
+        activeMarkers.clear();
+      }
+      renderBoard();
+    }
+
+    function updateSyncButtonUI() {
+      const btn = document.getElementById('btn-scale-sync');
+      if (isScaleSyncActive) {
+        btn.classList.add('sync-active');
+      } else {
+        btn.classList.remove('sync-active');
+      }
+    }
+
+    function changeRoot(rootVal) {
+      currentRoot = parseInt(rootVal, 10);
+      if (isScaleSyncActive) populateScaleNotes();
+      renderBoard();
+    }
+
+    function changeScaleType(scaleVal) {
+      currentScale = scaleVal;
+      if (isScaleSyncActive) populateScaleNotes();
+      renderBoard();
+    }
+
+    function setDisplayMode(mode) {
+      displayMode = mode;
+      document.querySelectorAll('.dock-group button').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${mode}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderBoard();
+    }
+
+    function clearMarkers() {
+      isScaleSyncActive = false;
+      updateSyncButtonUI();
+      activeMarkers.clear();
+      renderBoard();
+    }
+
+    function toggleSidebar() {
+      const panel = document.getElementById('sidebar-panel');
+      const triggerBtn = document.getElementById('sidebar-trigger-btn');
+      panel.classList.toggle('open');
+      triggerBtn.classList.toggle('open');
+    }
+
+    // ========================================================
+    // 徹底解決「指板木頭蒸發」的 Canvas 完整渲染匯出引擎 (2x Retina)
+    // ========================================================
+    function exportFretboardPNG() {
+      const scale = 2; // 2x 高畫質
+      const boardW = FRETS * fretWidth;
+      const boardH = (STRINGS - 1) * stringSpacing + 20;
+      const totalW = 1030;
+      const totalH = 210;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = totalW * scale;
+      canvas.height = totalH * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      const style = FRETBOARD_STYLES[currentFretboardStyle];
+
+      // 1. 在底層繪製實體木質漸層
+      const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
+      woodGrad.addColorStop(0, style.bgGradient[0]);
+      woodGrad.addColorStop(0.25, style.bgGradient[1]);
+      woodGrad.addColorStop(0.5, style.bgGradient[2]);
+      woodGrad.addColorStop(0.75, style.bgGradient[3]);
+      woodGrad.addColorStop(1, style.bgGradient[4]);
+
+      ctx.fillStyle = woodGrad;
+      ctx.fillRect(startX, startY - 10, boardW, boardH);
+
+      // 包邊線條
+      ctx.strokeStyle = style.binding[0];
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(startX, startY - 10, boardW, boardH);
+
+      // 2. 琴枕
+      ctx.fillStyle = style.nut.fill;
+      ctx.strokeStyle = style.nut.stroke;
+      ctx.lineWidth = 1;
+      ctx.fillRect(startX - 7, startY - 10, 7, boardH);
+      ctx.strokeRect(startX - 7, startY - 10, 7, boardH);
+
+      // 3. 弦與品絲透過 SVG 轉圖疊加
+      const svgElement = document.getElementById('fretboard');
+      const svgClone = svgElement.cloneNode(true);
+
+      // 確保漸層定義顯式內聯
+      const svgString = new XMLSerializer().serializeToString(svgClone);
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+
+      const img = new Image();
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+
+        // 下載 PNG
+        const pngURL = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        const rootName = NOTE_NAMES[currentRoot];
+        downloadLink.download = `Fretboard_${rootName}_${currentScale}.png`;
+        downloadLink.href = pngURL;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        URL.revokeObjectURL(blobURL);
+      };
+      img.src = blobURL;
+    }
+
+    renderBoard();
+  </script>
+</body>
+</html>
