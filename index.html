@@ -10,6 +10,7 @@
 
   <style>
     :root {
+      /* Apple 霧面陽極氧化鋁合金與液態玻璃 (Space Gray Metal & Frosted Glass) */
       --metal-bg: #e5e7eb;
       --metal-card: rgba(248, 249, 251, 0.76);
       --metal-dock: rgba(243, 245, 248, 0.86);
@@ -96,19 +97,19 @@
     }
 
     /* ========================================================
-       🎨 右上角快捷畫筆工具列 (形狀 + 4 色直接切換)
+       🎨 右上角快捷畫筆工具列 (質感 100% 同步底部 Dock)
        ======================================================== */
     .top-quick-toolbar {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: var(--metal-dock);
-      backdrop-filter: blur(35px);
-      -webkit-backdrop-filter: blur(35px);
-      padding: 5px 10px;
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      padding: 6px 12px;
       border-radius: 999px;
       border: 1px solid var(--metal-border);
-      box-shadow: var(--metal-bevel-light), 0 6px 18px rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
       pointer-events: auto;
       transition: all 0.25s var(--sf-spring-curve);
     }
@@ -118,16 +119,20 @@
     }
 
     .quick-shape-group {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 3px;
+      background: rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-shadow-inset);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
     }
 
     .quick-shape-btn {
       width: 28px;
       height: 28px;
-      border-radius: 8px;
-      border: 1px solid transparent;
+      border-radius: 50%;
+      border: none;
       background: transparent;
       display: flex;
       align-items: center;
@@ -137,7 +142,6 @@
       transition: all 0.2s var(--sf-spring-curve);
     }
     .quick-shape-btn:hover {
-      background: rgba(0, 0, 0, 0.06);
       transform: scale(1.1);
     }
     .quick-shape-btn:active {
@@ -145,9 +149,8 @@
     }
     .quick-shape-btn.active {
       background: #ffffff;
-      border-color: var(--metal-border);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      transform: scale(1.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transform: scale(1.05);
     }
 
     .quick-divider {
@@ -158,9 +161,13 @@
     }
 
     .quick-color-group {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      background: rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-shadow-inset);
+      border-radius: 999px;
+      padding: 4px 6px;
+      gap: 6px;
     }
 
     .quick-color-btn {
@@ -170,9 +177,9 @@
       border: 2px solid transparent;
       cursor: pointer;
       padding: 0;
-      transition: all 0.2s var(--sf-spring-curve);
+      transition: all 0.22s var(--sf-spring-curve);
       position: relative;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.22);
     }
     .quick-color-btn:hover {
       transform: scale(1.18);
@@ -183,7 +190,7 @@
     .quick-color-btn.active {
       border-color: #ffffff;
       transform: scale(1.22);
-      box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.25);
+      box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.28);
     }
 
     /* 指板主展示區 */
@@ -664,7 +671,7 @@
       margin-bottom: 9px;
     }
 
-    /* 抽屜內幾何形狀卡片 */
+    /* 幾何形狀卡片 */
     .shape-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -873,7 +880,6 @@
         font-size: 13px;
       }
 
-      /* 手機上右上角快捷列微調尺寸以節省空間 */
       .top-quick-toolbar {
         padding: 4px 7px;
         gap: 5px;
@@ -1011,32 +1017,31 @@
       <span class="brand-title">指板幾何視覺化</span>
     </div>
 
-    <!-- 右上角快捷畫筆工具列 -->
+    <!-- 右上角快捷畫筆工具列 (形狀 + 4 色直接切換) -->
     <div class="top-quick-toolbar">
-      <!-- 5 款幾何形狀 -->
       <div class="quick-shape-group">
         <button class="quick-shape-btn active" id="q-shape-circle" onclick="setShape('circle')" title="實心圓">
-          <svg width="16" height="16" viewBox="0 0 20 20">
+          <svg width="15" height="15" viewBox="0 0 20 20">
             <circle cx="10" cy="10" r="7" fill="#1c1c1e" />
           </svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-ring" onclick="setShape('ring')" title="空心圓圈">
-          <svg width="16" height="16" viewBox="0 0 20 20">
+          <svg width="15" height="15" viewBox="0 0 20 20">
             <circle cx="10" cy="10" r="6" fill="none" stroke="#1c1c1e" stroke-width="2.6" />
           </svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-diamond" onclick="setShape('diamond')" title="菱形">
-          <svg width="16" height="16" viewBox="0 0 20 20">
+          <svg width="15" height="15" viewBox="0 0 20 20">
             <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e" />
           </svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-triangle" onclick="setShape('triangle')" title="三角形">
-          <svg width="16" height="16" viewBox="0 0 20 20">
+          <svg width="15" height="15" viewBox="0 0 20 20">
             <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e" />
           </svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
-          <svg width="16" height="16" viewBox="0 0 20 20">
+          <svg width="15" height="15" viewBox="0 0 20 20">
             <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" />
             <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" />
           </svg>
@@ -1148,7 +1153,7 @@
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
     </svg>
   </button>
 
@@ -1192,10 +1197,11 @@
       </div>
     </div>
 
-    <!-- 2. 四色色彩庫 -->
+    <!-- 2. 四色色彩庫 (依需求升級：第一色重紅/嫣紅、第二色暗調對比、後兩色強調特徵音) -->
     <div>
       <div class="section-label">調性配色庫（點選單色指派至指板）</div>
 
+      <!-- 配色組 1: 經典原色 -->
       <div class="palette-group-card active-group" id="pal-card-apple_classic">
         <div class="palette-header" onclick="selectPaletteGroup('apple_classic')">
           <span class="palette-name">經典原色 (Classic Tint)</span>
@@ -1206,62 +1212,19 @@
             <span class="swatch-dot" style="background: #ff3b30;"></span>
             <span class="swatch-label">Root</span>
           </div>
-          <div class="swatch-chip" id="chip-apple_classic-c2" onclick="pickColorFromPalette('apple_classic', 'c2', '#ff9500', '色選 2')">
+          <div class="swatch-chip" id="chip-apple_classic-c2" onclick="pickColorFromPalette('apple_classic', 'c2', '#3a4d5e', '暗底對比')">
+            <span class="swatch-dot" style="background: #3a4d5e;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-apple_classic-c3" onclick="pickColorFromPalette('apple_classic', 'c3', '#ff9500', '強調 A')">
             <span class="swatch-dot" style="background: #ff9500;"></span>
           </div>
-          <div class="swatch-chip" id="chip-apple_classic-c3" onclick="pickColorFromPalette('apple_classic', 'c3', '#34c759', '色選 3')">
-            <span class="swatch-dot" style="background: #34c759;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-apple_classic-c4" onclick="pickColorFromPalette('apple_classic', 'c4', '#007aff', '色選 4')">
-            <span class="swatch-dot" style="background: #007aff;"></span>
+          <div class="swatch-chip" id="chip-apple_classic-c4" onclick="pickColorFromPalette('apple_classic', 'c4', '#30d158', '強調 B')">
+            <span class="swatch-dot" style="background: #30d158;"></span>
           </div>
         </div>
       </div>
 
-      <div class="palette-group-card" id="pal-card-terracotta">
-        <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
-          <span class="palette-name">陶土大地 (Terracotta)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#d84328', 'Root')">
-            <span class="swatch-dot" style="background: #d84328;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-terracotta-c2" onclick="pickColorFromPalette('terracotta', 'c2', '#e59b34', '色選 2')">
-            <span class="swatch-dot" style="background: #e59b34;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-terracotta-c3" onclick="pickColorFromPalette('terracotta', 'c3', '#5d7465', '色選 3')">
-            <span class="swatch-dot" style="background: #5d7465;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-terracotta-c4" onclick="pickColorFromPalette('terracotta', 'c4', '#586f84', '色選 4')">
-            <span class="swatch-dot" style="background: #586f84;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="palette-group-card" id="pal-card-caramel">
-        <div class="palette-header" onclick="selectPaletteGroup('caramel')">
-          <span class="palette-name">莫蘭迪焦糖 (Caramel)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-caramel-c1" onclick="pickColorFromPalette('caramel', 'c1', '#e07622', 'Root')">
-            <span class="swatch-dot" style="background: #e07622;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-caramel-c2" onclick="pickColorFromPalette('caramel', 'c2', '#d4a237', '色選 2')">
-            <span class="swatch-dot" style="background: #d4a237;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-caramel-c3" onclick="pickColorFromPalette('caramel', 'c3', '#486581', '色選 3')">
-            <span class="swatch-dot" style="background: #486581;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-caramel-c4" onclick="pickColorFromPalette('caramel', 'c4', '#7b6079', '色選 4')">
-            <span class="swatch-dot" style="background: #7b6079;"></span>
-          </div>
-        </div>
-      </div>
-
+      <!-- 配色組 2: 復古嫣紅 -->
       <div class="palette-group-card" id="pal-card-rose">
         <div class="palette-header" onclick="selectPaletteGroup('rose')">
           <span class="palette-name">復古嫣紅 (Vintage Rose)</span>
@@ -1272,14 +1235,60 @@
             <span class="swatch-dot" style="background: #d13b63;"></span>
             <span class="swatch-label">Root</span>
           </div>
-          <div class="swatch-chip" id="chip-rose-c2" onclick="pickColorFromPalette('rose', 'c2', '#df8075', '色選 2')">
-            <span class="swatch-dot" style="background: #df8075;"></span>
+          <div class="swatch-chip" id="chip-rose-c2" onclick="pickColorFromPalette('rose', 'c2', '#334155', '暗底對比')">
+            <span class="swatch-dot" style="background: #334155;"></span>
           </div>
-          <div class="swatch-chip" id="chip-rose-c3" onclick="pickColorFromPalette('rose', 'c3', '#475569', '色選 3')">
-            <span class="swatch-dot" style="background: #475569;"></span>
+          <div class="swatch-chip" id="chip-rose-c3" onclick="pickColorFromPalette('rose', 'c3', '#eab308', '強調 A')">
+            <span class="swatch-dot" style="background: #eab308;"></span>
           </div>
-          <div class="swatch-chip" id="chip-rose-c4" onclick="pickColorFromPalette('rose', 'c4', '#597461', '色選 4')">
-            <span class="swatch-dot" style="background: #597461;"></span>
+          <div class="swatch-chip" id="chip-rose-c4" onclick="pickColorFromPalette('rose', 'c4', '#06b6d4', '強調 B')">
+            <span class="swatch-dot" style="background: #06b6d4;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配色組 3: 陶土紅褐 -->
+      <div class="palette-group-card" id="pal-card-terracotta">
+        <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
+          <span class="palette-name">陶土紅褐 (Terracotta Earth)</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-grid-4">
+          <div class="swatch-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#c84126', 'Root')">
+            <span class="swatch-dot" style="background: #c84126;"></span>
+            <span class="swatch-label">Root</span>
+          </div>
+          <div class="swatch-chip" id="chip-terracotta-c2" onclick="pickColorFromPalette('terracotta', 'c2', '#3b4856', '暗底對比')">
+            <span class="swatch-dot" style="background: #3b4856;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-terracotta-c3" onclick="pickColorFromPalette('terracotta', 'c3', '#e59b34', '強調 A')">
+            <span class="swatch-dot" style="background: #e59b34;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-terracotta-c4" onclick="pickColorFromPalette('terracotta', 'c4', '#52b788', '強調 B')">
+            <span class="swatch-dot" style="background: #52b788;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配色組 4: 深焙酒紅 -->
+      <div class="palette-group-card" id="pal-card-crimson">
+        <div class="palette-header" onclick="selectPaletteGroup('crimson')">
+          <span class="palette-name">深焙酒紅 (Crimson Velvet)</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-grid-4">
+          <div class="swatch-chip" id="chip-crimson-c1" onclick="pickColorFromPalette('crimson', 'c1', '#b91c1c', 'Root')">
+            <span class="swatch-dot" style="background: #b91c1c;"></span>
+            <span class="swatch-label">Root</span>
+          </div>
+          <div class="swatch-chip" id="chip-crimson-c2" onclick="pickColorFromPalette('crimson', 'c2', '#2c3e50', '暗底對比')">
+            <span class="swatch-dot" style="background: #2c3e50;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-crimson-c3" onclick="pickColorFromPalette('crimson', 'c3', '#f59e0b', '強調 A')">
+            <span class="swatch-dot" style="background: #f59e0b;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-crimson-c4" onclick="pickColorFromPalette('crimson', 'c4', '#8b5cf6', '強調 B')">
+            <span class="swatch-dot" style="background: #8b5cf6;"></span>
           </div>
         </div>
       </div>
@@ -1396,30 +1405,34 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
+    // 重新設計的 4 色體系
+    // c1: 類紅色/復古嫣紅 (Root)
+    // c2: 深暗調對比 (陶土第4色風格暗藍灰，作為強對比襯底)
+    // c3, c4: 強調特徵音 (例如 #4/b5、6、9、7 等)
     const PALETTE_GROUPS = {
       apple_classic: {
-        c1: "#ff3b30",
-        c2: "#ff9500",
-        c3: "#34c759",
-        c4: "#007aff"
-      },
-      terracotta: {
-        c1: "#d84328",
-        c2: "#e59b34",
-        c3: "#5d7465",
-        c4: "#586f84"
-      },
-      caramel: {
-        c1: "#e07622",
-        c2: "#d4a237",
-        c3: "#486581",
-        c4: "#7b6079"
+        c1: "#ff3b30", // 鮮明蘋果正紅
+        c2: "#3a4d5e", // 沉穩深頁岩灰藍
+        c3: "#ff9500", // 活力暖橙 (#4 / 特徵音)
+        c4: "#30d158"  // 鮮綠 (6th / 延伸音)
       },
       rose: {
-        c1: "#d13b63",
-        c2: "#df8075",
-        c3: "#475569",
-        c4: "#597461"
+        c1: "#d13b63", // 復古嫣紅
+        c2: "#334155", // 頁岩冷黑藍
+        c3: "#eab308", // 復古暖薑黃
+        c4: "#06b6d4"  // 電光青藍
+      },
+      terracotta: {
+        c1: "#c84126", // 陶土熟磚紅
+        c2: "#3b4856", // 原陶土第4色 (深迷霧灰藍)
+        c3: "#e59b34", // 暖琥珀橙
+        c4: "#52b788"  // 鼠尾草青綠
+      },
+      crimson: {
+        c1: "#b91c1c", // 深沉酒紅 / 勃艮第紅
+        c2: "#2c3e50", // 曜石墨藍
+        c3: "#f59e0b", // 琥珀金
+        c4: "#8b5cf6"  // 藍調紫羅蘭
       }
     };
 
@@ -1751,19 +1764,24 @@
       renderBoard();
     }
 
-    // 更新右上角 4 色快速選單
+    // 渲染右上角 4 色快速選單
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
-      const colors = [pal.c1, pal.c2, pal.c3, pal.c4];
+      const colors = [
+        { hex: pal.c1, title: 'Root' },
+        { hex: pal.c2, title: '暗底對比' },
+        { hex: pal.c3, title: '強調色 A' },
+        { hex: pal.c4, title: '強調色 B' }
+      ];
 
       container.innerHTML = '';
-      colors.forEach((color, idx) => {
+      colors.forEach((item, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'quick-color-btn' + (currentBrushColor === color ? ' active' : '');
-        btn.style.backgroundColor = color;
-        btn.title = idx === 0 ? 'Root' : `色選 ${idx + 1}`;
-        btn.onclick = () => pickColorFromPalette(currentActivePalette, `c${idx + 1}`, color, btn.title);
+        btn.className = 'quick-color-btn' + (currentBrushColor === item.hex ? ' active' : '');
+        btn.style.backgroundColor = item.hex;
+        btn.title = item.title;
+        btn.onclick = () => pickColorFromPalette(currentActivePalette, `c${idx + 1}`, item.hex, item.title);
         container.appendChild(btn);
       });
     }
@@ -1819,6 +1837,7 @@
       renderBoard();
     }
 
+    // 自動填滿調內音：根音採用 c1，其餘調內音採用 c2（強烈暗底對比色）
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
@@ -1829,7 +1848,7 @@
           const midi = STRING_TUNING_MIDI[s] + f;
           const interval = ((midi - currentRoot) % 12 + 12) % 12;
           if (scaleNotes.includes(interval)) {
-            const noteColor = (interval === 0) ? pal.c1 : pal.c3;
+            const noteColor = (interval === 0) ? pal.c1 : pal.c2;
             activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, color: noteColor });
           }
         }
@@ -1989,7 +2008,7 @@
       }
     });
 
-    // 100% Canvas 原生純繪製引擎 (實體指板木頭、品絲、弦無損導出)
+    // 100% Canvas 原生純繪製 PNG 引擎
     function exportFretboardPNG() {
       const scale = 2;
       const boardW = FRETS * fretWidth;
@@ -2028,7 +2047,7 @@
       ctx.lineWidth = 1;
       ctx.strokeRect(startX - 7, startY - 10, 7, boardH);
 
-      // 3. 把位點 (Inlays)
+      // 3. 把位點
       const inlays = [3, 5, 7, 9, 12, 15];
       inlays.forEach(f => {
         if (f > FRETS) return;
@@ -2077,7 +2096,7 @@
         ctx.fillText(f, fx - fretWidth / 2, startY + boardH + 16);
       }
 
-      // 5. 琴弦 (6 Strings)
+      // 5. 琴弦
       const stringProps = [
         { stroke: "#dcd8cf", width: 0.95 },
         { stroke: "#ccc5b8", width: 1.25 },
