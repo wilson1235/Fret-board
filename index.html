@@ -100,7 +100,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.25);
     }
 
-    /* 指板主舞台 (桌機 & 平板) */
+    /* 指板主舞台 */
     .stage-container {
       width: 100%;
       max-width: 1180px;
@@ -159,7 +159,7 @@
       text-anchor: middle;
     }
 
-    /* 底部 Dock (桌機 & 平板單列) */
+    /* 底部 Dock */
     .floating-dock {
       position: fixed;
       bottom: 26px;
@@ -319,9 +319,7 @@
       margin: 0 2px;
     }
 
-    /* ========================================================
-       🎛️ 可隨意拖曳、自由吸附側邊的浮動齒輪按鈕 (Draggable Knob)
-       ======================================================== */
+    /* 懸浮齒輪鈕 (全螢幕自由拖曳 & 磁吸) */
     .sidebar-trigger-btn {
       position: fixed;
       top: 50%;
@@ -341,7 +339,7 @@
       z-index: 120;
       opacity: 0.5;
       user-select: none;
-      touch-action: none; /* 防止手機觸控畫面滾動干擾拖曳 */
+      touch-action: none;
       transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -351,12 +349,11 @@
 
     .sidebar-trigger-btn.is-dragging {
       opacity: 1 !important;
-      transition: none !important; /* 拖曳過程中取消平滑延遲，跟手度 100% */
+      transition: none !important;
       transform: scale(1.12) !important;
       box-shadow: 0 10px 28px rgba(0,0,0,0.2) !important;
     }
 
-    /* 停留在右邊時的半隱藏與 Hover */
     .sidebar-trigger-btn.dock-right {
       transform: translateX(20px);
       border-right: none;
@@ -369,7 +366,6 @@
       box-shadow: -4px 6px 18px rgba(0,0,0,0.12);
     }
 
-    /* 停留在左邊時的半隱藏與 Hover */
     .sidebar-trigger-btn.dock-left {
       transform: translateX(-20px);
       border-left: none;
@@ -396,7 +392,7 @@
       transform: rotate(90deg);
     }
 
-    /* 抽屜面板 (支援左右兩側自適應滑出) */
+    /* 抽屜面板 */
     .sidebar-panel {
       position: fixed;
       top: 0;
@@ -415,7 +411,6 @@
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* 預設由右側滑出 */
     .sidebar-panel.panel-right {
       right: -350px;
       left: auto;
@@ -425,7 +420,6 @@
       right: 0;
     }
 
-    /* 當按鈕吸在左側時，抽屜從左側滑出 */
     .sidebar-panel.panel-left {
       left: -350px;
       right: auto;
@@ -501,13 +495,13 @@
       border-color: #b8ab94;
     }
 
-    /* 配對色彩卡片 */
+    /* 4色和弦階層配對卡片 */
     .palette-group-card {
       background: #ffffff;
       border: 1px solid var(--dock-border);
       border-radius: 12px;
       padding: 10px 12px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -537,28 +531,33 @@
       font-weight: 500;
     }
 
-    .palette-swatches-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
+    .palette-swatches-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
     }
 
     .swatch-chip {
-      flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 6px;
-      padding: 5px 7px;
+      gap: 4px;
+      padding: 6px 3px;
       border-radius: 8px;
       border: 1.5px solid transparent;
       background: #f5f2eb;
       cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .swatch-chip:hover {
+      background: #ebe5db;
     }
 
     .swatch-chip.active-chip {
       border-color: #2b2825;
       background: #ffffff;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
     }
 
     .swatch-dot {
@@ -566,12 +565,14 @@
       height: 14px;
       border-radius: 50%;
       flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
     .swatch-label {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
       color: #44403c;
+      white-space: nowrap;
     }
 
     /* 6 款木質風格 */
@@ -723,13 +724,11 @@
         justify-content: center;
       }
 
-      /* 手機上齒輪稍微調小，操作更靈敏 */
       .sidebar-trigger-btn {
         width: 44px;
         height: 44px;
       }
 
-      /* 手機上維持由下往上滑出的底部抽屜 */
       .sidebar-panel.panel-right,
       .sidebar-panel.panel-left {
         top: auto !important;
@@ -845,7 +844,7 @@
     </div>
   </footer>
 
-  <!-- 可任意拖曳、智慧吸附兩側的懸浮齒輪鈕 -->
+  <!-- 懸浮齒輪鈕 (自由拖曳) -->
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
@@ -853,7 +852,7 @@
     </svg>
   </button>
 
-  <!-- 抽屜面板 (自適應左右側) -->
+  <!-- 抽屜面板 -->
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
     <div class="sidebar-header">
       <div class="sidebar-title">外觀與幾何設定</div>
@@ -893,74 +892,110 @@
       </div>
     </div>
 
-    <!-- 2. 配色庫 -->
+    <!-- 2. 四色和弦階層調色盤 -->
     <div>
-      <div class="section-label">經典配色庫（可點選組內單色畫筆）</div>
+      <div class="section-label">4階和弦色彩庫（可點選單色畫筆）</div>
 
+      <!-- 配色組 1: 陶土大地 -->
       <div class="palette-group-card active-group" id="pal-card-terracotta">
         <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
-          <span class="palette-name">陶土磚紅 ✕ 鼠尾草綠</span>
+          <span class="palette-name">陶土大地 (Terracotta)</span>
           <span class="palette-radio-label">套用組</span>
         </div>
-        <div class="palette-swatches-row">
+        <div class="palette-swatches-grid-4">
           <div class="swatch-chip active-chip" id="chip-terracotta-root" onclick="pickColorFromPalette('terracotta', 'root', '#d84328', 'Root (鮮明磚紅)')">
             <span class="swatch-dot" style="background: #d84328;"></span>
-            <span class="swatch-label">Root (1)</span>
+            <span class="swatch-label">1 Root</span>
           </div>
-          <div class="swatch-chip" id="chip-terracotta-other" onclick="pickColorFromPalette('terracotta', 'other', '#5d7465', '副音 (鼠尾草綠)')">
+          <div class="swatch-chip" id="chip-terracotta-third" onclick="pickColorFromPalette('terracotta', 'third', '#e59b34', '3rd (暖焙琥珀)')">
+            <span class="swatch-dot" style="background: #e59b34;"></span>
+            <span class="swatch-label">3rd</span>
+          </div>
+          <div class="swatch-chip" id="chip-terracotta-fifth" onclick="pickColorFromPalette('terracotta', 'fifth', '#5d7465', '5th (鼠尾草綠)')">
             <span class="swatch-dot" style="background: #5d7465;"></span>
-            <span class="swatch-label">Other</span>
+            <span class="swatch-label">5th</span>
+          </div>
+          <div class="swatch-chip" id="chip-terracotta-seventh" onclick="pickColorFromPalette('terracotta', 'seventh', '#586f84', '7th (頁岩迷霧藍)')">
+            <span class="swatch-dot" style="background: #586f84;"></span>
+            <span class="swatch-label">7th/T</span>
           </div>
         </div>
       </div>
 
+      <!-- 配色組 2: 暖焙焦糖 -->
       <div class="palette-group-card" id="pal-card-caramel">
         <div class="palette-header" onclick="selectPaletteGroup('caramel')">
-          <span class="palette-name">暖焙琥珀 ✕ 迷霧灰藍</span>
+          <span class="palette-name">莫蘭迪焦糖 (Caramel)</span>
           <span class="palette-radio-label">套用組</span>
         </div>
-        <div class="palette-swatches-row">
-          <div class="swatch-chip" id="chip-caramel-root" onclick="pickColorFromPalette('caramel', 'root', '#e07622', 'Root (飽和琥珀橙)')">
+        <div class="palette-swatches-grid-4">
+          <div class="swatch-chip" id="chip-caramel-root" onclick="pickColorFromPalette('caramel', 'root', '#e07622', 'Root (暖陽焙橙)')">
             <span class="swatch-dot" style="background: #e07622;"></span>
-            <span class="swatch-label">Root (1)</span>
+            <span class="swatch-label">1 Root</span>
           </div>
-          <div class="swatch-chip" id="chip-caramel-other" onclick="pickColorFromPalette('caramel', 'other', '#586f84', '副音 (迷霧藍)')">
-            <span class="swatch-dot" style="background: #586f84;"></span>
-            <span class="swatch-label">Other</span>
+          <div class="swatch-chip" id="chip-caramel-third" onclick="pickColorFromPalette('caramel', 'third', '#d4a237', '3rd (薑黃金芥)')">
+            <span class="swatch-dot" style="background: #d4a237;"></span>
+            <span class="swatch-label">3rd</span>
+          </div>
+          <div class="swatch-chip" id="chip-caramel-fifth" onclick="pickColorFromPalette('caramel', 'fifth', '#486581', '5th (灰藍頁岩)')">
+            <span class="swatch-dot" style="background: #486581;"></span>
+            <span class="swatch-label">5th</span>
+          </div>
+          <div class="swatch-chip" id="chip-caramel-seventh" onclick="pickColorFromPalette('caramel', 'seventh', '#7b6079', '7th (煙燻冷紫)')">
+            <span class="swatch-dot" style="background: #7b6079;"></span>
+            <span class="swatch-label">7th/T</span>
           </div>
         </div>
       </div>
 
+      <!-- 配色組 3: 復古嫣紅 -->
       <div class="palette-group-card" id="pal-card-rose">
         <div class="palette-header" onclick="selectPaletteGroup('rose')">
-          <span class="palette-name">嫣紅玫瑰 ✕ 頁岩墨灰</span>
+          <span class="palette-name">復古嫣紅 (Vintage Rose)</span>
           <span class="palette-radio-label">套用組</span>
         </div>
-        <div class="palette-swatches-row">
-          <div class="swatch-chip" id="chip-rose-root" onclick="pickColorFromPalette('rose', 'root', '#d13b63', 'Root (嫣紅玫瑰)')">
+        <div class="palette-swatches-grid-4">
+          <div class="swatch-chip" id="chip-rose-root" onclick="pickColorFromPalette('rose', 'root', '#d13b63', 'Root (濃郁嫣紅)')">
             <span class="swatch-dot" style="background: #d13b63;"></span>
-            <span class="swatch-label">Root (1)</span>
+            <span class="swatch-label">1 Root</span>
           </div>
-          <div class="swatch-chip" id="chip-rose-other" onclick="pickColorFromPalette('rose', 'other', '#475569', '副音 (頁岩灰)')">
+          <div class="swatch-chip" id="chip-rose-third" onclick="pickColorFromPalette('rose', 'third', '#df8075', '3rd (杏桃裸粉)')">
+            <span class="swatch-dot" style="background: #df8075;"></span>
+            <span class="swatch-label">3rd</span>
+          </div>
+          <div class="swatch-chip" id="chip-rose-fifth" onclick="pickColorFromPalette('rose', 'fifth', '#475569', '5th (墨炭石墨)')">
             <span class="swatch-dot" style="background: #475569;"></span>
-            <span class="swatch-label">Other</span>
+            <span class="swatch-label">5th</span>
+          </div>
+          <div class="swatch-chip" id="chip-rose-seventh" onclick="pickColorFromPalette('rose', 'seventh', '#597461', '7th (青苔灰綠)')">
+            <span class="swatch-dot" style="background: #597461;"></span>
+            <span class="swatch-label">7th/T</span>
           </div>
         </div>
       </div>
 
+      <!-- 配色組 4: 冷萃橄欖 -->
       <div class="palette-group-card" id="pal-card-olive">
         <div class="palette-header" onclick="selectPaletteGroup('olive')">
-          <span class="palette-name">冷萃橄欖 ✕ 深焙燕麥</span>
+          <span class="palette-name">高山冷萃橄欖 (Alpine)</span>
           <span class="palette-radio-label">套用組</span>
         </div>
-        <div class="palette-swatches-row">
-          <div class="swatch-chip" id="chip-olive-root" onclick="pickColorFromPalette('olive', 'root', '#829c38', 'Root (亮青橄欖)')">
+        <div class="palette-swatches-grid-4">
+          <div class="swatch-chip" id="chip-olive-root" onclick="pickColorFromPalette('olive', 'root', '#829c38', 'Root (鮮青橄欖)')">
             <span class="swatch-dot" style="background: #829c38;"></span>
-            <span class="swatch-label">Root (1)</span>
+            <span class="swatch-label">1 Root</span>
           </div>
-          <div class="swatch-chip" id="chip-olive-other" onclick="pickColorFromPalette('olive', 'other', '#7d6555', '副音 (深焙燕麥)')">
-            <span class="swatch-dot" style="background: #7d6555;"></span>
-            <span class="swatch-label">Other</span>
+          <div class="swatch-chip" id="chip-olive-third" onclick="pickColorFromPalette('olive', 'third', '#afad37', '3rd (芥末芥綠)')">
+            <span class="swatch-dot" style="background: #afad37;"></span>
+            <span class="swatch-label">3rd</span>
+          </div>
+          <div class="swatch-chip" id="chip-olive-fifth" onclick="pickColorFromPalette('olive', 'fifth', '#8c705f', '5th (深焙燕麥)')">
+            <span class="swatch-dot" style="background: #8c705f;"></span>
+            <span class="swatch-label">5th</span>
+          </div>
+          <div class="swatch-chip" id="chip-olive-seventh" onclick="pickColorFromPalette('olive', 'seventh', '#4a6572', '7th (冷墨鋼藍)')">
+            <span class="swatch-dot" style="background: #4a6572;"></span>
+            <span class="swatch-label">7th/T</span>
           </div>
         </div>
       </div>
@@ -1016,7 +1051,7 @@
     const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const DEGREE_NAMES = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"];
 
-    // Web Audio API
+    // Web Audio API 發聲
     let audioCtx = null;
     function playGuitarTone(midiNote) {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1057,11 +1092,36 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
+    // 4 階層色票庫定義 (Root, 3rd, 5th, 7th/Ext, 以及其他調內音 other)
     const PALETTE_GROUPS = {
-      terracotta: { root: "#d84328", other: "#5d7465", out: "#8c827a" },
-      caramel:    { root: "#e07622", other: "#586f84", out: "#8a949e" },
-      rose:       { root: "#d13b63", other: "#475569", out: "#918b8b" },
-      olive:      { root: "#829c38", other: "#7d6555", out: "#9c968f" }
+      terracotta: {
+        root:    "#d84328",
+        third:   "#e59b34",
+        fifth:   "#5d7465",
+        seventh: "#586f84",
+        other:   "#829188"
+      },
+      caramel: {
+        root:    "#e07622",
+        third:   "#d4a237",
+        fifth:   "#486581",
+        seventh: "#7b6079",
+        other:   "#627d98"
+      },
+      rose: {
+        root:    "#d13b63",
+        third:   "#df8075",
+        fifth:   "#475569",
+        seventh: "#597461",
+        other:   "#64748b"
+      },
+      olive: {
+        root:    "#829c38",
+        third:   "#afad37",
+        fifth:   "#8c705f",
+        seventh: "#4a6572",
+        other:   "#6c7a89"
+      }
     };
 
     const FRETBOARD_STYLES = {
@@ -1392,6 +1452,7 @@
       renderBoard();
     }
 
+    // 從 4 色卡片中單選某色作為畫筆
     function pickColorFromPalette(groupKey, type, hexColor, labelName) {
       currentActivePalette = groupKey;
       currentBrushColor = hexColor;
@@ -1413,9 +1474,10 @@
       }
     }
 
+    // 點擊整張卡片套用
     function selectPaletteGroup(groupKey) {
       const group = PALETTE_GROUPS[groupKey];
-      pickColorFromPalette(groupKey, 'root', group.root, 'Root (高飽和)');
+      pickColorFromPalette(groupKey, 'root', group.root, 'Root (1)');
     }
 
     function setShape(shapeName) {
@@ -1433,18 +1495,28 @@
       renderBoard();
     }
 
+    // 自動填滿調內音：智慧分層指派 4 階色 (1 / 3 / 5 / 7)
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
-      const currentPal = PALETTE_GROUPS[currentActivePalette];
+      const pal = PALETTE_GROUPS[currentActivePalette];
 
       for (let s = 0; s < STRINGS; s++) {
         for (let f = 0; f <= FRETS; f++) {
           const midi = STRING_TUNING_MIDI[s] + f;
           const interval = ((midi - currentRoot) % 12 + 12) % 12;
           if (scaleNotes.includes(interval)) {
-            const markColor = (interval === 0) ? currentPal.root : currentPal.other;
-            activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, color: markColor });
+            let noteColor = pal.other;
+            if (interval === 0) {
+              noteColor = pal.root;                      // 1 (根音)
+            } else if (interval === 3 || interval === 4) {
+              noteColor = pal.third;                     // b3 / 3 (三音)
+            } else if (interval === 6 || interval === 7) {
+              noteColor = pal.fifth;                     // b5 / 5 (五音)
+            } else if (interval === 10 || interval === 11) {
+              noteColor = pal.seventh;                   // b7 / 7 (七音)
+            }
+            activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, color: noteColor });
           }
         }
       }
@@ -1497,23 +1569,19 @@
       renderBoard();
     }
 
-    // ========================================================
-    // 🧲 全螢幕邊緣拖曳與智慧吸附引擎
-    // ========================================================
+    // 拖曳與邊緣吸附引擎
     const dragBtn = document.getElementById('sidebar-trigger-btn');
     const panel = document.getElementById('sidebar-panel');
     let isDragging = false;
     let startPointerX = 0, startPointerY = 0;
     let initialBtnX = 0, initialBtnY = 0;
     let hasMoved = false;
-    let dockedSide = 'right'; // 'left' 或 'right'
 
     function toggleSidebar() {
       const isOpen = panel.classList.toggle('open');
       dragBtn.classList.toggle('open', isOpen);
     }
 
-    // 指標事件 (相容滑鼠、平板 Apple Pencil 與手指觸控)
     dragBtn.addEventListener('pointerdown', (e) => {
       isDragging = true;
       hasMoved = false;
@@ -1533,7 +1601,6 @@
       const deltaX = e.clientX - startPointerX;
       const deltaY = e.clientY - startPointerY;
 
-      // 移動超過 6px 判定為拖曳，避免與純點擊衝突
       if (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6) {
         hasMoved = true;
         dragBtn.classList.add('is-dragging');
@@ -1542,7 +1609,6 @@
         let nextX = initialBtnX + deltaX;
         let nextY = initialBtnY + deltaY;
 
-        // 螢幕四周邊界限制保護
         const btnW = dragBtn.offsetWidth;
         const btnH = dragBtn.offsetHeight;
         nextX = Math.max(8, Math.min(window.innerWidth - btnW - 8, nextX));
@@ -1561,39 +1627,29 @@
       dragBtn.classList.remove('is-dragging');
 
       if (!hasMoved) {
-        // 單純點擊，正常切換抽屜開關
         toggleSidebar();
       } else {
-        // 拖曳結束：智慧磁吸至距離最近的邊緣 (左或右)
         const btnRect = dragBtn.getBoundingClientRect();
         const screenMid = window.innerWidth / 2;
         const btnCenter = btnRect.left + btnRect.width / 2;
 
         if (btnCenter < screenMid) {
-          // 吸附至左側
-          dockedSide = 'left';
           dragBtn.style.left = '0px';
           dragBtn.style.right = 'auto';
           dragBtn.classList.add('dock-left');
-          
-          // 讓側邊抽屜切換為從左邊滑出
           panel.classList.remove('panel-right');
           panel.classList.add('panel-left');
         } else {
-          // 吸附至右側
-          dockedSide = 'right';
           dragBtn.style.left = 'auto';
           dragBtn.style.right = '0px';
           dragBtn.classList.add('dock-right');
-
-          // 讓側邊抽屜切換為從右邊滑出
           panel.classList.remove('panel-left');
           panel.classList.add('panel-right');
         }
       }
     });
 
-    // 匯出 PNG 功能
+    // 匯出完整 PNG
     function exportFretboardPNG() {
       const scale = 2;
       const boardW = FRETS * fretWidth;
