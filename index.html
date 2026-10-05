@@ -54,9 +54,9 @@
     /* 頂部導覽列 */
     .top-status-bar {
       position: fixed;
-      top: 22px;
-      left: 32px;
-      right: 32px;
+      top: 18px;
+      left: 28px;
+      right: 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -95,34 +95,95 @@
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    .current-brush-pill {
+    /* ========================================================
+       🎨 右上角快捷畫筆工具列 (形狀 + 4 色直接切換)
+       ======================================================== */
+    .top-quick-toolbar {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: var(--metal-dock);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      padding: 6px 15px;
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      padding: 5px 10px;
       border-radius: 999px;
       border: 1px solid var(--metal-border);
-      box-shadow: var(--metal-bevel-light), 0 4px 14px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--metal-bevel-light), 0 6px 18px rgba(0, 0, 0, 0.06);
       pointer-events: auto;
-      font-size: 12.5px;
-      color: var(--metal-text-secondary);
-      font-weight: 500;
       transition: all 0.25s var(--sf-spring-curve);
     }
-    .current-brush-pill:hover {
-      transform: scale(1.04);
+    .top-quick-toolbar:hover {
       background: #ffffff;
-      box-shadow: var(--metal-bevel-light), 0 6px 18px rgba(0, 0, 0, 0.09);
+      box-shadow: var(--metal-bevel-light), 0 8px 24px rgba(0, 0, 0, 0.09);
     }
 
-    .brush-preview-dot {
-      width: 13px;
-      height: 13px;
+    .quick-shape-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .quick-shape-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.2s var(--sf-spring-curve);
+    }
+    .quick-shape-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+      transform: scale(1.1);
+    }
+    .quick-shape-btn:active {
+      transform: scale(0.92);
+    }
+    .quick-shape-btn.active {
+      background: #ffffff;
+      border-color: var(--metal-border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transform: scale(1.08);
+    }
+
+    .quick-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--metal-border);
+      margin: 0 2px;
+    }
+
+    .quick-color-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .quick-color-btn {
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      border: 2px solid transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.2s var(--sf-spring-curve);
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .quick-color-btn:hover {
+      transform: scale(1.18);
+    }
+    .quick-color-btn:active {
+      transform: scale(0.9);
+    }
+    .quick-color-btn.active {
+      border-color: #ffffff;
+      transform: scale(1.22);
+      box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.25);
     }
 
     /* 指板主展示區 */
@@ -499,7 +560,7 @@
       transform: rotate(90deg);
     }
 
-    /* 手機背景遮罩 (點擊自動收合) */
+    /* 手機背景遮罩 */
     .sidebar-overlay {
       position: fixed;
       top: 0;
@@ -603,7 +664,7 @@
       margin-bottom: 9px;
     }
 
-    /* 幾何形狀卡片 */
+    /* 抽屜內幾何形狀卡片 */
     .shape-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -805,15 +866,29 @@
         top: 0;
         left: 0;
         right: 0;
-        padding: 16px 16px 8px;
+        padding: 14px 14px 6px;
         width: 100%;
       }
       .brand-title {
         font-size: 13px;
       }
-      .current-brush-pill {
-        padding: 4px 10px;
-        font-size: 11px;
+
+      /* 手機上右上角快捷列微調尺寸以節省空間 */
+      .top-quick-toolbar {
+        padding: 4px 7px;
+        gap: 5px;
+      }
+      .quick-shape-btn {
+        width: 24px;
+        height: 24px;
+      }
+      .quick-shape-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+      .quick-color-btn {
+        width: 18px;
+        height: 18px;
       }
 
       .stage-container {
@@ -929,17 +1004,51 @@
   <!-- 手機版半透明遮罩 (點擊收合) -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-  <!-- 頂部標頭 -->
+  <!-- 頂部導覽列 (含右上角快捷畫筆工具列) -->
   <header class="top-status-bar">
     <div class="brand-stamp">
       <span class="brand-badge">STUDIO</span>
       <span class="brand-title">指板幾何視覺化</span>
     </div>
 
-    <div class="current-brush-pill">
-      <span>畫筆：</span>
-      <span class="brush-preview-dot" id="header-brush-preview" style="background-color: #ff3b30;"></span>
-      <span id="header-brush-label">Root</span>
+    <!-- 右上角快捷畫筆工具列 -->
+    <div class="top-quick-toolbar">
+      <!-- 5 款幾何形狀 -->
+      <div class="quick-shape-group">
+        <button class="quick-shape-btn active" id="q-shape-circle" onclick="setShape('circle')" title="實心圓">
+          <svg width="16" height="16" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="7" fill="#1c1c1e" />
+          </svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-ring" onclick="setShape('ring')" title="空心圓圈">
+          <svg width="16" height="16" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="6" fill="none" stroke="#1c1c1e" stroke-width="2.6" />
+          </svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-diamond" onclick="setShape('diamond')" title="菱形">
+          <svg width="16" height="16" viewBox="0 0 20 20">
+            <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e" />
+          </svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-triangle" onclick="setShape('triangle')" title="三角形">
+          <svg width="16" height="16" viewBox="0 0 20 20">
+            <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e" />
+          </svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
+          <svg width="16" height="16" viewBox="0 0 20 20">
+            <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" />
+            <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="quick-divider"></div>
+
+      <!-- 當前組 4 色選單 -->
+      <div class="quick-color-group" id="quick-color-container">
+        <!-- 由 JavaScript 動態渲染 4 顆色票 -->
+      </div>
     </div>
   </header>
 
@@ -1039,7 +1148,7 @@
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
     </svg>
   </button>
 
@@ -1093,17 +1202,17 @@
           <span class="palette-radio-label">套用組</span>
         </div>
         <div class="palette-swatches-grid-4">
-          <div class="swatch-chip active-chip" id="chip-apple_classic-c1" onclick="pickColorFromPalette('apple_classic', 'c1', '#ff3b30', 'Root (System Red)')">
+          <div class="swatch-chip active-chip" id="chip-apple_classic-c1" onclick="pickColorFromPalette('apple_classic', 'c1', '#ff3b30', 'Root')">
             <span class="swatch-dot" style="background: #ff3b30;"></span>
             <span class="swatch-label">Root</span>
           </div>
-          <div class="swatch-chip" id="chip-apple_classic-c2" onclick="pickColorFromPalette('apple_classic', 'c2', '#ff9500', '色選 2 (Orange)')">
+          <div class="swatch-chip" id="chip-apple_classic-c2" onclick="pickColorFromPalette('apple_classic', 'c2', '#ff9500', '色選 2')">
             <span class="swatch-dot" style="background: #ff9500;"></span>
           </div>
-          <div class="swatch-chip" id="chip-apple_classic-c3" onclick="pickColorFromPalette('apple_classic', 'c3', '#34c759', '色選 3 (Green)')">
+          <div class="swatch-chip" id="chip-apple_classic-c3" onclick="pickColorFromPalette('apple_classic', 'c3', '#34c759', '色選 3')">
             <span class="swatch-dot" style="background: #34c759;"></span>
           </div>
-          <div class="swatch-chip" id="chip-apple_classic-c4" onclick="pickColorFromPalette('apple_classic', 'c4', '#007aff', '色選 4 (Blue)')">
+          <div class="swatch-chip" id="chip-apple_classic-c4" onclick="pickColorFromPalette('apple_classic', 'c4', '#007aff', '色選 4')">
             <span class="swatch-dot" style="background: #007aff;"></span>
           </div>
         </div>
@@ -1115,17 +1224,17 @@
           <span class="palette-radio-label">套用組</span>
         </div>
         <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#d84328', 'Root (磚紅)')">
+          <div class="swatch-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#d84328', 'Root')">
             <span class="swatch-dot" style="background: #d84328;"></span>
             <span class="swatch-label">Root</span>
           </div>
-          <div class="swatch-chip" id="chip-terracotta-c2" onclick="pickColorFromPalette('terracotta', 'c2', '#e59b34', '色選 2 (琥珀橙)')">
+          <div class="swatch-chip" id="chip-terracotta-c2" onclick="pickColorFromPalette('terracotta', 'c2', '#e59b34', '色選 2')">
             <span class="swatch-dot" style="background: #e59b34;"></span>
           </div>
-          <div class="swatch-chip" id="chip-terracotta-c3" onclick="pickColorFromPalette('terracotta', 'c3', '#5d7465', '色選 3 (鼠尾草綠)')">
+          <div class="swatch-chip" id="chip-terracotta-c3" onclick="pickColorFromPalette('terracotta', 'c3', '#5d7465', '色選 3')">
             <span class="swatch-dot" style="background: #5d7465;"></span>
           </div>
-          <div class="swatch-chip" id="chip-terracotta-c4" onclick="pickColorFromPalette('terracotta', 'c4', '#586f84', '色選 4 (迷霧藍)')">
+          <div class="swatch-chip" id="chip-terracotta-c4" onclick="pickColorFromPalette('terracotta', 'c4', '#586f84', '色選 4')">
             <span class="swatch-dot" style="background: #586f84;"></span>
           </div>
         </div>
@@ -1137,17 +1246,17 @@
           <span class="palette-radio-label">套用組</span>
         </div>
         <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-caramel-c1" onclick="pickColorFromPalette('caramel', 'c1', '#e07622', 'Root (暖陽焙橙)')">
+          <div class="swatch-chip" id="chip-caramel-c1" onclick="pickColorFromPalette('caramel', 'c1', '#e07622', 'Root')">
             <span class="swatch-dot" style="background: #e07622;"></span>
             <span class="swatch-label">Root</span>
           </div>
-          <div class="swatch-chip" id="chip-caramel-c2" onclick="pickColorFromPalette('caramel', 'c2', '#d4a237', '色選 2 (薑黃金芥)')">
+          <div class="swatch-chip" id="chip-caramel-c2" onclick="pickColorFromPalette('caramel', 'c2', '#d4a237', '色選 2')">
             <span class="swatch-dot" style="background: #d4a237;"></span>
           </div>
-          <div class="swatch-chip" id="chip-caramel-c3" onclick="pickColorFromPalette('caramel', 'c3', '#486581', '色選 3 (灰藍頁岩)')">
+          <div class="swatch-chip" id="chip-caramel-c3" onclick="pickColorFromPalette('caramel', 'c3', '#486581', '色選 3')">
             <span class="swatch-dot" style="background: #486581;"></span>
           </div>
-          <div class="swatch-chip" id="chip-caramel-c4" onclick="pickColorFromPalette('caramel', 'c4', '#7b6079', '色選 4 (煙燻冷紫)')">
+          <div class="swatch-chip" id="chip-caramel-c4" onclick="pickColorFromPalette('caramel', 'c4', '#7b6079', '色選 4')">
             <span class="swatch-dot" style="background: #7b6079;"></span>
           </div>
         </div>
@@ -1159,17 +1268,17 @@
           <span class="palette-radio-label">套用組</span>
         </div>
         <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-rose-c1" onclick="pickColorFromPalette('rose', 'c1', '#d13b63', 'Root (濃郁嫣紅)')">
+          <div class="swatch-chip" id="chip-rose-c1" onclick="pickColorFromPalette('rose', 'c1', '#d13b63', 'Root')">
             <span class="swatch-dot" style="background: #d13b63;"></span>
             <span class="swatch-label">Root</span>
           </div>
-          <div class="swatch-chip" id="chip-rose-c2" onclick="pickColorFromPalette('rose', 'c2', '#df8075', '色選 2 (杏桃裸粉)')">
+          <div class="swatch-chip" id="chip-rose-c2" onclick="pickColorFromPalette('rose', 'c2', '#df8075', '色選 2')">
             <span class="swatch-dot" style="background: #df8075;"></span>
           </div>
-          <div class="swatch-chip" id="chip-rose-c3" onclick="pickColorFromPalette('rose', 'c3', '#475569', '色選 3 (墨炭石墨)')">
+          <div class="swatch-chip" id="chip-rose-c3" onclick="pickColorFromPalette('rose', 'c3', '#475569', '色選 3')">
             <span class="swatch-dot" style="background: #475569;"></span>
           </div>
-          <div class="swatch-chip" id="chip-rose-c4" onclick="pickColorFromPalette('rose', 'c4', '#597461', '色選 4 (青苔灰綠)')">
+          <div class="swatch-chip" id="chip-rose-c4" onclick="pickColorFromPalette('rose', 'c4', '#597461', '色選 4')">
             <span class="swatch-dot" style="background: #597461;"></span>
           </div>
         </div>
@@ -1642,13 +1751,32 @@
       renderBoard();
     }
 
+    // 更新右上角 4 色快速選單
+    function renderQuickColorBar() {
+      const container = document.getElementById('quick-color-container');
+      const pal = PALETTE_GROUPS[currentActivePalette];
+      const colors = [pal.c1, pal.c2, pal.c3, pal.c4];
+
+      container.innerHTML = '';
+      colors.forEach((color, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-color-btn' + (currentBrushColor === color ? ' active' : '');
+        btn.style.backgroundColor = color;
+        btn.title = idx === 0 ? 'Root' : `色選 ${idx + 1}`;
+        btn.onclick = () => pickColorFromPalette(currentActivePalette, `c${idx + 1}`, color, btn.title);
+        container.appendChild(btn);
+      });
+    }
+
+    // 自由挑選色彩指派畫筆 (雙向同步更新抽屜與右上角快捷列)
     function pickColorFromPalette(groupKey, type, hexColor, labelName) {
       currentActivePalette = groupKey;
       currentBrushColor = hexColor;
 
-      document.getElementById('header-brush-preview').style.backgroundColor = hexColor;
-      document.getElementById('header-brush-label').textContent = labelName;
+      // 1. 同步右上角快捷列色票按鈕
+      renderQuickColorBar();
 
+      // 2. 同步抽屜卡片選中狀態
       document.querySelectorAll('.palette-group-card').forEach(c => c.classList.remove('active-group'));
       const activeCard = document.getElementById(`pal-card-${groupKey}`);
       if (activeCard) activeCard.classList.add('active-group');
@@ -1668,11 +1796,19 @@
       pickColorFromPalette(groupKey, 'c1', group.c1, 'Root');
     }
 
+    // 切換幾何形狀 (雙向同步右上角與抽屜)
     function setShape(shapeName) {
       currentSelectedShape = shapeName;
+
+      // 同步抽屜
       document.querySelectorAll('.shape-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`shape-${shapeName}`);
-      if (activeBtn) activeBtn.classList.add('active');
+      const drawerBtn = document.getElementById(`shape-${shapeName}`);
+      if (drawerBtn) drawerBtn.classList.add('active');
+
+      // 同步右上角快捷鈕
+      document.querySelectorAll('.quick-shape-btn').forEach(btn => btn.classList.remove('active'));
+      const quickBtn = document.getElementById(`q-shape-${shapeName}`);
+      if (quickBtn) quickBtn.classList.add('active');
     }
 
     function changeFretboardStyle(styleKey) {
@@ -1747,9 +1883,7 @@
       renderBoard();
     }
 
-    // ========================================================
-    // 🧲 邊緣拖曳 + 點擊空白處自動收合 (Click-outside Dismiss)
-    // ========================================================
+    // 抽屜與點擊空白處自動收合
     const dragBtn = document.getElementById('sidebar-trigger-btn');
     const panel = document.getElementById('sidebar-panel');
     const overlay = document.getElementById('sidebar-overlay');
@@ -1778,12 +1912,10 @@
       }
     }
 
-    // 點擊面板內部時阻止事件冒泡，不觸發收合
     panel.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
     });
 
-    // 點擊面板外的全域空白處自動收合
     document.addEventListener('pointerdown', (e) => {
       if (panel.classList.contains('open') && !dragBtn.contains(e.target)) {
         closeSidebar();
@@ -1857,7 +1989,7 @@
       }
     });
 
-    // 100% Canvas 原生全要素純繪製 PNG 匯出引擎
+    // 100% Canvas 原生純繪製引擎 (實體指板木頭、品絲、弦無損導出)
     function exportFretboardPNG() {
       const scale = 2;
       const boardW = FRETS * fretWidth;
@@ -2046,7 +2178,9 @@
       document.body.removeChild(downloadLink);
     }
 
+    // 初始化渲染
     renderBoard();
+    renderQuickColorBar();
   </script>
 </body>
 </html>
