@@ -10,20 +10,20 @@
 
   <style>
     :root {
-      /* Apple System Color Palette (iOS / macOS 規範) */
-      --sf-bg-base: #f2f2f7;
-      --sf-card-bg: rgba(255, 255, 255, 0.78);
-      --sf-dock-bg: rgba(255, 255, 255, 0.82);
-      --sf-separator: rgba(60, 60, 67, 0.12);
-      --sf-separator-opaque: #e5e5ea;
-      --sf-text-primary: #000000;
-      --sf-text-secondary: #3c3c43;
-      --sf-text-tertiary: #8e8e93;
-      --sf-fill-tertiary: rgba(118, 118, 128, 0.12);
-      --sf-blue: #007aff;
-      --sf-blue-pressed: #0062cc;
-      --sf-shadow-float: 0 10px 32px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --sf-shadow-panel: 0 20px 48px rgba(0, 0, 0, 0.12);
+      /* Apple 霧面金屬與液態毛玻璃 (Space Aluminum & Fine Glass) */
+      --metal-bg: #e6e8eb;
+      --metal-gradient: linear-gradient(145deg, #f0f2f5 0%, #e2e4e8 100%);
+      --metal-card: rgba(248, 249, 251, 0.76);
+      --metal-dock: rgba(243, 245, 248, 0.82);
+      --metal-border: rgba(180, 185, 195, 0.55);
+      --metal-bevel-light: inset 0 1px 0.5px rgba(255, 255, 255, 0.9);
+      --metal-bevel-dark: inset 0 -1px 0.5px rgba(0, 0, 0, 0.06);
+      --metal-text-primary: #1d1d1f;
+      --metal-text-secondary: #48484a;
+      --metal-text-tertiary: #86868b;
+      --metal-blue: #0071e3;
+      --metal-shadow-float: 0 16px 40px rgba(0, 0, 0, 0.07), 0 2px 6px rgba(0, 0, 0, 0.03);
+      --metal-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.06);
     }
 
     * {
@@ -35,9 +35,13 @@
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      background-color: var(--sf-bg-base);
+      background: var(--metal-bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.6) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(200, 205, 215, 0.4) 0px, transparent 50%),
+        linear-gradient(180deg, #edeff2 0%, #dfe2e6 100%);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -46,7 +50,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 頂部導覽列 (Apple Navigation Bar 風格) */
+    /* 頂部標頭 (Apple Metal Style) */
     .top-status-bar {
       position: fixed;
       top: 20px;
@@ -62,53 +66,55 @@
     .brand-stamp {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
       pointer-events: auto;
     }
 
     .brand-badge {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
-      letter-spacing: 1px;
-      padding: 3px 7px;
-      border-radius: 6px;
-      background: var(--sf-text-primary);
-      color: #ffffff;
+      letter-spacing: 1.2px;
+      padding: 3.5px 8px;
+      border-radius: 7px;
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
+      color: #f5f5f7;
       font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
     }
 
     .brand-title {
-      font-size: 14px;
+      font-size: 14.5px;
       font-weight: 600;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       letter-spacing: -0.2px;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
     .current-brush-pill {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      background: var(--sf-dock-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 5px 12px;
+      background: var(--metal-dock);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      padding: 5px 13px;
       border-radius: 999px;
-      border: 0.5px solid var(--sf-separator);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--metal-border);
+      box-shadow: var(--metal-bevel-light), 0 4px 12px rgba(0, 0, 0, 0.05);
       pointer-events: auto;
       font-size: 12px;
-      color: var(--sf-text-secondary);
+      color: var(--metal-text-secondary);
       font-weight: 500;
     }
 
     .brush-preview-dot {
-      width: 11px;
-      height: 11px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
     }
 
-    /* 指板展示區 */
+    /* 指板主展示區 (霧面金屬底盤) */
     .stage-container {
       width: 100%;
       max-width: 1180px;
@@ -119,13 +125,13 @@
     }
 
     .fretboard-card {
-      background: var(--sf-card-bg);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 0.5px solid var(--sf-separator);
-      border-radius: 20px;
+      background: var(--metal-card);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--metal-border);
+      border-radius: 22px;
       padding: 28px 22px;
-      box-shadow: var(--sf-shadow-float);
+      box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
       overflow-x: auto;
       max-width: 100%;
       -webkit-overflow-scrolling: touch;
@@ -148,7 +154,7 @@
 
     .marker-shape {
       transition: fill 0.15s ease, stroke 0.15s ease;
-      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
     }
 
     .marker-text {
@@ -167,17 +173,17 @@
       text-anchor: middle;
     }
 
-    /* 底部 Apple Floating Dock */
+    /* 底部 Apple Metal Floating Dock */
     .floating-dock {
       position: fixed;
       bottom: 24px;
-      background: var(--sf-dock-bg);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 0.5px solid var(--sf-separator);
+      background: var(--metal-dock);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--metal-border);
       border-radius: 999px;
       padding: 6px 10px;
-      box-shadow: var(--sf-shadow-float);
+      box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -191,13 +197,14 @@
       gap: 6px;
     }
 
-    /* Apple Segmented Control */
+    /* Apple 分段切換器 (金屬壓凹質感) */
     .dock-group {
       display: inline-flex;
       align-items: center;
-      background: rgba(118, 118, 128, 0.12);
+      background: rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-shadow-inset);
       border-radius: 999px;
-      padding: 2.5px;
+      padding: 3px;
       gap: 1px;
     }
 
@@ -207,7 +214,7 @@
       padding: 6px 12px;
       font-size: 12px;
       font-weight: 500;
-      color: var(--sf-text-secondary);
+      color: var(--metal-text-secondary);
       border-radius: 999px;
       cursor: pointer;
       transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -216,12 +223,12 @@
 
     .dock-btn.active {
       background: #ffffff;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       font-weight: 600;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
-    /* Apple Select Capsule */
+    /* Apple 下拉選單金屬膠囊 */
     .dock-select-pill {
       display: inline-flex;
       align-items: center;
@@ -232,33 +239,33 @@
     .dock-select-pill label {
       font-size: 10.5px;
       font-weight: 600;
-      color: var(--sf-text-tertiary);
+      color: var(--metal-text-tertiary);
       letter-spacing: 0.2px;
     }
 
     .dock-select-pill select {
       appearance: none;
       background: #ffffff;
-      border: 0.5px solid var(--sf-separator-opaque);
+      border: 1px solid var(--metal-border);
       padding: 6px 24px 6px 10px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 500;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       cursor: pointer;
       outline: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 8px center;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
-    /* Apple 主按鈕 (調內音連動) */
+    /* Apple 調內音切換 (陽極氧化藍/深墨金屬) */
     .dock-btn-sync {
-      background: var(--sf-text-primary);
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
       color: #ffffff;
-      border: none;
-      padding: 7px 13px;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      padding: 7px 14px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 500;
@@ -268,10 +275,13 @@
       cursor: pointer;
       transition: all 0.18s ease;
       white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     .dock-btn-sync.sync-active {
-      background: var(--sf-blue);
+      background: linear-gradient(180deg, #007aff 0%, #0062cc 100%);
+      border-color: #0051b3;
+      box-shadow: 0 2px 8px rgba(0, 122, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .sync-led {
@@ -288,26 +298,27 @@
     }
 
     .dock-btn-action {
-      background: transparent;
-      border: 0.5px solid var(--sf-separator-opaque);
+      background: #ffffff;
+      border: 1px solid var(--metal-border);
       padding: 6px 12px;
       border-radius: 999px;
       font-size: 12px;
-      color: var(--sf-text-secondary);
+      color: var(--metal-text-secondary);
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     .dock-btn-action:hover {
-      background: rgba(0, 0, 0, 0.04);
-      color: var(--sf-text-primary);
+      background: #f5f5f7;
+      color: var(--metal-text-primary);
     }
 
-    /* 靜音切換按鈕 (Apple Mute Button) */
+    /* 靜音切換按鈕 */
     .dock-btn-mute {
       background: #ffffff;
-      border: 0.5px solid var(--sf-separator-opaque);
+      border: 1px solid var(--metal-border);
       width: 32px;
       height: 32px;
       border-radius: 50%;
@@ -317,25 +328,26 @@
       cursor: pointer;
       transition: all 0.18s ease;
       padding: 0;
-      color: var(--sf-text-primary);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      color: var(--metal-text-primary);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
     .dock-btn-mute:hover {
-      background: rgba(0, 0, 0, 0.04);
+      background: #f5f5f7;
     }
 
     .dock-btn-mute.is-muted {
-      background: rgba(255, 59, 48, 0.1);
+      background: rgba(255, 59, 48, 0.12);
       border-color: rgba(255, 59, 48, 0.35);
       color: #ff3b30;
     }
 
+    /* 匯出按鈕 */
     .dock-btn-export {
-      background: rgba(0, 0, 0, 0.05);
-      color: var(--sf-text-primary);
-      border: 0.5px solid var(--sf-separator);
-      padding: 6px 12px;
+      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+      color: var(--metal-text-primary);
+      border: 1px solid var(--metal-border);
+      padding: 6px 13px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 500;
@@ -345,20 +357,21 @@
       gap: 5px;
       transition: all 0.15s ease;
       white-space: nowrap;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .dock-btn-export:hover {
-      background: rgba(0, 0, 0, 0.09);
+      background: #dee2e6;
     }
 
     .dock-divider {
-      width: 0.5px;
+      width: 1px;
       height: 18px;
-      background: var(--sf-separator);
+      background: var(--metal-border);
       margin: 0 2px;
     }
 
-    /* 懸浮齒輪鈕 (AssistiveTouch 風格) */
+    /* 懸浮齒輪鈕 (AssistiveTouch 金屬質感) */
     .sidebar-trigger-btn {
       position: fixed;
       top: 50%;
@@ -366,17 +379,17 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--sf-dock-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 0.5px solid var(--sf-separator);
-      box-shadow: var(--sf-shadow-float);
+      background: var(--metal-dock);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--metal-border);
+      box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: grab;
       z-index: 120;
-      opacity: 0.6;
+      opacity: 0.65;
       user-select: none;
       touch-action: none;
       transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -419,7 +432,7 @@
 
     .sidebar-trigger-btn svg {
       transition: transform 0.35s ease;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       pointer-events: none;
     }
 
@@ -431,16 +444,16 @@
       transform: rotate(90deg);
     }
 
-    /* 抽屜面板 (Apple Sidebar / Sheet) */
+    /* 抽屜面板 (Apple Frosted Metal Sheet) */
     .sidebar-panel {
       position: fixed;
       top: 0;
       bottom: 0;
       width: 320px;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(35px);
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: var(--sf-shadow-panel);
+      background: rgba(246, 248, 250, 0.88);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14);
       z-index: 105;
       padding: 24px 18px;
       display: flex;
@@ -453,7 +466,7 @@
     .sidebar-panel.panel-right {
       right: -340px;
       left: auto;
-      border-left: 0.5px solid var(--sf-separator);
+      border-left: 1px solid var(--metal-border);
     }
     .sidebar-panel.panel-right.open {
       right: 0;
@@ -462,7 +475,7 @@
     .sidebar-panel.panel-left {
       left: -340px;
       right: auto;
-      border-right: 0.5px solid var(--sf-separator);
+      border-right: 1px solid var(--metal-border);
     }
     .sidebar-panel.panel-left.open {
       left: 0;
@@ -473,21 +486,21 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 12px;
-      border-bottom: 0.5px solid var(--sf-separator);
+      border-bottom: 1px solid var(--metal-border);
     }
 
     .sidebar-title {
       font-size: 15px;
       font-weight: 600;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       letter-spacing: -0.2px;
     }
 
     .close-btn {
-      background: var(--sf-fill-tertiary);
+      background: rgba(0, 0, 0, 0.06);
       border: none;
       font-size: 14px;
-      color: var(--sf-text-secondary);
+      color: var(--metal-text-secondary);
       cursor: pointer;
       width: 28px;
       height: 28px;
@@ -499,19 +512,19 @@
     }
 
     .close-btn:hover {
-      background: rgba(118, 118, 128, 0.2);
+      background: rgba(0, 0, 0, 0.12);
     }
 
     .section-label {
       font-size: 11px;
       font-weight: 600;
-      color: var(--sf-text-tertiary);
+      color: var(--metal-text-tertiary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 9px;
     }
 
-    /* 幾何形狀卡片 (Apple Clean Grid) */
+    /* 幾何形狀卡片 */
     .shape-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -521,7 +534,7 @@
     .shape-btn {
       aspect-ratio: 1 / 1;
       border-radius: 12px;
-      border: 0.5px solid var(--sf-separator-opaque);
+      border: 1px solid var(--metal-border);
       background: #ffffff;
       display: flex;
       align-items: center;
@@ -529,7 +542,7 @@
       padding: 0;
       cursor: pointer;
       transition: all 0.16s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     .shape-btn svg {
@@ -539,32 +552,32 @@
 
     .shape-btn:hover {
       background: #fdfdfd;
-      border-color: #c7c7cc;
+      border-color: #adb5bd;
     }
 
     .shape-btn.active {
       background: #ffffff;
-      border-color: var(--sf-blue);
-      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.35), 0 2px 6px rgba(0, 0, 0, 0.06);
+      border-color: var(--metal-blue);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.35), 0 2px 6px rgba(0, 0, 0, 0.06);
     }
 
-    /* 調性色票卡片 (Apple Inset Grouped List 風格) */
+    /* 調性色票卡片 */
     .palette-group-card {
       background: #ffffff;
-      border: 0.5px solid var(--sf-separator-opaque);
+      border: 1px solid var(--metal-border);
       border-radius: 14px;
       padding: 10px 12px;
       margin-bottom: 9px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
       transition: border-color 0.15s ease;
     }
 
     .palette-group-card.active-group {
-      border-color: var(--sf-blue);
-      box-shadow: 0 0 0 1px var(--sf-blue);
+      border-color: var(--metal-blue);
+      box-shadow: 0 0 0 1px var(--metal-blue);
     }
 
     .palette-header {
@@ -577,12 +590,12 @@
     .palette-name {
       font-size: 12.5px;
       font-weight: 600;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
     }
 
     .palette-radio-label {
       font-size: 10.5px;
-      color: var(--sf-blue);
+      color: var(--metal-blue);
       font-weight: 500;
     }
 
@@ -600,18 +613,18 @@
       min-height: 48px;
       border-radius: 10px;
       border: 1.5px solid transparent;
-      background: var(--sf-bg-base);
+      background: rgba(0, 0, 0, 0.04);
       cursor: pointer;
       transition: all 0.15s ease;
       padding: 4px;
     }
 
     .swatch-chip:hover {
-      background: #e5e5ea;
+      background: rgba(0, 0, 0, 0.08);
     }
 
     .swatch-chip.active-chip {
-      border-color: var(--sf-text-primary);
+      border-color: var(--metal-text-primary);
       background: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
@@ -621,13 +634,13 @@
       height: 16px;
       border-radius: 50%;
       flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.22);
     }
 
     .swatch-label {
       font-size: 10px;
       font-weight: 600;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
       margin-top: 3px;
     }
 
@@ -639,7 +652,7 @@
     }
 
     .wood-card {
-      border: 0.5px solid var(--sf-separator-opaque);
+      border: 1px solid var(--metal-border);
       border-radius: 12px;
       padding: 8px 10px;
       background: #ffffff;
@@ -649,33 +662,34 @@
       gap: 5px;
       text-align: left;
       transition: border-color 0.15s ease;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.03);
     }
 
     .wood-card.active {
-      border-color: var(--sf-blue);
-      box-shadow: 0 0 0 1px var(--sf-blue);
+      border-color: var(--metal-blue);
+      box-shadow: 0 0 0 1px var(--metal-blue);
     }
 
     .wood-preview {
       width: 100%;
       height: 20px;
       border-radius: 6px;
-      border: 0.5px solid rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.12);
     }
 
     .wood-name {
       font-size: 11.5px;
       font-weight: 600;
-      color: var(--sf-text-primary);
+      color: var(--metal-text-primary);
     }
 
     .wood-desc {
       font-size: 9.5px;
-      color: var(--sf-text-tertiary);
+      color: var(--metal-text-tertiary);
       line-height: 1.2;
     }
 
-    /* 手機專屬響應式 (Apple Bottom Sheet) */
+    /* 手機專屬響應式 */
     @media (max-width: 768px) {
       body {
         justify-content: flex-start;
@@ -707,7 +721,7 @@
         border-left: none;
         border-right: none;
         padding: 20px 0 16px;
-        background: rgba(255, 255, 255, 0.6);
+        background: rgba(248, 249, 251, 0.7);
         box-shadow: none;
         width: 100%;
       }
@@ -796,7 +810,7 @@
         border-radius: 24px 24px 0 0 !important;
         border-left: none !important;
         border-right: none !important;
-        border-top: 0.5px solid var(--sf-separator) !important;
+        border-top: 1px solid var(--metal-border) !important;
         transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
         padding: 20px 18px 36px !important;
       }
@@ -914,7 +928,7 @@
     </div>
   </footer>
 
-  <!-- 懸浮齒輪鈕 (AssistiveTouch 拖曳) -->
+  <!-- 懸浮齒輪鈕 -->
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
@@ -929,7 +943,7 @@
       <button class="close-btn" onclick="toggleSidebar()">✕</button>
     </div>
 
-    <!-- 1. 幾何形狀 (Apple 簡潔純白圓角矩形) -->
+    <!-- 1. 幾何形狀 -->
     <div>
       <div class="section-label">標記幾何形狀</div>
       <div class="shape-grid">
@@ -962,11 +976,10 @@
       </div>
     </div>
 
-    <!-- 2. 四色色彩庫 (Apple System Color Tones) -->
+    <!-- 2. 四色色彩庫 -->
     <div>
       <div class="section-label">調性配色庫（點選單色指派至指板）</div>
 
-      <!-- 配色組 1: Apple Red & Mint -->
       <div class="palette-group-card active-group" id="pal-card-apple_classic">
         <div class="palette-header" onclick="selectPaletteGroup('apple_classic')">
           <span class="palette-name">經典原色 (Classic Tint)</span>
@@ -989,7 +1002,6 @@
         </div>
       </div>
 
-      <!-- 配色組 2: 陶土磚紅大地 -->
       <div class="palette-group-card" id="pal-card-terracotta">
         <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
           <span class="palette-name">陶土大地 (Terracotta)</span>
@@ -1012,7 +1024,6 @@
         </div>
       </div>
 
-      <!-- 配色組 3: 莫蘭迪焦糖 -->
       <div class="palette-group-card" id="pal-card-caramel">
         <div class="palette-header" onclick="selectPaletteGroup('caramel')">
           <span class="palette-name">莫蘭迪焦糖 (Caramel)</span>
@@ -1035,7 +1046,6 @@
         </div>
       </div>
 
-      <!-- 配色組 4: 復古嫣紅玫瑰 -->
       <div class="palette-group-card" id="pal-card-rose">
         <div class="palette-header" onclick="selectPaletteGroup('rose')">
           <span class="palette-name">復古嫣紅 (Vintage Rose)</span>
@@ -1114,7 +1124,7 @@
     let isMuted = false;
 
     function playGuitarTone(midiNote) {
-      if (isMuted) return; // 靜音時完全不發出音訊
+      if (isMuted) return;
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -1170,7 +1180,6 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
-    // 4 色體系
     const PALETTE_GROUPS = {
       apple_classic: {
         c1: "#ff3b30",
@@ -1257,7 +1266,7 @@
         inlayOpacity: 0.9,
         wire: '#94a3b8',
         shadow: '#090d16',
-        fretNum: '#8e8e93'
+        fretNum: '#94a3b8'
       }
     };
 
@@ -1440,7 +1449,7 @@
         el.setAttribute("cx", x);
         el.setAttribute("cy", y);
         el.setAttribute("r", 9.8);
-        el.setAttribute("fill", "rgba(0,0,0,0.3)");
+        el.setAttribute("fill", "rgba(0,0,0,0.35)");
         el.setAttribute("stroke", color);
         el.setAttribute("stroke-width", "2.8");
         el.setAttribute("class", "marker-shape");
@@ -1526,7 +1535,6 @@
       renderBoard();
     }
 
-    // 自由挑選色彩指派畫筆
     function pickColorFromPalette(groupKey, type, hexColor, labelName) {
       currentActivePalette = groupKey;
       currentBrushColor = hexColor;
@@ -1568,7 +1576,6 @@
       renderBoard();
     }
 
-    // 自動填滿調內音
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
@@ -1633,7 +1640,7 @@
       renderBoard();
     }
 
-    // 拖曳引擎 (AssistiveTouch)
+    // 拖曳引擎
     const dragBtn = document.getElementById('sidebar-trigger-btn');
     const panel = document.getElementById('sidebar-panel');
     let isDragging = false;
@@ -1713,9 +1720,11 @@
       }
     });
 
-    // 匯出 PNG
+    // ========================================================
+    // 📷 100% Canvas 原生全要素純繪製 PNG 匯出引擎 (徹底告別幽靈指板)
+    // ========================================================
     function exportFretboardPNG() {
-      const scale = 2;
+      const scale = 2; // 2x Retina 無損解析度
       const boardW = FRETS * fretWidth;
       const boardH = (STRINGS - 1) * stringSpacing + 20;
       const totalW = 1030;
@@ -1729,6 +1738,7 @@
 
       const style = FRETBOARD_STYLES[currentFretboardStyle];
 
+      // 1. 原生繪製指板木質漸層
       const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
       woodGrad.addColorStop(0, style.bgGradient[0]);
       woodGrad.addColorStop(0.25, style.bgGradient[1]);
@@ -1739,40 +1749,172 @@
       ctx.fillStyle = woodGrad;
       ctx.fillRect(startX, startY - 10, boardW, boardH);
 
+      // 包邊 (Binding)
       ctx.strokeStyle = style.binding[0];
       ctx.lineWidth = 1.5;
       ctx.strokeRect(startX, startY - 10, boardW, boardH);
 
+      // 2. 琴枕 (Nut)
       ctx.fillStyle = style.nut.fill;
+      ctx.fillRect(startX - 7, startY - 10, 7, boardH);
       ctx.strokeStyle = style.nut.stroke;
       ctx.lineWidth = 1;
-      ctx.fillRect(startX - 7, startY - 10, 7, boardH);
       ctx.strokeRect(startX - 7, startY - 10, 7, boardH);
 
-      const svgElement = document.getElementById('fretboard');
-      const svgClone = svgElement.cloneNode(true);
+      // 3. 把位點 (Inlays)
+      const inlays = [3, 5, 7, 9, 12, 15];
+      inlays.forEach(f => {
+        if (f > FRETS) return;
+        const ix = startX + (f - 0.5) * fretWidth;
+        ctx.fillStyle = style.inlay;
+        ctx.globalAlpha = style.inlayOpacity;
 
-      const svgString = new XMLSerializer().serializeToString(svgClone);
-      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      const URL = window.URL || window.webkitURL || window;
-      const blobURL = URL.createObjectURL(svgBlob);
+        if (f === 12) {
+          ctx.beginPath();
+          ctx.arc(ix, startY + stringSpacing * 1.5, 4.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(ix, startY + stringSpacing * 3.5, 4.2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(ix, startY + stringSpacing * 2.5, 4.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+      });
 
-      const img = new Image();
-      img.onload = function() {
-        ctx.drawImage(img, 0, 0);
+      // 4. 品絲與數字 (Frets & Numbers)
+      ctx.font = '500 11.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
 
-        const pngURL = canvas.toDataURL('image/png');
-        const downloadLink = document.createElement('a');
-        const rootName = NOTE_NAMES[currentRoot];
-        downloadLink.download = `Fretboard_${rootName}_${currentScale}.png`;
-        downloadLink.href = pngURL;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
+      for (let f = 1; f <= FRETS; f++) {
+        const fx = startX + f * fretWidth;
 
-        URL.revokeObjectURL(blobURL);
-      };
-      img.src = blobURL;
+        // 品絲立體陰影
+        ctx.strokeStyle = style.shadow;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(fx + 1, startY - 10);
+        ctx.lineTo(fx + 1, startY - 10 + boardH);
+        ctx.stroke();
+
+        // 亮金屬品絲
+        ctx.strokeStyle = style.wire;
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        ctx.moveTo(fx, startY - 10);
+        ctx.lineTo(fx, startY - 10 + boardH);
+        ctx.stroke();
+
+        // 品位數字
+        ctx.fillStyle = style.fretNum;
+        ctx.fillText(f, fx - fretWidth / 2, startY + boardH + 16);
+      }
+
+      // 5. 6條琴弦 (Guitar Strings)
+      const stringProps = [
+        { stroke: "#dcd8cf", width: 0.95 },
+        { stroke: "#ccc5b8", width: 1.25 },
+        { stroke: "#9b9487", width: 1.6 },
+        { stroke: "#b89771", width: 2.1 },
+        { stroke: "#ab8860", width: 2.6 },
+        { stroke: "#99754f", width: 3.1 }
+      ];
+
+      for (let s = 0; s < STRINGS; s++) {
+        const sy = startY + s * stringSpacing;
+        ctx.strokeStyle = stringProps[s].stroke;
+        ctx.lineWidth = stringProps[s].width;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(startX - 22, sy);
+        ctx.lineTo(startX + boardW, sy);
+        ctx.stroke();
+      }
+
+      // 6. 標記幾何形狀與文字 (Native Markers & Labels)
+      ctx.font = '600 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      activeMarkers.forEach((markerData, key) => {
+        const { s, f, shape, color } = markerData;
+        const mx = f === 0 ? startX - 16 : startX + (f - 0.5) * fretWidth;
+        const my = startY + s * stringSpacing;
+
+        const midi = STRING_TUNING_MIDI[s] + f;
+        const noteName = NOTE_NAMES[midi % 12];
+        const interval = ((midi - currentRoot) % 12 + 12) % 12;
+        const degreeName = DEGREE_NAMES[interval];
+
+        // 幾何形狀原生渲染
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.45)';
+        ctx.shadowBlur = 5;
+        ctx.shadowOffsetY = 2;
+
+        if (shape === 'circle') {
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(mx, my, 11.2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (shape === 'ring') {
+          ctx.fillStyle = 'rgba(0,0,0,0.35)';
+          ctx.beginPath();
+          ctx.arc(mx, my, 9.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2.8;
+          ctx.stroke();
+        } else if (shape === 'diamond') {
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(mx, my - 13);
+          ctx.lineTo(mx + 13, my);
+          ctx.lineTo(mx, my + 13);
+          ctx.lineTo(mx - 13, my);
+          ctx.closePath();
+          ctx.fill();
+        } else if (shape === 'triangle') {
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(mx, my - 12);
+          ctx.lineTo(mx + 12.5, my + 9);
+          ctx.lineTo(mx - 12.5, my + 9);
+          ctx.closePath();
+          ctx.fill();
+        } else if (shape === 'cross') {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2.8;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(mx - 7, my - 7);
+          ctx.lineTo(mx + 7, my + 7);
+          ctx.moveTo(mx + 7, my - 7);
+          ctx.lineTo(mx - 7, my + 7);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // 文字繪製
+        if (displayMode !== 'dot' && shape !== 'cross') {
+          ctx.fillStyle = '#ffffff';
+          const labelY = shape === 'triangle' ? my + 2 : my;
+          ctx.fillText(displayMode === 'note' ? noteName : degreeName, mx, labelY);
+        }
+      });
+
+      // 觸發高清 PNG 下載
+      const pngURL = canvas.toDataURL('image/png');
+      const downloadLink = document.createElement('a');
+      const rootName = NOTE_NAMES[currentRoot];
+      downloadLink.download = `Guitar_Fretboard_${rootName}_${currentScale}.png`;
+      downloadLink.href = pngURL;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
     }
 
     renderBoard();
