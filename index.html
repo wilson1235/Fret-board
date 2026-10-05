@@ -5,25 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>指板幾何視覺化 - Studio Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* Apple 霧面金屬與液態毛玻璃 (Space Aluminum & Fine Glass) */
-      --metal-bg: #e6e8eb;
-      --metal-gradient: linear-gradient(145deg, #f0f2f5 0%, #e2e4e8 100%);
+      /* Apple 霧面陽極氧化鋁合金與液態玻璃 (Space Gray Metal & Frosted Glass) */
+      --metal-bg: #e5e7eb;
       --metal-card: rgba(248, 249, 251, 0.76);
-      --metal-dock: rgba(243, 245, 248, 0.82);
+      --metal-dock: rgba(243, 245, 248, 0.86);
       --metal-border: rgba(180, 185, 195, 0.55);
-      --metal-bevel-light: inset 0 1px 0.5px rgba(255, 255, 255, 0.9);
-      --metal-bevel-dark: inset 0 -1px 0.5px rgba(0, 0, 0, 0.06);
+      --metal-bevel-light: inset 0 1px 0.5px rgba(255, 255, 255, 0.95);
+      --metal-bevel-dark: inset 0 -1px 0.5px rgba(0, 0, 0, 0.08);
       --metal-text-primary: #1d1d1f;
       --metal-text-secondary: #48484a;
       --metal-text-tertiary: #86868b;
       --metal-blue: #0071e3;
-      --metal-shadow-float: 0 16px 40px rgba(0, 0, 0, 0.07), 0 2px 6px rgba(0, 0, 0, 0.03);
-      --metal-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+      --metal-shadow-float: 0 18px 45px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.03);
+      --metal-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.07);
+
+      /* Apple 專屬彈性貝茲曲線 */
+      --sf-spring-curve: cubic-bezier(0.2, 0.9, 0.3, 1.25);
+      --sf-smooth-curve: cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     * {
@@ -37,8 +40,8 @@
       min-height: 100vh;
       background: var(--metal-bg);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.6) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(200, 205, 215, 0.4) 0px, transparent 50%),
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.65) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(195, 200, 210, 0.45) 0px, transparent 50%),
         linear-gradient(180deg, #edeff2 0%, #dfe2e6 100%);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
       color: var(--metal-text-primary);
@@ -50,12 +53,12 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 頂部標頭 (Apple Metal Style) */
+    /* 頂部導覽列 */
     .top-status-bar {
       position: fixed;
-      top: 20px;
-      left: 28px;
-      right: 28px;
+      top: 22px;
+      left: 32px;
+      right: 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -66,24 +69,28 @@
     .brand-stamp {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
       pointer-events: auto;
+      transition: transform 0.25s var(--sf-spring-curve);
+    }
+    .brand-stamp:hover {
+      transform: scale(1.02);
     }
 
     .brand-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 10.5px;
       letter-spacing: 1.2px;
-      padding: 3.5px 8px;
+      padding: 4px 9px;
       border-radius: 7px;
       background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
       color: #f5f5f7;
       font-weight: 600;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
     .brand-title {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--metal-text-primary);
       letter-spacing: -0.2px;
@@ -93,32 +100,38 @@
     .current-brush-pill {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       background: var(--metal-dock);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
-      padding: 5px 13px;
+      padding: 6px 15px;
       border-radius: 999px;
       border: 1px solid var(--metal-border);
-      box-shadow: var(--metal-bevel-light), 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--metal-bevel-light), 0 4px 14px rgba(0, 0, 0, 0.05);
       pointer-events: auto;
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--metal-text-secondary);
       font-weight: 500;
+      transition: all 0.25s var(--sf-spring-curve);
+    }
+    .current-brush-pill:hover {
+      transform: scale(1.04);
+      background: #ffffff;
+      box-shadow: var(--metal-bevel-light), 0 6px 18px rgba(0, 0, 0, 0.09);
     }
 
     .brush-preview-dot {
-      width: 12px;
-      height: 12px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       box-shadow: 0 1px 3px rgba(0,0,0,0.25);
     }
 
-    /* 指板主展示區 (霧面金屬底盤) */
+    /* 指板主展示區 (Apple 官網卡片微浮雕動態) */
     .stage-container {
       width: 100%;
-      max-width: 1180px;
-      padding: 70px 20px 110px;
+      max-width: 1200px;
+      padding: 70px 20px 120px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -129,12 +142,19 @@
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
       border: 1px solid var(--metal-border);
-      border-radius: 22px;
-      padding: 28px 22px;
+      border-radius: 24px;
+      padding: 32px 26px;
       box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
       overflow-x: auto;
       max-width: 100%;
       -webkit-overflow-scrolling: touch;
+      transition: transform 0.35s var(--sf-spring-curve), box-shadow 0.35s var(--sf-smooth-curve);
+    }
+
+    /* Apple 官網懸停微浮雕效果 */
+    .fretboard-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--metal-bevel-light), 0 24px 50px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
     svg {
@@ -153,7 +173,7 @@
     }
 
     .marker-shape {
-      transition: fill 0.15s ease, stroke 0.15s ease;
+      transition: transform 0.2s var(--sf-spring-curve), fill 0.15s ease, stroke 0.15s ease;
       filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
     }
 
@@ -173,120 +193,150 @@
       text-anchor: middle;
     }
 
-    /* 底部 Apple Metal Floating Dock */
+    /* ========================================================
+       🖥️ 電腦端更大、大氣的 Apple Metal Dock (附帶 Hover 彈性放大)
+       ======================================================== */
     .floating-dock {
       position: fixed;
-      bottom: 24px;
+      bottom: 28px;
       background: var(--metal-dock);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
       border: 1px solid var(--metal-border);
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: 8px 14px; /* 加大 padding */
       box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       z-index: 90;
       max-width: calc(100vw - 32px);
+      transition: transform 0.3s var(--sf-spring-curve), box-shadow 0.3s var(--sf-smooth-curve);
     }
 
     .dock-row-primary, .dock-row-secondary {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    /* Apple 分段切換器 (金屬壓凹質感) */
+    /* Apple 分段切換器 */
     .dock-group {
       display: inline-flex;
       align-items: center;
       background: rgba(0, 0, 0, 0.06);
       box-shadow: var(--metal-shadow-inset);
       border-radius: 999px;
-      padding: 3px;
-      gap: 1px;
+      padding: 3.5px;
+      gap: 2px;
     }
 
     .dock-btn {
       background: transparent;
       border: none;
-      padding: 6px 12px;
-      font-size: 12px;
+      padding: 7px 15px; /* 加大尺寸 */
+      font-size: 13px;
       font-weight: 500;
       color: var(--metal-text-secondary);
       border-radius: 999px;
       cursor: pointer;
-      transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: all 0.22s var(--sf-spring-curve);
       white-space: nowrap;
+    }
+
+    .dock-btn:hover {
+      transform: scale(1.06);
+      color: var(--metal-text-primary);
+    }
+    .dock-btn:active {
+      transform: scale(0.95);
     }
 
     .dock-btn.active {
       background: #ffffff;
       color: var(--metal-text-primary);
       font-weight: 600;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transform: scale(1.03);
     }
 
-    /* Apple 下拉選單金屬膠囊 */
+    /* Apple 下拉選單膠囊 */
     .dock-select-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 0 2px;
+      gap: 6px;
+      padding: 0 3px;
     }
 
     .dock-select-pill label {
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--metal-text-tertiary);
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
     }
 
     .dock-select-pill select {
       appearance: none;
       background: #ffffff;
       border: 1px solid var(--metal-border);
-      padding: 6px 24px 6px 10px;
+      padding: 7px 26px 7px 12px; /* 加大高度與字級 */
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--metal-text-primary);
       cursor: pointer;
       outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 8px center;
+      background-position: right 9px center;
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: all 0.22s var(--sf-spring-curve);
     }
 
-    /* Apple 調內音切換 (陽極氧化藍/深墨金屬) */
+    .dock-select-pill select:hover {
+      transform: scale(1.04);
+      border-color: #a0a6b2;
+      box-shadow: var(--metal-bevel-light), 0 3px 8px rgba(0, 0, 0, 0.07);
+    }
+    .dock-select-pill select:active {
+      transform: scale(0.97);
+    }
+
+    /* Apple 主按鈕 (調內音連動) */
     .dock-btn-sync {
       background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
       color: #ffffff;
       border: 1px solid rgba(0, 0, 0, 0.4);
-      padding: 7px 14px;
+      padding: 8px 16px; /* 加大 */
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.22s var(--sf-spring-curve);
       white-space: nowrap;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .dock-btn-sync:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .dock-btn-sync:active {
+      transform: scale(0.96);
     }
 
     .dock-btn-sync.sync-active {
       background: linear-gradient(180deg, #007aff 0%, #0062cc 100%);
       border-color: #0051b3;
-      box-shadow: 0 2px 8px rgba(0, 122, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 10px rgba(0, 122, 255, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
     .sync-led {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.45);
       transition: all 0.2s ease;
@@ -294,46 +344,56 @@
 
     .dock-btn-sync.sync-active .sync-led {
       background: #ffffff;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 7px rgba(255, 255, 255, 0.95);
     }
 
     .dock-btn-action {
       background: #ffffff;
       border: 1px solid var(--metal-border);
-      padding: 6px 12px;
+      padding: 8px 14px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--metal-text-secondary);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.22s var(--sf-spring-curve);
       white-space: nowrap;
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     .dock-btn-action:hover {
+      transform: scale(1.05);
       background: #f5f5f7;
       color: var(--metal-text-primary);
+      box-shadow: var(--metal-bevel-light), 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    .dock-btn-action:active {
+      transform: scale(0.96);
     }
 
     /* 靜音切換按鈕 */
     .dock-btn-mute {
       background: #ffffff;
       border: 1px solid var(--metal-border);
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.22s var(--sf-spring-curve);
       padding: 0;
       color: var(--metal-text-primary);
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
     .dock-btn-mute:hover {
+      transform: scale(1.08);
       background: #f5f5f7;
+      box-shadow: var(--metal-bevel-light), 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    .dock-btn-mute:active {
+      transform: scale(0.93);
     }
 
     .dock-btn-mute.is-muted {
@@ -347,37 +407,42 @@
       background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
       color: var(--metal-text-primary);
       border: 1px solid var(--metal-border);
-      padding: 6px 13px;
+      padding: 8px 15px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
+      gap: 6px;
+      transition: all 0.22s var(--sf-spring-curve);
       white-space: nowrap;
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .dock-btn-export:hover {
+      transform: scale(1.05);
       background: #dee2e6;
+      box-shadow: var(--metal-bevel-light), 0 3px 9px rgba(0, 0, 0, 0.09);
+    }
+    .dock-btn-export:active {
+      transform: scale(0.96);
     }
 
     .dock-divider {
       width: 1px;
-      height: 18px;
+      height: 20px;
       background: var(--metal-border);
-      margin: 0 2px;
+      margin: 0 3px;
     }
 
-    /* 懸浮齒輪鈕 (AssistiveTouch 金屬質感) */
+    /* 懸浮齒輪鈕 (AssistiveTouch) */
     .sidebar-trigger-btn {
       position: fixed;
       top: 50%;
       right: 0;
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: var(--metal-dock);
       backdrop-filter: blur(30px);
@@ -392,7 +457,7 @@
       opacity: 0.65;
       user-select: none;
       touch-action: none;
-      transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s var(--sf-spring-curve);
     }
 
     .sidebar-trigger-btn:active {
@@ -402,18 +467,18 @@
     .sidebar-trigger-btn.is-dragging {
       opacity: 1 !important;
       transition: none !important;
-      transform: scale(1.12) !important;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.18) !important;
+      transform: scale(1.15) !important;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
     }
 
     .sidebar-trigger-btn.dock-right {
       transform: translateX(18px);
       border-right: none;
-      border-radius: 22px 0 0 22px;
+      border-radius: 24px 0 0 24px;
     }
     .sidebar-trigger-btn.dock-right:hover {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateX(0) scale(1.04);
       background: #ffffff;
       box-shadow: -4px 6px 18px rgba(0,0,0,0.1);
     }
@@ -421,11 +486,11 @@
     .sidebar-trigger-btn.dock-left {
       transform: translateX(-18px);
       border-left: none;
-      border-radius: 0 22px 22px 0;
+      border-radius: 0 24px 24px 0;
     }
     .sidebar-trigger-btn.dock-left:hover {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateX(0) scale(1.04);
       background: #ffffff;
       box-shadow: 4px 6px 18px rgba(0,0,0,0.1);
     }
@@ -460,7 +525,7 @@
       flex-direction: column;
       gap: 20px;
       overflow-y: auto;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.35s var(--sf-spring-curve);
     }
 
     .sidebar-panel.panel-right {
@@ -508,11 +573,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.15s ease;
+      transition: all 0.2s var(--sf-spring-curve);
     }
 
     .close-btn:hover {
+      transform: scale(1.1);
       background: rgba(0, 0, 0, 0.12);
+    }
+    .close-btn:active {
+      transform: scale(0.92);
     }
 
     .section-label {
@@ -524,7 +593,7 @@
       margin-bottom: 9px;
     }
 
-    /* 幾何形狀卡片 */
+    /* 幾何形狀卡片 (含 Hover 微浮雕放大) */
     .shape-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -541,7 +610,7 @@
       justify-content: center;
       padding: 0;
       cursor: pointer;
-      transition: all 0.16s ease;
+      transition: all 0.22s var(--sf-spring-curve);
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
@@ -551,17 +620,22 @@
     }
 
     .shape-btn:hover {
-      background: #fdfdfd;
+      transform: translateY(-2px) scale(1.06);
       border-color: #adb5bd;
+      box-shadow: var(--metal-bevel-light), 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+    .shape-btn:active {
+      transform: scale(0.94);
     }
 
     .shape-btn.active {
       background: #ffffff;
       border-color: var(--metal-blue);
-      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.35), 0 2px 6px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.35), 0 3px 8px rgba(0, 0, 0, 0.08);
+      transform: scale(1.04);
     }
 
-    /* 調性色票卡片 */
+    /* 調性色票卡片 (Apple 懸浮質感) */
     .palette-group-card {
       background: #ffffff;
       border: 1px solid var(--metal-border);
@@ -572,12 +646,17 @@
       flex-direction: column;
       gap: 8px;
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
-      transition: border-color 0.15s ease;
+      transition: all 0.25s var(--sf-spring-curve);
+    }
+
+    .palette-group-card:hover {
+      transform: translateY(-1.5px);
+      box-shadow: var(--metal-bevel-light), 0 6px 14px rgba(0, 0, 0, 0.06);
     }
 
     .palette-group-card.active-group {
       border-color: var(--metal-blue);
-      box-shadow: 0 0 0 1px var(--metal-blue);
+      box-shadow: 0 0 0 1px var(--metal-blue), 0 4px 12px rgba(0, 113, 227, 0.12);
     }
 
     .palette-header {
@@ -615,18 +694,24 @@
       border: 1.5px solid transparent;
       background: rgba(0, 0, 0, 0.04);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s var(--sf-spring-curve);
       padding: 4px;
     }
 
     .swatch-chip:hover {
+      transform: scale(1.08);
       background: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .swatch-chip:active {
+      transform: scale(0.92);
     }
 
     .swatch-chip.active-chip {
       border-color: var(--metal-text-primary);
       background: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transform: scale(1.04);
     }
 
     .swatch-dot {
@@ -644,7 +729,7 @@
       margin-top: 3px;
     }
 
-    /* 6 款木質風格 */
+    /* 6 款木質風格 (微浮雕動態) */
     .wood-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -661,8 +746,17 @@
       flex-direction: column;
       gap: 5px;
       text-align: left;
-      transition: border-color 0.15s ease;
+      transition: all 0.22s var(--sf-spring-curve);
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .wood-card:hover {
+      transform: translateY(-2px) scale(1.02);
+      border-color: #a0a6b2;
+      box-shadow: var(--metal-bevel-light), 0 6px 14px rgba(0,0,0,0.07);
+    }
+    .wood-card:active {
+      transform: scale(0.97);
     }
 
     .wood-card.active {
@@ -795,8 +889,8 @@
       }
 
       .sidebar-trigger-btn {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
       }
 
       .sidebar-panel.panel-right,
@@ -811,7 +905,7 @@
         border-left: none !important;
         border-right: none !important;
         border-top: 1px solid var(--metal-border) !important;
-        transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        transition: bottom 0.35s var(--sf-spring-curve) !important;
         padding: 20px 18px 36px !important;
       }
       .sidebar-panel.open {
@@ -845,7 +939,7 @@
     </div>
   </main>
 
-  <!-- 底部 Dock -->
+  <!-- 底部 Dock (電腦端擴大、附微浮雕放大動態) -->
   <footer class="floating-dock">
     <div class="dock-row-primary">
       <div class="dock-group">
@@ -910,12 +1004,12 @@
 
       <!-- 靜音切換按鈕 -->
       <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="開關聲音">
-        <svg id="icon-sound" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg>
-        <svg id="icon-mute" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <line x1="23" y1="9" x2="17" y2="15"></line>
           <line x1="17" y1="9" x2="23" y2="15"></line>
@@ -930,7 +1024,7 @@
 
   <!-- 懸浮齒輪鈕 -->
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
     </svg>
@@ -1721,10 +1815,10 @@
     });
 
     // ========================================================
-    // 📷 100% Canvas 原生全要素純繪製 PNG 匯出引擎 (徹底告別幽靈指板)
+    // 📷 100% Canvas 原生純繪製引擎 (實體指板木頭、品絲、弦無損導出)
     // ========================================================
     function exportFretboardPNG() {
-      const scale = 2; // 2x Retina 無損解析度
+      const scale = 2; // 2x Retina 解析度
       const boardW = FRETS * fretWidth;
       const boardH = (STRINGS - 1) * stringSpacing + 20;
       const totalW = 1030;
@@ -1738,7 +1832,7 @@
 
       const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      // 1. 原生繪製指板木質漸層
+      // 1. 指板木質實體漸層 (絕不蒸發)
       const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
       woodGrad.addColorStop(0, style.bgGradient[0]);
       woodGrad.addColorStop(0.25, style.bgGradient[1]);
@@ -1749,12 +1843,12 @@
       ctx.fillStyle = woodGrad;
       ctx.fillRect(startX, startY - 10, boardW, boardH);
 
-      // 包邊 (Binding)
+      // 包邊
       ctx.strokeStyle = style.binding[0];
       ctx.lineWidth = 1.5;
       ctx.strokeRect(startX, startY - 10, boardW, boardH);
 
-      // 2. 琴枕 (Nut)
+      // 2. 琴枕
       ctx.fillStyle = style.nut.fill;
       ctx.fillRect(startX - 7, startY - 10, 7, boardH);
       ctx.strokeStyle = style.nut.stroke;
@@ -1784,7 +1878,7 @@
         ctx.globalAlpha = 1.0;
       });
 
-      // 4. 品絲與數字 (Frets & Numbers)
+      // 4. 品絲與數字
       ctx.font = '500 11.5px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -1792,7 +1886,7 @@
       for (let f = 1; f <= FRETS; f++) {
         const fx = startX + f * fretWidth;
 
-        // 品絲立體陰影
+        // 品絲陰影
         ctx.strokeStyle = style.shadow;
         ctx.lineWidth = 1.2;
         ctx.beginPath();
@@ -1800,7 +1894,7 @@
         ctx.lineTo(fx + 1, startY - 10 + boardH);
         ctx.stroke();
 
-        // 亮金屬品絲
+        // 亮銀品絲
         ctx.strokeStyle = style.wire;
         ctx.lineWidth = 2.0;
         ctx.beginPath();
@@ -1808,12 +1902,12 @@
         ctx.lineTo(fx, startY - 10 + boardH);
         ctx.stroke();
 
-        // 品位數字
+        // 數字
         ctx.fillStyle = style.fretNum;
         ctx.fillText(f, fx - fretWidth / 2, startY + boardH + 16);
       }
 
-      // 5. 6條琴弦 (Guitar Strings)
+      // 5. 琴弦 (6 Strings)
       const stringProps = [
         { stroke: "#dcd8cf", width: 0.95 },
         { stroke: "#ccc5b8", width: 1.25 },
@@ -1834,7 +1928,7 @@
         ctx.stroke();
       }
 
-      // 6. 標記幾何形狀與文字 (Native Markers & Labels)
+      // 6. 標記幾何形狀與文字
       ctx.font = '600 11px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -1849,7 +1943,6 @@
         const interval = ((midi - currentRoot) % 12 + 12) % 12;
         const degreeName = DEGREE_NAMES[interval];
 
-        // 幾何形狀原生渲染
         ctx.save();
         ctx.shadowColor = 'rgba(0,0,0,0.45)';
         ctx.shadowBlur = 5;
@@ -1898,7 +1991,6 @@
         }
         ctx.restore();
 
-        // 文字繪製
         if (displayMode !== 'dot' && shape !== 'cross') {
           ctx.fillStyle = '#ffffff';
           const labelY = shape === 'triangle' ? my + 2 : my;
@@ -1906,7 +1998,7 @@
         }
       });
 
-      // 觸發高清 PNG 下載
+      // 觸發 PNG 下載
       const pngURL = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
       const rootName = NOTE_NAMES[currentRoot];
