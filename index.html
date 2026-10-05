@@ -10,10 +10,9 @@
 
   <style>
     :root {
-      /* Apple 霧面陽極氧化鋁合金與液態玻璃 (Space Gray Metal & Frosted Glass) */
       --metal-bg: #e5e7eb;
-      --metal-card: rgba(248, 249, 251, 0.76);
-      --metal-dock: rgba(243, 245, 248, 0.86);
+      --metal-card: rgba(248, 249, 251, 0.78);
+      --metal-dock: rgba(243, 245, 248, 0.88);
       --metal-border: rgba(180, 185, 195, 0.55);
       --metal-bevel-light: inset 0 1px 0.5px rgba(255, 255, 255, 0.95);
       --metal-bevel-dark: inset 0 -1px 0.5px rgba(0, 0, 0, 0.08);
@@ -23,983 +22,343 @@
       --metal-blue: #0071e3;
       --metal-shadow-float: 0 18px 45px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.03);
       --metal-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.07);
-
-      --sf-spring-curve: cubic-bezier(0.2, 0.9, 0.3, 1.25);
-      --sf-smooth-curve: cubic-bezier(0.25, 1, 0.5, 1);
+      --sf-spring: cubic-bezier(0.2, 0.9, 0.3, 1.25);
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
+      margin: 0; padding: 0; min-height: 100vh;
       background: var(--metal-bg);
       background-image: 
         radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.65) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(195, 200, 210, 0.45) 0px, transparent 50%),
         linear-gradient(180deg, #edeff2 0%, #dfe2e6 100%);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
       color: var(--metal-text-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
     }
 
     /* 頂部導覽列 */
     .top-status-bar {
-      position: fixed;
-      top: 18px;
-      left: 28px;
-      right: 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-      z-index: 10;
+      position: fixed; top: 18px; left: 28px; right: 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none; z-index: 10;
     }
 
     .brand-stamp {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      pointer-events: auto;
-      transition: transform 0.25s var(--sf-spring-curve);
+      display: inline-flex; align-items: center; gap: 10px; pointer-events: auto;
+      transition: transform 0.25s var(--sf-spring);
     }
-    .brand-stamp:hover {
-      transform: scale(1.02);
-    }
+    .brand-stamp:hover { transform: scale(1.02); }
 
     .brand-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      letter-spacing: 1.2px;
-      padding: 4px 9px;
-      border-radius: 7px;
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 1.2px;
+      padding: 4px 9px; border-radius: 7px;
       background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
-      color: #f5f5f7;
-      font-weight: 600;
+      color: #f5f5f7; font-weight: 600;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
     .brand-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--metal-text-primary);
-      letter-spacing: -0.2px;
+      font-size: 15px; font-weight: 600; color: var(--metal-text-primary);
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    /* 右上角快捷工具列 */
+    /* 右上角快捷畫筆 */
     .top-quick-toolbar {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--metal-dock);
-      backdrop-filter: blur(40px);
-      -webkit-backdrop-filter: blur(40px);
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--metal-border);
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--metal-dock); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      padding: 6px 12px; border-radius: 999px; border: 1px solid var(--metal-border);
       box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
-      pointer-events: auto;
-      transition: all 0.25s var(--sf-spring-curve);
+      pointer-events: auto; transition: all 0.25s var(--sf-spring);
     }
-    .top-quick-toolbar:hover {
-      background: #ffffff;
-      box-shadow: var(--metal-bevel-light), 0 8px 24px rgba(0, 0, 0, 0.09);
-    }
+    .top-quick-toolbar:hover { background: #ffffff; box-shadow: var(--metal-bevel-light), 0 8px 24px rgba(0,0,0,0.09); }
 
-    .quick-shape-group {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.06);
-      box-shadow: var(--metal-shadow-inset);
-      border-radius: 999px;
-      padding: 3px;
-      gap: 2px;
+    .quick-shape-group, .quick-color-group {
+      display: inline-flex; align-items: center; background: rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-shadow-inset); border-radius: 999px;
     }
+    .quick-shape-group { padding: 3px; gap: 2px; }
+    .quick-color-group { padding: 4px 6px; gap: 6px; }
 
     .quick-shape-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.2s var(--sf-spring-curve);
+      width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+      transition: all 0.2s var(--sf-spring);
     }
-    .quick-shape-btn:hover {
-      transform: scale(1.1);
-    }
-    .quick-shape-btn:active {
-      transform: scale(0.92);
-    }
+    .quick-shape-btn:hover { transform: scale(1.1); }
+    .quick-shape-btn:active { transform: scale(0.92); }
     .quick-shape-btn.active {
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
       transform: scale(1.05);
     }
 
-    .quick-divider {
-      width: 1px;
-      height: 18px;
-      background: var(--metal-border);
-      margin: 0 2px;
-    }
-
-    .quick-color-group {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.06);
-      box-shadow: var(--metal-shadow-inset);
-      border-radius: 999px;
-      padding: 4px 6px;
-      gap: 6px;
-    }
+    .quick-divider { width: 1px; height: 18px; background: var(--metal-border); margin: 0 2px; }
 
     .quick-color-btn {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.22s var(--sf-spring-curve);
-      position: relative;
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent;
+      cursor: pointer; padding: 0; transition: all 0.22s var(--sf-spring);
       box-shadow: 0 1px 3px rgba(0,0,0,0.22);
     }
-    .quick-color-btn:hover {
-      transform: scale(1.18);
-    }
-    .quick-color-btn:active {
-      transform: scale(0.9);
-    }
+    .quick-color-btn:hover { transform: scale(1.18); }
+    .quick-color-btn:active { transform: scale(0.9); }
     .quick-color-btn.active {
-      border-color: #ffffff;
-      transform: scale(1.22);
+      border-color: #ffffff; transform: scale(1.22);
       box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.28);
     }
 
-    /* 指板展示區 */
+    /* 指板主展示區 */
     .stage-container {
-      width: 100%;
-      max-width: 1200px;
-      padding: 70px 20px 120px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width: 100%; max-width: 1220px; padding: 75px 20px 125px;
+      display: flex; justify-content: center; align-items: center;
     }
 
     .fretboard-card {
-      background: var(--metal-card);
-      backdrop-filter: blur(40px);
-      -webkit-backdrop-filter: blur(40px);
-      border: 1px solid var(--metal-border);
-      border-radius: 24px;
-      padding: 32px 26px;
+      background: var(--metal-card); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--metal-border); border-radius: 24px; padding: 30px 24px;
       box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
-      overflow-x: auto;
-      max-width: 100%;
-      -webkit-overflow-scrolling: touch;
-      transition: transform 0.35s var(--sf-spring-curve), box-shadow 0.35s var(--sf-smooth-curve);
+      overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch;
+      transition: transform 0.35s var(--sf-spring), box-shadow 0.35s;
     }
-
     .fretboard-card:hover {
       transform: translateY(-2px);
-      box-shadow: var(--metal-bevel-light), 0 24px 50px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.04);
+      box-shadow: var(--metal-bevel-light), 0 24px 50px rgba(0,0,0,0.1);
     }
 
-    svg {
-      display: block;
-      margin: 0 auto;
-      user-select: none;
-    }
-
-    .clickable-area {
-      fill: transparent;
-      cursor: pointer;
-    }
-
-    .clickable-area:hover {
-      fill: rgba(255, 255, 255, 0.08);
-    }
-
-    .marker-shape {
-      transition: transform 0.2s var(--sf-spring-curve), fill 0.15s ease, stroke 0.15s ease;
-      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
-    }
-
+    svg { display: block; margin: 0 auto; user-select: none; }
+    .clickable-area { fill: transparent; cursor: pointer; }
+    .clickable-area:hover { fill: rgba(255, 255, 255, 0.08); }
+    .marker-shape { transition: transform 0.2s var(--sf-spring); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.45)); }
     .marker-text {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      text-anchor: middle;
-      dominant-baseline: central;
-      pointer-events: none;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      text-anchor: middle; dominant-baseline: central; pointer-events: none;
     }
-
-    .fret-number {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
-      font-weight: 500;
-      text-anchor: middle;
-    }
+    .fret-number { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; text-anchor: middle; }
 
     /* 底部 Dock */
     .floating-dock {
-      position: fixed;
-      bottom: 28px;
-      background: var(--metal-dock);
-      backdrop-filter: blur(40px);
-      -webkit-backdrop-filter: blur(40px);
-      border: 1px solid var(--metal-border);
-      border-radius: 999px;
-      padding: 8px 14px;
+      position: fixed; bottom: 26px; background: var(--metal-dock);
+      backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--metal-border); border-radius: 999px; padding: 8px 14px;
       box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 90;
-      max-width: calc(100vw - 32px);
-      transition: transform 0.3s var(--sf-spring-curve), box-shadow 0.3s var(--sf-smooth-curve);
+      display: flex; align-items: center; gap: 10px; z-index: 90; max-width: calc(100vw - 32px);
     }
 
-    .dock-row-primary, .dock-row-secondary {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .dock-row-primary, .dock-row-secondary { display: flex; align-items: center; gap: 8px; }
 
     .dock-group {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.06);
-      box-shadow: var(--metal-shadow-inset);
-      border-radius: 999px;
-      padding: 3.5px;
-      gap: 2px;
+      display: inline-flex; align-items: center; background: rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-shadow-inset); border-radius: 999px; padding: 3.5px; gap: 2px;
     }
 
     .dock-btn {
-      background: transparent;
-      border: none;
-      padding: 7px 15px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--metal-text-secondary);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: all 0.22s var(--sf-spring-curve);
-      white-space: nowrap;
+      background: transparent; border: none; padding: 7px 15px; font-size: 13px; font-weight: 500;
+      color: var(--metal-text-secondary); border-radius: 999px; cursor: pointer;
+      transition: all 0.22s var(--sf-spring); white-space: nowrap;
     }
-
-    .dock-btn:hover {
-      transform: scale(1.06);
-      color: var(--metal-text-primary);
-    }
-    .dock-btn:active {
-      transform: scale(0.95);
-    }
-
+    .dock-btn:hover { transform: scale(1.06); color: var(--metal-text-primary); }
+    .dock-btn:active { transform: scale(0.95); }
     .dock-btn.active {
-      background: #ffffff;
-      color: var(--metal-text-primary);
-      font-weight: 600;
-      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      background: #ffffff; color: var(--metal-text-primary); font-weight: 600;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
       transform: scale(1.03);
     }
 
-    .dock-select-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0 3px;
-    }
-
-    .dock-select-pill label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--metal-text-tertiary);
-      letter-spacing: 0.3px;
-    }
-
+    .dock-select-pill { display: inline-flex; align-items: center; gap: 6px; padding: 0 3px; }
+    .dock-select-pill label { font-size: 11px; font-weight: 600; color: var(--metal-text-tertiary); letter-spacing: 0.3px; }
     .dock-select-pill select {
-      appearance: none;
-      background: #ffffff;
-      border: 1px solid var(--metal-border);
-      padding: 7px 26px 7px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--metal-text-primary);
-      cursor: pointer;
-      outline: none;
+      appearance: none; background: #ffffff; border: 1px solid var(--metal-border);
+      padding: 7px 26px 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      color: var(--metal-text-primary); cursor: pointer; outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 9px center;
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
-      transition: all 0.22s var(--sf-spring-curve);
+      background-repeat: no-repeat; background-position: right 9px center;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.22s var(--sf-spring);
     }
-
-    .dock-select-pill select:hover {
-      transform: scale(1.04);
-      border-color: #a0a6b2;
-      box-shadow: var(--metal-bevel-light), 0 3px 8px rgba(0, 0, 0, 0.07);
-    }
-    .dock-select-pill select:active {
-      transform: scale(0.97);
-    }
+    .dock-select-pill select:hover { transform: scale(1.04); border-color: #a0a6b2; }
 
     .dock-btn-sync {
-      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
-      color: #ffffff;
-      border: 1px solid rgba(0, 0, 0, 0.4);
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      cursor: pointer;
-      transition: all 0.22s var(--sf-spring-curve);
-      white-space: nowrap;
-      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%); color: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.4); padding: 8px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;
+      cursor: pointer; transition: all 0.22s var(--sf-spring); white-space: nowrap;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
     }
-
-    .dock-btn-sync:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    }
-    .dock-btn-sync:active {
-      transform: scale(0.96);
-    }
-
+    .dock-btn-sync:hover { transform: scale(1.05); }
     .dock-btn-sync.sync-active {
       background: linear-gradient(180deg, #007aff 0%, #0062cc 100%);
-      border-color: #0051b3;
-      box-shadow: 0 2px 10px rgba(0, 122, 255, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      border-color: #0051b3; box-shadow: 0 2px 10px rgba(0, 122, 255, 0.38);
     }
 
-    .sync-led {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.45);
-      transition: all 0.2s ease;
-    }
+    .sync-led { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.45); }
+    .dock-btn-sync.sync-active .sync-led { background: #ffffff; box-shadow: 0 0 7px rgba(255, 255, 255, 0.95); }
 
-    .dock-btn-sync.sync-active .sync-led {
-      background: #ffffff;
-      box-shadow: 0 0 7px rgba(255, 255, 255, 0.95);
+    .dock-btn-action, .dock-btn-export {
+      background: #ffffff; border: 1px solid var(--metal-border); padding: 8px 14px;
+      border-radius: 999px; font-size: 13px; color: var(--metal-text-secondary);
+      cursor: pointer; transition: all 0.22s var(--sf-spring); white-space: nowrap;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.03);
     }
-
-    .dock-btn-action {
-      background: #ffffff;
-      border: 1px solid var(--metal-border);
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--metal-text-secondary);
-      cursor: pointer;
-      transition: all 0.22s var(--sf-spring-curve);
-      white-space: nowrap;
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
-    }
-
-    .dock-btn-action:hover {
-      transform: scale(1.05);
-      background: #f5f5f7;
-      color: var(--metal-text-primary);
-      box-shadow: var(--metal-bevel-light), 0 3px 8px rgba(0, 0, 0, 0.08);
-    }
-    .dock-btn-action:active {
-      transform: scale(0.96);
-    }
+    .dock-btn-action:hover, .dock-btn-export:hover { transform: scale(1.05); color: var(--metal-text-primary); }
 
     .dock-btn-mute {
-      background: #ffffff;
-      border: 1px solid var(--metal-border);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.22s var(--sf-spring-curve);
-      padding: 0;
-      color: var(--metal-text-primary);
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
+      background: #ffffff; border: 1px solid var(--metal-border); width: 36px; height: 36px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.22s var(--sf-spring); padding: 0; color: var(--metal-text-primary);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.04);
     }
+    .dock-btn-mute:hover { transform: scale(1.08); }
+    .dock-btn-mute.is-muted { background: rgba(255, 59, 48, 0.12); border-color: rgba(255, 59, 48, 0.35); color: #ff3b30; }
 
-    .dock-btn-mute:hover {
-      transform: scale(1.08);
-      background: #f5f5f7;
-      box-shadow: var(--metal-bevel-light), 0 3px 8px rgba(0, 0, 0, 0.08);
-    }
-    .dock-btn-mute:active {
-      transform: scale(0.93);
-    }
-
-    .dock-btn-mute.is-muted {
-      background: rgba(255, 59, 48, 0.12);
-      border-color: rgba(255, 59, 48, 0.35);
-      color: #ff3b30;
-    }
-
-    .dock-btn-export {
-      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
-      color: var(--metal-text-primary);
-      border: 1px solid var(--metal-border);
-      padding: 8px 15px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.22s var(--sf-spring-curve);
-      white-space: nowrap;
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .dock-btn-export:hover {
-      transform: scale(1.05);
-      background: #dee2e6;
-      box-shadow: var(--metal-bevel-light), 0 3px 9px rgba(0, 0, 0, 0.09);
-    }
-    .dock-btn-export:active {
-      transform: scale(0.96);
-    }
-
-    .dock-divider {
-      width: 1px;
-      height: 20px;
-      background: var(--metal-border);
-      margin: 0 3px;
-    }
+    .dock-divider { width: 1px; height: 20px; background: var(--metal-border); margin: 0 3px; }
 
     /* 懸浮齒輪鈕 */
     .sidebar-trigger-btn {
-      position: fixed;
-      top: 50%;
-      right: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--metal-dock);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--metal-border);
-      box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-      z-index: 120;
-      opacity: 0.65;
-      user-select: none;
-      touch-action: none;
-      transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s var(--sf-spring-curve);
+      position: fixed; top: 50%; right: 0; width: 48px; height: 48px; border-radius: 50%;
+      background: var(--metal-dock); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--metal-border); box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
+      display: flex; align-items: center; justify-content: center; cursor: grab; z-index: 120;
+      opacity: 0.65; user-select: none; touch-action: none; transition: all 0.25s var(--sf-spring);
     }
+    .sidebar-trigger-btn:active { cursor: grabbing; }
+    .sidebar-trigger-btn.is-dragging { opacity: 1 !important; transform: scale(1.15) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important; }
+    .sidebar-trigger-btn.dock-right { transform: translateX(18px); border-right: none; border-radius: 24px 0 0 24px; }
+    .sidebar-trigger-btn.dock-right:hover { opacity: 1; transform: translateX(0) scale(1.04); background: #ffffff; }
+    .sidebar-trigger-btn.dock-left { transform: translateX(-18px); border-left: none; border-radius: 0 24px 24px 0; }
+    .sidebar-trigger-btn.dock-left:hover { opacity: 1; transform: translateX(0) scale(1.04); background: #ffffff; }
+    .sidebar-trigger-btn svg { transition: transform 0.35s ease; color: var(--metal-text-primary); pointer-events: none; }
+    .sidebar-trigger-btn:hover svg { transform: rotate(35deg); }
+    .sidebar-trigger-btn.open svg { transform: rotate(90deg); }
 
-    .sidebar-trigger-btn:active {
-      cursor: grabbing;
-    }
-
-    .sidebar-trigger-btn.is-dragging {
-      opacity: 1 !important;
-      transition: none !important;
-      transform: scale(1.15) !important;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
-    }
-
-    .sidebar-trigger-btn.dock-right {
-      transform: translateX(18px);
-      border-right: none;
-      border-radius: 24px 0 0 24px;
-    }
-    .sidebar-trigger-btn.dock-right:hover {
-      opacity: 1;
-      transform: translateX(0) scale(1.04);
-      background: #ffffff;
-      box-shadow: -4px 6px 18px rgba(0,0,0,0.1);
-    }
-
-    .sidebar-trigger-btn.dock-left {
-      transform: translateX(-18px);
-      border-left: none;
-      border-radius: 0 24px 24px 0;
-    }
-    .sidebar-trigger-btn.dock-left:hover {
-      opacity: 1;
-      transform: translateX(0) scale(1.04);
-      background: #ffffff;
-      box-shadow: 4px 6px 18px rgba(0,0,0,0.1);
-    }
-
-    .sidebar-trigger-btn svg {
-      transition: transform 0.35s ease;
-      color: var(--metal-text-primary);
-      pointer-events: none;
-    }
-
-    .sidebar-trigger-btn:hover svg {
-      transform: rotate(35deg);
-    }
-
-    .sidebar-trigger-btn.open svg {
-      transform: rotate(90deg);
-    }
-
-    /* 手機背景遮罩 */
     .sidebar-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.28);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 104;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.28); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 104; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
-    .sidebar-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
 
     /* 抽屜面板 */
     .sidebar-panel {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      width: 320px;
-      background: rgba(246, 248, 250, 0.9);
-      backdrop-filter: blur(40px);
-      -webkit-backdrop-filter: blur(40px);
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14);
-      z-index: 105;
-      padding: 24px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      overflow-y: auto;
-      transition: all 0.35s var(--sf-spring-curve);
+      position: fixed; top: 0; bottom: 0; width: 330px;
+      background: rgba(246, 248, 250, 0.92); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14); z-index: 105; padding: 24px 18px;
+      display: flex; flex-direction: column; gap: 20px; overflow-y: auto; transition: all 0.35s var(--sf-spring);
     }
-
-    .sidebar-panel.panel-right {
-      right: -340px;
-      left: auto;
-      border-left: 1px solid var(--metal-border);
-    }
-    .sidebar-panel.panel-right.open {
-      right: 0;
-    }
-
-    .sidebar-panel.panel-left {
-      left: -340px;
-      right: auto;
-      border-right: 1px solid var(--metal-border);
-    }
-    .sidebar-panel.panel-left.open {
-      left: 0;
-    }
+    .sidebar-panel.panel-right { right: -350px; left: auto; border-left: 1px solid var(--metal-border); }
+    .sidebar-panel.panel-right.open { right: 0; }
+    .sidebar-panel.panel-left { left: -350px; right: auto; border-right: 1px solid var(--metal-border); }
+    .sidebar-panel.panel-left.open { left: 0; }
 
     .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--metal-border);
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 1px solid var(--metal-border);
     }
-
-    .sidebar-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--metal-text-primary);
-      letter-spacing: -0.2px;
-    }
-
+    .sidebar-title { font-size: 15px; font-weight: 600; color: var(--metal-text-primary); }
     .close-btn {
-      background: rgba(0, 0, 0, 0.06);
-      border: none;
-      font-size: 14px;
-      color: var(--metal-text-secondary);
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s var(--sf-spring-curve);
+      background: rgba(0, 0, 0, 0.06); border: none; font-size: 14px; color: var(--metal-text-secondary);
+      cursor: pointer; width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s var(--sf-spring);
     }
-
-    .close-btn:hover {
-      transform: scale(1.1);
-      background: rgba(0, 0, 0, 0.12);
-    }
-    .close-btn:active {
-      transform: scale(0.92);
-    }
+    .close-btn:hover { transform: scale(1.1); background: rgba(0, 0, 0, 0.12); }
 
     .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--metal-text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 9px;
+      font-size: 11px; font-weight: 600; color: var(--metal-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 9px;
     }
 
-    /* 抽屜內幾何形狀卡片 */
-    .shape-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
+    /* 樂器定音控制台 (Tuning Controls) */
+    .tuning-rows {
+      display: flex; flex-direction: column; gap: 6px;
+      background: #ffffff; border: 1px solid var(--metal-border); border-radius: 14px;
+      padding: 10px 12px; box-shadow: var(--metal-bevel-light);
     }
-
-    .shape-btn {
-      aspect-ratio: 1 / 1;
-      border-radius: 12px;
-      border: 1px solid var(--metal-border);
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      cursor: pointer;
-      transition: all 0.22s var(--sf-spring-curve);
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
+    .tuning-string-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 500; color: var(--metal-text-secondary);
     }
-
-    .shape-btn svg {
-      display: block;
-      margin: auto;
-    }
-
-    .shape-btn:hover {
-      transform: translateY(-2px) scale(1.06);
-      border-color: #adb5bd;
-      box-shadow: var(--metal-bevel-light), 0 4px 10px rgba(0, 0, 0, 0.08);
-    }
-    .shape-btn:active {
-      transform: scale(0.94);
-    }
-
-    .shape-btn.active {
-      background: #ffffff;
-      border-color: var(--metal-blue);
-      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.35), 0 3px 8px rgba(0, 0, 0, 0.08);
-      transform: scale(1.04);
+    .tuning-string-item select {
+      appearance: none; background: #f3f4f6; border: 1px solid var(--metal-border);
+      padding: 3px 20px 3px 8px; border-radius: 8px; font-size: 11.5px; font-weight: 600;
+      color: var(--metal-text-primary); cursor: pointer; outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 6px center;
     }
 
     /* 調性色票卡片 */
     .palette-group-card {
-      background: #ffffff;
-      border: 1px solid var(--metal-border);
-      border-radius: 14px;
-      padding: 10px 12px;
-      margin-bottom: 9px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
-      transition: all 0.25s var(--sf-spring-curve);
+      background: #ffffff; border: 1px solid var(--metal-border); border-radius: 14px;
+      padding: 10px 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;
+      box-shadow: var(--metal-bevel-light); transition: all 0.25s var(--sf-spring);
     }
+    .palette-group-card:hover { transform: translateY(-1.5px); }
+    .palette-group-card.active-group { border-color: var(--metal-blue); box-shadow: 0 0 0 1px var(--metal-blue); }
+    .palette-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .palette-name { font-size: 12.5px; font-weight: 600; }
+    .palette-radio-label { font-size: 10.5px; color: var(--metal-blue); font-weight: 500; }
 
-    .palette-group-card:hover {
-      transform: translateY(-1.5px);
-      box-shadow: var(--metal-bevel-light), 0 6px 14px rgba(0, 0, 0, 0.06);
-    }
-
-    .palette-group-card.active-group {
-      border-color: var(--metal-blue);
-      box-shadow: 0 0 0 1px var(--metal-blue), 0 4px 12px rgba(0, 113, 227, 0.12);
-    }
-
-    .palette-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .palette-name {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--metal-text-primary);
-    }
-
-    .palette-radio-label {
-      font-size: 10.5px;
-      color: var(--metal-blue);
-      font-weight: 500;
-    }
-
-    .palette-swatches-grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
-
+    .palette-swatches-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .swatch-chip {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      border-radius: 10px;
-      border: 1.5px solid transparent;
-      background: rgba(0, 0, 0, 0.04);
-      cursor: pointer;
-      transition: all 0.2s var(--sf-spring-curve);
-      padding: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 48px; border-radius: 10px; border: 1.5px solid transparent;
+      background: rgba(0, 0, 0, 0.04); cursor: pointer; transition: all 0.2s var(--sf-spring); padding: 4px;
     }
+    .swatch-chip:hover { transform: scale(1.08); }
+    .swatch-chip.active-chip { border-color: var(--metal-text-primary); background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .swatch-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.22); }
+    .swatch-label { font-size: 10px; font-weight: 600; margin-top: 3px; }
 
-    .swatch-chip:hover {
-      transform: scale(1.08);
-      background: rgba(0, 0, 0, 0.08);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    }
-    .swatch-chip:active {
-      transform: scale(0.92);
-    }
-
-    .swatch-chip.active-chip {
-      border-color: var(--metal-text-primary);
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transform: scale(1.04);
-    }
-
-    .swatch-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.22);
-    }
-
-    .swatch-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--metal-text-primary);
-      margin-top: 3px;
-    }
-
-    /* 6 款木質風格 */
-    .wood-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
+    /* 3款精緻指板風格卡片 */
+    .wood-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
     .wood-card {
-      border: 1px solid var(--metal-border);
-      border-radius: 12px;
-      padding: 8px 10px;
-      background: #ffffff;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      text-align: left;
-      transition: all 0.22s var(--sf-spring-curve);
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.03);
+      border: 1px solid var(--metal-border); border-radius: 12px; padding: 10px 12px;
+      background: #ffffff; cursor: pointer; display: flex; align-items: center; gap: 12px;
+      transition: all 0.22s var(--sf-spring); box-shadow: var(--metal-bevel-light);
     }
-
-    .wood-card:hover {
-      transform: translateY(-2px) scale(1.02);
-      border-color: #a0a6b2;
-      box-shadow: var(--metal-bevel-light), 0 6px 14px rgba(0,0,0,0.07);
-    }
-    .wood-card:active {
-      transform: scale(0.97);
-    }
-
-    .wood-card.active {
-      border-color: var(--metal-blue);
-      box-shadow: 0 0 0 1px var(--metal-blue);
-    }
-
-    .wood-preview {
-      width: 100%;
-      height: 20px;
-      border-radius: 6px;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-    }
-
-    .wood-name {
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--metal-text-primary);
-    }
-
-    .wood-desc {
-      font-size: 9.5px;
-      color: var(--metal-text-tertiary);
-      line-height: 1.2;
-    }
+    .wood-card:hover { transform: translateY(-1.5px); border-color: #a0a6b2; }
+    .wood-card.active { border-color: var(--metal-blue); box-shadow: 0 0 0 1px var(--metal-blue); }
+    .wood-preview { width: 50px; height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+    .wood-meta { display: flex; flex-direction: column; gap: 2px; }
+    .wood-name { font-size: 12px; font-weight: 600; color: var(--metal-text-primary); }
+    .wood-desc { font-size: 10px; color: var(--metal-text-tertiary); }
 
     /* 手機專屬響應式 */
     @media (max-width: 768px) {
-      body {
-        justify-content: flex-start;
-        padding-bottom: 140px;
-      }
+      body { justify-content: flex-start; padding-bottom: 140px; }
+      .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 14px 14px 6px; width: 100%; }
+      .brand-title { font-size: 13px; }
+      .top-quick-toolbar { padding: 4px 7px; gap: 5px; }
+      .quick-shape-btn { width: 24px; height: 24px; }
+      .quick-shape-btn svg { width: 15px; height: 15px; }
+      .quick-color-btn { width: 18px; height: 18px; }
 
-      .top-status-bar {
-        position: relative;
-        top: 0;
-        left: 0;
-        right: 0;
-        padding: 14px 14px 6px;
-        width: 100%;
-      }
-      .brand-title {
-        font-size: 13px;
-      }
-
-      .top-quick-toolbar {
-        padding: 4px 7px;
-        gap: 5px;
-      }
-      .quick-shape-btn {
-        width: 24px;
-        height: 24px;
-      }
-      .quick-shape-btn svg {
-        width: 15px;
-        height: 15px;
-      }
-      .quick-color-btn {
-        width: 18px;
-        height: 18px;
-      }
-
-      .stage-container {
-        padding: 8px 0 20px;
-        width: 100vw;
-      }
-      .fretboard-card {
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        padding: 20px 0 16px;
-        background: rgba(248, 249, 251, 0.7);
-        box-shadow: none;
-        width: 100%;
-      }
-      svg {
-        margin-left: 12px;
-      }
+      .stage-container { padding: 8px 0 20px; width: 100vw; }
+      .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 20px 0 16px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
+      svg { margin-left: 12px; }
 
       .floating-dock {
-        bottom: 14px;
-        left: 10px;
-        right: 10px;
-        width: auto;
-        max-width: none;
-        padding: 9px 10px;
-        border-radius: 22px;
-        flex-direction: column;
-        gap: 7px;
+        bottom: 14px; left: 10px; right: 10px; width: auto; max-width: none;
+        padding: 9px 10px; border-radius: 22px; flex-direction: column; gap: 7px;
       }
+      .dock-divider { display: none; }
+      .dock-row-primary, .dock-row-secondary { width: 100%; justify-content: space-between; }
+      .dock-row-primary .dock-group { flex: 1.1; justify-content: center; }
+      .dock-row-primary .dock-btn { padding: 6px 7px; font-size: 11.5px; flex: 1; text-align: center; }
+      .dock-row-primary .dock-select-pill { flex: 0.9; gap: 4px; }
+      .dock-row-primary .dock-select-pill select { width: 100%; padding: 6px 18px 6px 7px; font-size: 11.5px; }
+      .dock-row-secondary .dock-btn-sync { flex: 1.5; padding: 6px 8px; font-size: 11.5px; justify-content: center; }
+      .dock-row-secondary .dock-btn-action { flex: 0.7; padding: 6px 5px; font-size: 11.5px; text-align: center; }
+      .dock-row-secondary .dock-btn-export { flex: 1.1; padding: 6px 8px; font-size: 11.5px; justify-content: center; }
+      .sidebar-trigger-btn { width: 44px; height: 44px; }
 
-      .dock-divider {
-        display: none;
+      .sidebar-panel.panel-right, .sidebar-panel.panel-left {
+        top: auto !important; bottom: -100% !important; left: 0 !important; right: 0 !important;
+        width: 100% !important; height: 75vh !important; border-radius: 24px 24px 0 0 !important;
+        border-left: none !important; border-right: none !important; border-top: 1px solid var(--metal-border) !important;
+        transition: bottom 0.35s var(--sf-spring) !important; padding: 20px 18px 36px !important;
       }
-
-      .dock-row-primary {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .dock-row-primary .dock-group {
-        flex: 1.1;
-        justify-content: center;
-      }
-      .dock-row-primary .dock-btn {
-        padding: 6px 7px;
-        font-size: 11.5px;
-        flex: 1;
-        text-align: center;
-      }
-
-      .dock-row-primary .dock-select-pill {
-        flex: 0.9;
-        gap: 4px;
-      }
-      .dock-row-primary .dock-select-pill select {
-        width: 100%;
-        padding: 6px 18px 6px 7px;
-        font-size: 11.5px;
-      }
-
-      .dock-row-secondary {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .dock-row-secondary .dock-btn-sync {
-        flex: 1.5;
-        padding: 6px 8px;
-        font-size: 11.5px;
-        justify-content: center;
-      }
-      .dock-row-secondary .dock-btn-action {
-        flex: 0.7;
-        padding: 6px 5px;
-        font-size: 11.5px;
-        text-align: center;
-      }
-      .dock-row-secondary .dock-btn-export {
-        flex: 1.1;
-        padding: 6px 8px;
-        font-size: 11.5px;
-        justify-content: center;
-      }
-
-      .sidebar-trigger-btn {
-        width: 44px;
-        height: 44px;
-      }
-
-      .sidebar-panel.panel-right,
-      .sidebar-panel.panel-left {
-        top: auto !important;
-        bottom: -100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        height: 75vh !important;
-        border-radius: 24px 24px 0 0 !important;
-        border-left: none !important;
-        border-right: none !important;
-        border-top: 1px solid var(--metal-border) !important;
-        transition: bottom 0.35s var(--sf-spring-curve) !important;
-        padding: 20px 18px 36px !important;
-      }
-      .sidebar-panel.open {
-        bottom: 0 !important;
-      }
+      .sidebar-panel.open { bottom: 0 !important; }
     }
   </style>
 </head>
@@ -1014,40 +373,30 @@
       <span class="brand-title">指板幾何視覺化</span>
     </div>
 
-    <!-- 右上角快捷畫筆工具列 -->
+    <!-- 右上角快捷工具列 (5形狀 + 4色) -->
     <div class="top-quick-toolbar">
       <div class="quick-shape-group">
         <button class="quick-shape-btn active" id="q-shape-circle" onclick="setShape('circle')" title="實心圓">
-          <svg width="15" height="15" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="7" fill="#1c1c1e" />
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#1c1c1e"/></svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-ring" onclick="setShape('ring')" title="空心圓圈">
-          <svg width="15" height="15" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="6" fill="none" stroke="#1c1c1e" stroke-width="2.6" />
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" fill="none" stroke="#1c1c1e" stroke-width="2.6"/></svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-diamond" onclick="setShape('diamond')" title="菱形">
-          <svg width="15" height="15" viewBox="0 0 20 20">
-            <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e" />
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 20 20"><polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e"/></svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-triangle" onclick="setShape('triangle')" title="三角形">
-          <svg width="15" height="15" viewBox="0 0 20 20">
-            <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e" />
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 20 20"><polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e"/></svg>
         </button>
         <button class="quick-shape-btn" id="q-shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
           <svg width="15" height="15" viewBox="0 0 20 20">
-            <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" />
-            <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" />
+            <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round"/>
           </svg>
         </button>
       </div>
 
       <div class="quick-divider"></div>
-
-      <!-- 當前組 4 色選單 -->
       <div class="quick-color-group" id="quick-color-container"></div>
     </div>
   </header>
@@ -1073,42 +422,28 @@
       <div class="dock-select-pill">
         <label>Key</label>
         <select id="root-select" onchange="changeRoot(this.value)">
-          <option value="0">C</option>
-          <option value="1">C# / D♭</option>
-          <option value="2">D</option>
-          <option value="3">D# / E♭</option>
-          <option value="4">E</option>
-          <option value="5">F</option>
-          <option value="6">F# / G♭</option>
-          <option value="7">G</option>
-          <option value="8">G# / A♭</option>
-          <option value="9">A</option>
-          <option value="10">A# / B♭</option>
-          <option value="11">B</option>
+          <option value="0">C</option><option value="1">C#</option><option value="2">D</option>
+          <option value="3">D#</option><option value="4">E</option><option value="5">F</option>
+          <option value="6">F#</option><option value="7">G</option><option value="8">G#</option>
+          <option value="9">A</option><option value="10">A#</option><option value="11">B</option>
         </select>
       </div>
 
       <div class="dock-select-pill">
         <label>Scale</label>
         <select id="scale-type" onchange="changeScaleType(this.value)">
-          <optgroup label="自然大小調與五聲">
-            <option value="major">大調</option>
-            <option value="minor">自然小調</option>
-            <option value="major_pentatonic">大調五聲</option>
-            <option value="minor_pentatonic">小調五聲</option>
+          <optgroup label="自然與五聲">
+            <option value="major">大調</option><option value="minor">自然小調</option>
+            <option value="major_pentatonic">大調五聲</option><option value="minor_pentatonic">小調五聲</option>
           </optgroup>
           <optgroup label="教會調式">
-            <option value="ionian">Ionian</option>
-            <option value="dorian">Dorian</option>
-            <option value="phrygian">Phrygian</option>
-            <option value="lydian">Lydian</option>
-            <option value="mixolydian">Mixolydian</option>
-            <option value="aeolian">Aeolian</option>
+            <option value="ionian">Ionian</option><option value="dorian">Dorian</option>
+            <option value="phrygian">Phrygian</option><option value="lydian">Lydian</option>
+            <option value="mixolydian">Mixolydian</option><option value="aeolian">Aeolian</option>
             <option value="locrian">Locrian</option>
           </optgroup>
-          <optgroup label="小調衍生">
-            <option value="harmonic_minor">和聲小調</option>
-            <option value="melodic_minor">爵士小調</option>
+          <optgroup label="衍生音階">
+            <option value="harmonic_minor">和聲小調</option><option value="melodic_minor">爵士小調</option>
           </optgroup>
         </select>
       </div>
@@ -1124,259 +459,97 @@
 
       <button class="dock-btn-action" onclick="clearMarkers()">清除</button>
 
-      <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="開關聲音">
-        <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
-        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <line x1="23" y1="9" x2="17" y2="15"></line>
-          <line x1="17" y1="9" x2="23" y2="15"></line>
-        </svg>
+      <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
+        <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
       </button>
 
-      <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">
-        <span>📷 匯出 PNG</span>
-      </button>
+      <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
     </div>
   </footer>
 
   <!-- 懸浮齒輪鈕 -->
-  <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-    </svg>
+  <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
-  <!-- 抽屜面板 -->
+  <!-- 抽屜面板 (已移除幾何形狀，加入樂器與各弦調音控制) -->
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
     <div class="sidebar-header">
-      <div class="sidebar-title">外觀與幾何設定</div>
+      <div class="sidebar-title">樂器與外觀設定</div>
       <button class="close-btn" onclick="closeSidebar()">✕</button>
     </div>
 
-    <!-- 1. 幾何形狀 -->
+    <!-- 1. 樂器預設與自訂調弦 -->
     <div>
-      <div class="section-label">標記幾何形狀</div>
-      <div class="shape-grid">
-        <button class="shape-btn active" id="shape-circle" onclick="setShape('circle')" title="實心圓">
-          <svg width="20" height="20" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="7.2" fill="#1c1c1e" />
-          </svg>
-        </button>
-        <button class="shape-btn" id="shape-ring" onclick="setShape('ring')" title="空心圓圈">
-          <svg width="20" height="20" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="6.5" fill="none" stroke="#1c1c1e" stroke-width="2.4" />
-          </svg>
-        </button>
-        <button class="shape-btn" id="shape-diamond" onclick="setShape('diamond')" title="菱形">
-          <svg width="20" height="20" viewBox="0 0 20 20">
-            <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e" />
-          </svg>
-        </button>
-        <button class="shape-btn" id="shape-triangle" onclick="setShape('triangle')" title="三角形">
-          <svg width="20" height="20" viewBox="0 0 20 20">
-            <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e" />
-          </svg>
-        </button>
-        <button class="shape-btn" id="shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
-          <svg width="20" height="20" viewBox="0 0 20 20">
-            <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.5" stroke-linecap="round" />
-            <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.5" stroke-linecap="round" />
-          </svg>
-        </button>
+      <div class="section-label">樂器類型與弦數</div>
+      <div class="dock-select-pill" style="width: 100%; margin-bottom: 8px;">
+        <select id="instrument-select" style="width: 100%;" onchange="changeInstrument(this.value)">
+          <option value="guitar_6" selected>6 弦吉他 (Guitar)</option>
+          <option value="guitar_7">7 弦吉他 (7-String)</option>
+          <option value="bass_4">4 弦貝斯 (4-String Bass)</option>
+          <option value="bass_5">5 弦貝斯 (5-String Bass)</option>
+          <option value="ukulele_4">4 弦烏克麗麗 (Ukulele)</option>
+        </select>
       </div>
+
+      <div class="section-label">各弦定音微調 (由高音弦至低音弦)</div>
+      <div class="tuning-rows" id="tuning-controls-container"></div>
     </div>
 
-    <!-- 2. 四色色彩庫 (每組專屬暗底襯底，高對比教學) -->
+    <!-- 2. 四色色彩庫 -->
     <div>
-      <div class="section-label">調性配色庫（點選單色指派至指板）</div>
-
-      <div class="palette-group-card active-group" id="pal-card-apple_classic">
-        <div class="palette-header" onclick="selectPaletteGroup('apple_classic')">
-          <span class="palette-name">經典原色 (Classic Tint)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip active-chip" id="chip-apple_classic-c1" onclick="pickColorFromPalette('apple_classic', 'c1', '#ff3b30', 'Root')">
-            <span class="swatch-dot" style="background: #ff3b30;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-apple_classic-c2" onclick="pickColorFromPalette('apple_classic', 'c2', '#2c3e50', '暗底襯底')">
-            <span class="swatch-dot" style="background: #2c3e50;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-apple_classic-c3" onclick="pickColorFromPalette('apple_classic', 'c3', '#ff9500', '強調 A')">
-            <span class="swatch-dot" style="background: #ff9500;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-apple_classic-c4" onclick="pickColorFromPalette('apple_classic', 'c4', '#30d158', '強調 B')">
-            <span class="swatch-dot" style="background: #30d158;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="palette-group-card" id="pal-card-rose">
-        <div class="palette-header" onclick="selectPaletteGroup('rose')">
-          <span class="palette-name">復古嫣紅 (Vintage Rose)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-rose-c1" onclick="pickColorFromPalette('rose', 'c1', '#d13b63', 'Root')">
-            <span class="swatch-dot" style="background: #d13b63;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-rose-c2" onclick="pickColorFromPalette('rose', 'c2', '#382933', '暗底襯底')">
-            <span class="swatch-dot" style="background: #382933;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-rose-c3" onclick="pickColorFromPalette('rose', 'c3', '#eab308', '強調 A')">
-            <span class="swatch-dot" style="background: #eab308;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-rose-c4" onclick="pickColorFromPalette('rose', 'c4', '#06b6d4', '強調 B')">
-            <span class="swatch-dot" style="background: #06b6d4;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="palette-group-card" id="pal-card-terracotta">
-        <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
-          <span class="palette-name">陶土紅褐 (Terracotta Earth)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#c84126', 'Root')">
-            <span class="swatch-dot" style="background: #c84126;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-terracotta-c2" onclick="pickColorFromPalette('terracotta', 'c2', '#2e3d36', '暗底襯底')">
-            <span class="swatch-dot" style="background: #2e3d36;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-terracotta-c3" onclick="pickColorFromPalette('terracotta', 'c3', '#e59b34', '強調 A')">
-            <span class="swatch-dot" style="background: #e59b34;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-terracotta-c4" onclick="pickColorFromPalette('terracotta', 'c4', '#52b788', '強調 B')">
-            <span class="swatch-dot" style="background: #52b788;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="palette-group-card" id="pal-card-crimson">
-        <div class="palette-header" onclick="selectPaletteGroup('crimson')">
-          <span class="palette-name">深焙酒紅 (Crimson Velvet)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-crimson-c1" onclick="pickColorFromPalette('crimson', 'c1', '#b91c1c', 'Root')">
-            <span class="swatch-dot" style="background: #b91c1c;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-crimson-c2" onclick="pickColorFromPalette('crimson', 'c2', '#2b2d42', '暗底襯底')">
-            <span class="swatch-dot" style="background: #2b2d42;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-crimson-c3" onclick="pickColorFromPalette('crimson', 'c3', '#f59e0b', '強調 A')">
-            <span class="swatch-dot" style="background: #f59e0b;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-crimson-c4" onclick="pickColorFromPalette('crimson', 'c4', '#8b5cf6', '強調 B')">
-            <span class="swatch-dot" style="background: #8b5cf6;"></span>
-          </div>
-        </div>
-      </div>
+      <div class="section-label">調性配色庫</div>
+      <div id="palette-cards-container"></div>
     </div>
 
-    <!-- 3. 指板材質風格 -->
+    <!-- 3. 三款 Apple 現代精緻風格 -->
     <div>
-      <div class="section-label">指板木質風格</div>
+      <div class="section-label">指板風格</div>
       <div class="wood-grid">
-        <div class="wood-card active" id="fret-btn-rosewood" onclick="changeFretboardStyle('rosewood')">
-          <div class="wood-preview" style="background: linear-gradient(180deg, #2a1a13, #1f120d);"></div>
-          <div class="wood-name">巴西玫瑰木</div>
-          <div class="wood-desc">深邃紅褐 ✕ 象牙邊</div>
+        <div class="wood-card active" id="fret-btn-studio_white" onclick="changeFretboardStyle('studio_white')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #ffffff, #e8ecf2);"></div>
+          <div class="wood-meta">
+            <div class="wood-name">純淨工作室白 (Studio White)</div>
+            <div class="wood-desc">啞光白陶瓷 ✕ 12px 加粗原木枕</div>
+          </div>
         </div>
 
-        <div class="wood-card" id="fret-btn-roasted_maple" onclick="changeFretboardStyle('roasted_maple')">
-          <div class="wood-preview" style="background: linear-gradient(180deg, #be894e, #996631);"></div>
-          <div class="wood-name">烘烤楓木</div>
-          <div class="wood-desc">金黃焦糖 ✕ 黑點標記</div>
+        <div class="wood-card" id="fret-btn-brushed_silver" onclick="changeFretboardStyle('brushed_silver')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #edf0f5, #b8bec9);"></div>
+          <div class="wood-meta">
+            <div class="wood-name">極光冷銀鋁 (Brushed Silver)</div>
+            <div class="wood-desc">陽極氧化鋁 ✕ 黑鎳弦</div>
+          </div>
         </div>
 
-        <div class="wood-card" id="fret-btn-ebony" onclick="changeFretboardStyle('ebony')">
-          <div class="wood-preview" style="background: linear-gradient(180deg, #18181b, #0f0f11);"></div>
-          <div class="wood-name">黑夜黑檀木</div>
-          <div class="wood-desc">純黑緻密 ✕ 冷銀亮絲</div>
-        </div>
-
-        <div class="wood-card" id="fret-btn-vintage_maple" onclick="changeFretboardStyle('vintage_maple')">
-          <div class="wood-preview" style="background: linear-gradient(180deg, #e4c282, #c99e57);"></div>
-          <div class="wood-name">復古奶油楓木</div>
-          <div class="wood-desc">50s暖黃 ✕ 經典黑點</div>
-        </div>
-
-        <div class="wood-card" id="fret-btn-walnut" onclick="changeFretboardStyle('walnut')">
-          <div class="wood-preview" style="background: linear-gradient(180deg, #3d3028, #2a201a);"></div>
-          <div class="wood-name">深焙核桃木</div>
-          <div class="wood-desc">冷調灰褐 ✕ 灰白包邊</div>
-        </div>
-
-        <div class="wood-card" id="fret-btn-carbon" onclick="changeFretboardStyle('carbon')">
-          <div class="wood-preview" style="background: linear-gradient(180deg, #24272c, #16181b);"></div>
-          <div class="wood-name">石墨碳纖維</div>
-          <div class="wood-desc">現代霧灰 ✕ 夜光點</div>
+        <div class="wood-card" id="fret-btn-modern_rosewood" onclick="changeFretboardStyle('modern_rosewood')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #3a251d, #180e0a);"></div>
+          <div class="wood-meta">
+            <div class="wood-name">精品深焙玫瑰木 (Studio Rosewood)</div>
+            <div class="wood-desc">深邃油潤紅褐 ✕ 象牙骨枕</div>
+          </div>
         </div>
       </div>
     </div>
   </aside>
 
   <script>
-    const STRINGS = 6;
     const FRETS = 15;
-    const STRING_TUNING_MIDI = [64, 59, 55, 50, 45, 40];
     const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const DEGREE_NAMES = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"];
 
-    let audioCtx = null;
-    let isMuted = false;
+    // 樂器預設資料庫 (由高音弦至低音弦：index 0 為第 1 弦)
+    const INSTRUMENTS = {
+      guitar_6:  { name: "6 弦吉他",  tuning: [64, 59, 55, 50, 45, 40] }, // E4, B3, G3, D3, A2, E2
+      guitar_7:  { name: "7 弦吉他",  tuning: [64, 59, 55, 50, 45, 40, 35] }, // + B1
+      bass_4:    { name: "4 弦貝斯",  tuning: [43, 38, 33, 28] }, // G2, D2, A1, E1
+      bass_5:    { name: "5 弦貝斯",  tuning: [43, 38, 33, 28, 23] }, // + B0
+      ukulele_4: { name: "4 弦烏克麗麗", tuning: [69, 64, 60, 67] } // A4, E4, C4, G4 (High-G)
+    };
 
-    function playGuitarTone(midiNote) {
-      if (isMuted) return;
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-
-      const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      const now = audioCtx.currentTime;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.linearRampToValueAtTime(0.35, now + 0.012);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start(now);
-      osc.stop(now + 1.3);
-    }
-
-    function toggleMute() {
-      isMuted = !isMuted;
-      const muteBtn = document.getElementById('btn-mute-toggle');
-      const soundIcon = document.getElementById('icon-sound');
-      const muteIcon = document.getElementById('icon-mute');
-
-      if (isMuted) {
-        muteBtn.classList.add('is-muted');
-        soundIcon.style.display = 'none';
-        muteIcon.style.display = 'block';
-      } else {
-        muteBtn.classList.remove('is-muted');
-        soundIcon.style.display = 'block';
-        muteIcon.style.display = 'none';
-      }
-    }
+    let currentInstrumentKey = 'guitar_6';
+    let currentTuningMIDI = [...INSTRUMENTS[guitar_6 = 'guitar_6'].tuning];
 
     const SCALES = {
       major:             { notes: [0, 2, 4, 5, 7, 9, 11] },
@@ -1394,236 +567,179 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
-    // 4 組專屬色彩庫：c1 為 Root、c2 為每組獨立的低調暗色襯底、c3/c4 為強調色
+    // 4 組專屬色彩庫：c1(Root)、c2(暗底襯底)、c3/c4(強調色)
     const PALETTE_GROUPS = {
-      apple_classic: {
-        c1: "#ff3b30",
-        c2: "#2c3e50", // 曜石藍黑
-        c3: "#ff9500",
-        c4: "#30d158"
-      },
-      rose: {
-        c1: "#d13b63",
-        c2: "#382933", // 煙燻紫褐
-        c3: "#eab308",
-        c4: "#06b6d4"
-      },
-      terracotta: {
-        c1: "#c84126",
-        c2: "#2e3d36", // 墨苔青
-        c3: "#e59b34",
-        c4: "#52b788"
-      },
-      crimson: {
-        c1: "#b91c1c",
-        c2: "#2b2d42", // 岩炭黑藍
-        c3: "#f59e0b",
-        c4: "#8b5cf6"
-      }
+      apple_classic: { name: "經典原色 (Classic Tint)", c1: "#ff3b30", c2: "#2c3e50", c3: "#ff9500", c4: "#30d158" },
+      rose:          { name: "復古嫣紅 (Vintage Rose)", c1: "#d13b63", c2: "#382933", c3: "#eab308", c4: "#06b6d4" },
+      terracotta:    { name: "陶土紅褐 (Terracotta Earth)", c1: "#c84126", c2: "#2e3d36", c3: "#e59b34", c4: "#52b788" },
+      crimson:       { name: "深焙酒紅 (Crimson Velvet)", c1: "#b91c1c", c2: "#2b2d42", c3: "#f59e0b", c4: "#8b5cf6" }
     };
 
+    // 3 款新版指板外觀參數
     const FRETBOARD_STYLES = {
-      rosewood: {
-        bgGradient: ['#2a1a13', '#382218', '#261711', '#331f16', '#1f120d'],
-        binding: ['#d6cebd', '#c5bcab'],
-        nut: { fill: '#eae3d2', stroke: '#cfc4af' },
-        inlay: '#e3ded6',
-        inlayOpacity: 0.88,
-        wire: '#c8c1b5',
-        shadow: '#160c07',
-        fretNum: '#8e8e93'
+      studio_white: {
+        bg: ['#ffffff', '#f8f9fc', '#f1f3f7', '#e8ecf2'],
+        binding: '#cbd2dc',
+        nut: { fill: ['#cbb088', '#e8d5b5', '#dcc39e', '#b89c72'], stroke: '#a6885b', width: 13, isWood: true },
+        wire: '#94a3b8', shadow: '#b0b7c3', inlay: '#475569', inlayOpacity: 0.65, fretNum: '#86868b'
       },
-      roasted_maple: {
-        bgGradient: ['#be894e', '#c79255', '#a9733a', '#b78044', '#996631'],
-        binding: ['#925c27', '#804f1e'],
-        nut: { fill: '#241a12', stroke: '#150f09' },
-        inlay: '#261a11',
-        inlayOpacity: 0.85,
-        wire: '#d4af7a',
-        shadow: '#4d3013',
-        fretNum: '#6e451d'
+      brushed_silver: {
+        bg: ['#edf0f5', '#dde1e8', '#cbd0d9', '#b8bec9'],
+        binding: '#9ea6b5',
+        nut: { fill: ['#e2e8f0', '#ffffff', '#cbd5e1'], stroke: '#94a3b8', width: 9, isWood: false },
+        wire: '#525b6a', shadow: '#717a8a', inlay: '#1e293b', inlayOpacity: 0.75, fretNum: '#64748b'
       },
-      ebony: {
-        bgGradient: ['#1c1c1f', '#242429', '#151518', '#1e1e23', '#0e0e10'],
-        binding: ['#e2ded6', '#ccc6bc'],
-        nut: { fill: '#f2eee5', stroke: '#ded8ce' },
-        inlay: '#f0ecdf',
-        inlayOpacity: 0.95,
-        wire: '#e2e8f0',
-        shadow: '#060608',
-        fretNum: '#8e8e93'
-      },
-      vintage_maple: {
-        bgGradient: ['#e4c282', '#eccf91', '#dab370', '#e3c07f', '#c99e57'],
-        binding: ['#be8f45', '#a77931'],
-        nut: { fill: '#2d2319', stroke: '#1c150e' },
-        inlay: '#1c140e',
-        inlayOpacity: 0.9,
-        wire: '#cfb989',
-        shadow: '#664c1e',
-        fretNum: '#735522'
-      },
-      walnut: {
-        bgGradient: ['#3d3028', '#473930', '#342922', '#3f322a', '#261e18'],
-        binding: ['#b4aba2', '#9f958b'],
-        nut: { fill: '#e6ded4', stroke: '#c7bcb0' },
-        inlay: '#ded7ce',
-        inlayOpacity: 0.82,
-        wire: '#b8b2a8',
-        shadow: '#1c1511',
-        fretNum: '#8e8e93'
-      },
-      carbon: {
-        bgGradient: ['#282c34', '#323741', '#21252c', '#2c313a', '#181a1f'],
-        binding: ['#4b5563', '#374151'],
-        nut: { fill: '#111827', stroke: '#030712' },
-        inlay: '#6ee7b7',
-        inlayOpacity: 0.9,
-        wire: '#94a3b8',
-        shadow: '#090d16',
-        fretNum: '#94a3b8'
+      modern_rosewood: {
+        bg: ['#2d1c16', '#3a251d', '#251711', '#180e0a'],
+        binding: '#ded5c4',
+        nut: { fill: ['#ede4d3', '#fdfbf7', '#dfd3be'], stroke: '#c4b69d', width: 9, isWood: false },
+        wire: '#d5d9e0', shadow: '#120805', inlay: '#f1ece1', inlayOpacity: 0.9, fretNum: '#94a3b8'
       }
     };
 
     let displayMode = 'degree';
-    let currentRoot = 0; 
+    let currentRoot = 0;
     let currentScale = 'major';
-    let currentFretboardStyle = 'rosewood';
+    let currentFretboardStyle = 'studio_white';
     let currentSelectedShape = 'circle';
-    let currentActivePalette = 'apple_classic'; 
+    let currentActivePalette = 'apple_classic';
     let currentBrushColor = '#ff3b30';
-    let currentBrushType = 'c1'; // 紀錄當前是否為 Root 筆刷 ('c1')
+    let currentBrushType = 'c1'; // 是否為 Root
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
+    // Web Audio 音訊發聲
+    let audioCtx = null, isMuted = false;
+    function playGuitarTone(midiNote) {
+      if (isMuted) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      const now = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + 1.3);
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      document.getElementById('btn-mute-toggle').classList.toggle('is-muted', isMuted);
+      document.getElementById('icon-sound').style.display = isMuted ? 'none' : 'block';
+      document.getElementById('icon-mute').style.display = isMuted ? 'block' : 'none';
+    }
+
     const svg = document.getElementById('fretboard');
-    const startX = 64, startY = 32, fretWidth = 62, stringSpacing = 28;
+    const startX = 64, startY = 32, fretWidth = 62, stringSpacing = 26;
 
     function renderDefs() {
       const defs = document.getElementById('svg-defs');
       const style = FRETBOARD_STYLES[currentFretboardStyle];
-
       defs.innerHTML = `
-        <linearGradient id="dynamic-fretboard-grain" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="${style.bgGradient[0]}" />
-          <stop offset="25%" stop-color="${style.bgGradient[1]}" />
-          <stop offset="50%" stop-color="${style.bgGradient[2]}" />
-          <stop offset="75%" stop-color="${style.bgGradient[3]}" />
-          <stop offset="100%" stop-color="${style.bgGradient[4]}" />
+        <linearGradient id="dyn-wood-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          ${style.bg.map((c, i) => `<stop offset="${(i / (style.bg.length - 1)) * 100}%" stop-color="${c}"/>`).join('')}
         </linearGradient>
-        <linearGradient id="dynamic-binding" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="${style.binding[0]}" />
-          <stop offset="100%" stop-color="${style.binding[1]}" />
+        <linearGradient id="dyn-nut-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+          ${style.nut.fill.map((c, i) => `<stop offset="${(i / (style.nut.fill.length - 1)) * 100}%" stop-color="${c}"/>`).join('')}
         </linearGradient>
       `;
     }
 
     function renderBoard() {
       renderDefs();
-      const style = FRETBOARD_STYLES[currentFretboardStyle];
-      const defs = document.getElementById('svg-defs');
-      
-      svg.innerHTML = '';
-      if (defs) svg.appendChild(defs);
-
+      const numStrings = currentTuningMIDI.length;
       const boardW = FRETS * fretWidth;
-      const boardH = (STRINGS - 1) * stringSpacing + 20;
+      const boardH = (numStrings - 1) * stringSpacing + 20;
+      const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      // 1. 指板木質底圖
+      // 自動調整 SVG 畫布高度以適配 4~7 弦
+      const totalSVGHeight = boardH + startY + 28;
+      svg.setAttribute("height", totalSVGHeight);
+      svg.innerHTML = '';
+      svg.appendChild(document.getElementById('svg-defs'));
+
+      // 1. 指板底圖
       const woodRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      woodRect.setAttribute("x", startX);
-      woodRect.setAttribute("y", startY - 10);
-      woodRect.setAttribute("width", boardW);
-      woodRect.setAttribute("height", boardH);
-      woodRect.setAttribute("rx", "2");
-      woodRect.setAttribute("fill", "url(#dynamic-fretboard-grain)");
-      woodRect.setAttribute("stroke", "url(#dynamic-binding)");
-      woodRect.setAttribute("stroke-width", "1.5");
+      woodRect.setAttribute("x", startX); woodRect.setAttribute("y", startY - 10);
+      woodRect.setAttribute("width", boardW); woodRect.setAttribute("height", boardH);
+      woodRect.setAttribute("rx", "6"); woodRect.setAttribute("fill", "url(#dyn-wood-grad)");
+      woodRect.setAttribute("stroke", style.binding); woodRect.setAttribute("stroke-width", "1.6");
       svg.appendChild(woodRect);
 
-      // 2. 琴枕
+      // 2. 琴枕 (支援 12px 加粗木紋)
+      const nutW = style.nut.width;
       const nut = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      nut.setAttribute("x", startX - 7);
-      nut.setAttribute("y", startY - 10);
-      nut.setAttribute("width", 7);
-      nut.setAttribute("height", boardH);
-      nut.setAttribute("rx", "1.5");
-      nut.setAttribute("fill", style.nut.fill);
-      nut.setAttribute("stroke", style.nut.stroke);
-      nut.setAttribute("stroke-width", "1");
+      nut.setAttribute("x", startX - nutW); nut.setAttribute("y", startY - 10);
+      nut.setAttribute("width", nutW); nut.setAttribute("height", boardH);
+      nut.setAttribute("rx", "2.5"); nut.setAttribute("fill", "url(#dyn-nut-grad)");
+      nut.setAttribute("stroke", style.nut.stroke); nut.setAttribute("stroke-width", "1.2");
       svg.appendChild(nut);
 
+      if (style.nut.isWood) {
+        const grain = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        grain.setAttribute("x1", startX - nutW + 4); grain.setAttribute("y1", startY - 8);
+        grain.setAttribute("x2", startX - nutW + 4); grain.setAttribute("y2", startY - 12 + boardH);
+        grain.setAttribute("stroke", "#bfa378"); grain.setAttribute("stroke-width", "0.8"); grain.setAttribute("opacity", "0.7");
+        svg.appendChild(grain);
+      }
+
       // 3. 把位點 (Inlays)
-      const inlays = [3, 5, 7, 9, 12, 15];
-      inlays.forEach(f => {
+      [3, 5, 7, 9, 12, 15].forEach(f => {
         if (f > FRETS) return;
         const x = startX + (f - 0.5) * fretWidth;
+        const midY = startY + ((numStrings - 1) * stringSpacing) / 2;
         if (f === 12) {
-          drawCircle(x, startY + stringSpacing * 1.5, 4.2, style.inlay, style.inlayOpacity);
-          drawCircle(x, startY + stringSpacing * 3.5, 4.2, style.inlay, style.inlayOpacity);
+          drawCircle(x, midY - 15, 3.8, style.inlay, style.inlayOpacity);
+          drawCircle(x, midY + 15, 3.8, style.inlay, style.inlayOpacity);
         } else {
-          drawCircle(x, startY + stringSpacing * 2.5, 4.6, style.inlay, style.inlayOpacity);
+          drawCircle(x, midY, 4.2, style.inlay, style.inlayOpacity);
         }
       });
 
       // 4. 品絲與數字
       for (let f = 1; f <= FRETS; f++) {
         const x = startX + f * fretWidth;
-
         const shadow = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        shadow.setAttribute("x1", x + 1);
-        shadow.setAttribute("y1", startY - 10);
-        shadow.setAttribute("x2", x + 1);
-        shadow.setAttribute("y2", startY - 10 + boardH);
-        shadow.setAttribute("stroke", style.shadow);
-        shadow.setAttribute("stroke-width", "1.2");
+        shadow.setAttribute("x1", x + 1); shadow.setAttribute("y1", startY - 10);
+        shadow.setAttribute("x2", x + 1); shadow.setAttribute("y2", startY - 10 + boardH);
+        shadow.setAttribute("stroke", style.shadow); shadow.setAttribute("stroke-width", "1.2");
         svg.appendChild(shadow);
 
         const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        wire.setAttribute("x1", x);
-        wire.setAttribute("y1", startY - 10);
-        wire.setAttribute("x2", x);
-        wire.setAttribute("y2", startY - 10 + boardH);
-        wire.setAttribute("stroke", style.wire);
-        wire.setAttribute("stroke-width", "2.0");
+        wire.setAttribute("x1", x); wire.setAttribute("y1", startY - 10);
+        wire.setAttribute("x2", x); wire.setAttribute("y2", startY - 10 + boardH);
+        wire.setAttribute("stroke", style.wire); wire.setAttribute("stroke-width", "2.0");
         svg.appendChild(wire);
 
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x - fretWidth / 2);
-        text.setAttribute("y", startY + boardH + 16);
-        text.setAttribute("class", "fret-number");
-        text.setAttribute("fill", style.fretNum);
+        text.setAttribute("x", x - fretWidth / 2); text.setAttribute("y", startY + boardH + 16);
+        text.setAttribute("class", "fret-number"); text.setAttribute("fill", style.fretNum);
         text.textContent = f;
         svg.appendChild(text);
       }
 
-      // 5. 琴弦
-      const stringProps = [
-        { stroke: "#dcd8cf", width: 0.95 },
-        { stroke: "#ccc5b8", width: 1.25 },
-        { stroke: "#9b9487", width: 1.6 },
-        { stroke: "#b89771", width: 2.1 },
-        { stroke: "#ab8860", width: 2.6 },
-        { stroke: "#99754f", width: 3.1 }
-      ];
-
-      for (let s = 0; s < STRINGS; s++) {
+      // 5. 琴弦 (根據樂器弦數自適應粗細漸變)
+      for (let s = 0; s < numStrings; s++) {
         const y = startY + s * stringSpacing;
+        const stringThick = 0.95 + (s * (2.4 / (numStrings - 1 || 1)));
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", startX - 22);
-        line.setAttribute("y1", y);
-        line.setAttribute("x2", startX + boardW);
-        line.setAttribute("y2", y);
-        line.setAttribute("stroke", stringProps[s].stroke);
-        line.setAttribute("stroke-width", stringProps[s].width);
+        line.setAttribute("x1", startX - nutW - 12); line.setAttribute("y1", y);
+        line.setAttribute("x2", startX + boardW); line.setAttribute("y2", y);
+        line.setAttribute("stroke", s < 2 ? "#525b6a" : "#1e293b");
+        line.setAttribute("stroke-width", stringThick);
         line.setAttribute("stroke-linecap", "round");
         svg.appendChild(line);
       }
 
       // 6. 點擊感應區與標記點渲染
-      for (let s = 0; s < STRINGS; s++) {
+      for (let s = 0; s < numStrings; s++) {
         for (let f = 0; f <= FRETS; f++) {
-          const x = f === 0 ? startX - 16 : startX + (f - 0.5) * fretWidth;
+          const x = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
           const y = startY + s * stringSpacing;
           const key = `${s}-${f}`;
 
@@ -1644,8 +760,8 @@
       }
     }
 
-    function renderMarker(x, y, s, f, shape = 'circle', color = '#ff3b30') {
-      const midi = STRING_TUNING_MIDI[s] + f;
+    function renderMarker(x, y, s, f, shape, color) {
+      const midi = currentTuningMIDI[s] + f;
       const noteName = NOTE_NAMES[midi % 12];
       const interval = ((midi - currentRoot) % 12 + 12) % 12;
       const degreeName = DEGREE_NAMES[interval];
@@ -1654,65 +770,39 @@
 
       if (shape === 'circle') {
         const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        el.setAttribute("cx", x);
-        el.setAttribute("cy", y);
-        el.setAttribute("r", 11.2);
-        el.setAttribute("fill", color);
-        el.setAttribute("class", "marker-shape");
+        el.setAttribute("cx", x); el.setAttribute("cy", y); el.setAttribute("r", 11.2);
+        el.setAttribute("fill", color); el.setAttribute("class", "marker-shape");
         g.appendChild(el);
       } else if (shape === 'ring') {
         const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        el.setAttribute("cx", x);
-        el.setAttribute("cy", y);
-        el.setAttribute("r", 9.8);
-        el.setAttribute("fill", "rgba(0,0,0,0.35)");
-        el.setAttribute("stroke", color);
-        el.setAttribute("stroke-width", "2.8");
-        el.setAttribute("class", "marker-shape");
+        el.setAttribute("cx", x); el.setAttribute("cy", y); el.setAttribute("r", 9.8);
+        el.setAttribute("fill", "rgba(0,0,0,0.35)"); el.setAttribute("stroke", color);
+        el.setAttribute("stroke-width", "2.8"); el.setAttribute("class", "marker-shape");
         g.appendChild(el);
       } else if (shape === 'diamond') {
         const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         el.setAttribute("points", `${x},${y - 13} ${x + 13},${y} ${x},${y + 13} ${x - 13},${y}`);
-        el.setAttribute("fill", color);
-        el.setAttribute("class", "marker-shape");
+        el.setAttribute("fill", color); el.setAttribute("class", "marker-shape");
         g.appendChild(el);
       } else if (shape === 'triangle') {
         const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         el.setAttribute("points", `${x},${y - 12} ${x + 12.5},${y + 9} ${x - 12.5},${y + 9}`);
-        el.setAttribute("fill", color);
-        el.setAttribute("class", "marker-shape");
+        el.setAttribute("fill", color); el.setAttribute("class", "marker-shape");
         g.appendChild(el);
       } else if (shape === 'cross') {
-        const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line1.setAttribute("x1", x - 7);
-        line1.setAttribute("y1", y - 7);
-        line1.setAttribute("x2", x + 7);
-        line1.setAttribute("y2", y + 7);
-        line1.setAttribute("stroke", color);
-        line1.setAttribute("stroke-width", "2.8");
-        line1.setAttribute("stroke-linecap", "round");
-        line1.setAttribute("class", "marker-shape");
-
-        const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line2.setAttribute("x1", x + 7);
-        line2.setAttribute("y1", y - 7);
-        line2.setAttribute("x2", x - 7);
-        line2.setAttribute("y2", y + 7);
-        line2.setAttribute("stroke", color);
-        line2.setAttribute("stroke-width", "2.8");
-        line2.setAttribute("stroke-linecap", "round");
-        line2.setAttribute("class", "marker-shape");
-
-        g.appendChild(line1);
-        g.appendChild(line2);
+        const l1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        l1.setAttribute("x1", x - 7); l1.setAttribute("y1", y - 7); l1.setAttribute("x2", x + 7); l1.setAttribute("y2", y + 7);
+        l1.setAttribute("stroke", color); l1.setAttribute("stroke-width", "2.8"); l1.setAttribute("stroke-linecap", "round");
+        const l2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        l2.setAttribute("x1", x + 7); l2.setAttribute("y1", y - 7); l2.setAttribute("x2", x - 7); l2.setAttribute("y2", y + 7);
+        l2.setAttribute("stroke", color); l2.setAttribute("stroke-width", "2.8"); l2.setAttribute("stroke-linecap", "round");
+        g.appendChild(l1); g.appendChild(l2);
       }
 
       if (displayMode !== 'dot' && shape !== 'cross') {
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x);
-        text.setAttribute("y", shape === 'triangle' ? y + 2 : y);
-        text.setAttribute("class", "marker-text");
-        text.setAttribute("fill", "#ffffff");
+        text.setAttribute("x", x); text.setAttribute("y", shape === 'triangle' ? y + 2 : y);
+        text.setAttribute("class", "marker-text"); text.setAttribute("fill", "#ffffff");
         text.textContent = displayMode === 'note' ? noteName : degreeName;
         g.appendChild(text);
       }
@@ -1723,40 +813,33 @@
 
     function drawCircle(cx, cy, r, fill, opacity) {
       const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      c.setAttribute("cx", cx);
-      c.setAttribute("cy", cy);
-      c.setAttribute("r", r);
-      c.setAttribute("fill", fill);
-      c.setAttribute("opacity", opacity);
+      c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", r);
+      c.setAttribute("fill", fill); c.setAttribute("opacity", opacity);
       svg.appendChild(c);
     }
 
-    // 點擊琴格標記（支援 Root 畫筆連動 Key 為首調 1）
+    // 點擊琴格 (Root 筆刷智慧鎖定為 Key / 首調 1)
     function toggleMarker(s, f) {
-      const midi = STRING_TUNING_MIDI[s] + f;
+      const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
 
-      // 當前使用的是 Root (c1) 筆刷時，自動將全域調性改為該音（首調 1）
       if (currentBrushType === 'c1') {
         const newRoot = midi % 12;
         if (currentRoot !== newRoot) {
           currentRoot = newRoot;
           document.getElementById('root-select').value = newRoot;
-          if (isScaleSyncActive) {
-            populateScaleNotes();
-          }
+          if (isScaleSyncActive) populateScaleNotes();
         }
       }
 
       const key = `${s}-${f}`;
       if (activeMarkers.has(key)) {
-        const current = activeMarkers.get(key);
-        if (current.shape === currentSelectedShape && current.color === currentBrushColor) {
+        const cur = activeMarkers.get(key);
+        if (cur.shape === currentSelectedShape && cur.color === currentBrushColor) {
           activeMarkers.delete(key);
         } else {
-          current.shape = currentSelectedShape;
-          current.color = currentBrushColor;
-          activeMarkers.set(key, current);
+          cur.shape = currentSelectedShape; cur.color = currentBrushColor;
+          activeMarkers.set(key, cur);
         }
       } else {
         activeMarkers.set(key, { s, f, shape: currentSelectedShape, color: currentBrushColor });
@@ -1764,7 +847,7 @@
       renderBoard();
     }
 
-    // 渲染右上角 4 色快速選單
+    // 快捷工具列渲染
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
@@ -1774,57 +857,108 @@
         { key: 'c3', hex: pal.c3, title: '強調色 A' },
         { key: 'c4', hex: pal.c4, title: '強調色 B' }
       ];
-
       container.innerHTML = '';
       colors.forEach(item => {
         const btn = document.createElement('button');
         btn.className = 'quick-color-btn' + (currentBrushColor === item.hex ? ' active' : '');
-        btn.style.backgroundColor = item.hex;
-        btn.title = item.title;
-        btn.onclick = () => pickColorFromPalette(currentActivePalette, item.key, item.hex, item.title);
+        btn.style.backgroundColor = item.hex; btn.title = item.title;
+        btn.onclick = () => pickColor(currentActivePalette, item.key, item.hex);
         container.appendChild(btn);
       });
     }
 
-    // 自由挑選色彩指派畫筆
-    function pickColorFromPalette(groupKey, type, hexColor, labelName) {
+    function pickColor(groupKey, type, hexColor) {
       currentActivePalette = groupKey;
       currentBrushColor = hexColor;
-      currentBrushType = type; // 紀錄是否為 c1 (Root)
-
-      // 1. 同步右上角快捷列
+      currentBrushType = type;
       renderQuickColorBar();
-
-      // 2. 同步抽屜卡片選中狀態
-      document.querySelectorAll('.palette-group-card').forEach(c => c.classList.remove('active-group'));
-      const activeCard = document.getElementById(`pal-card-${groupKey}`);
-      if (activeCard) activeCard.classList.add('active-group');
-
-      document.querySelectorAll('.swatch-chip').forEach(chip => chip.classList.remove('active-chip'));
-      const activeChip = document.getElementById(`chip-${groupKey}-${type}`);
-      if (activeChip) activeChip.classList.add('active-chip');
-
-      if (isScaleSyncActive) {
-        populateScaleNotes();
-        renderBoard();
-      }
-    }
-
-    function selectPaletteGroup(groupKey) {
-      const group = PALETTE_GROUPS[groupKey];
-      pickColorFromPalette(groupKey, 'c1', group.c1, 'Root');
+      updatePaletteUI();
+      if (isScaleSyncActive) { populateScaleNotes(); }
+      renderBoard();
     }
 
     function setShape(shapeName) {
       currentSelectedShape = shapeName;
+      document.querySelectorAll('.quick-shape-btn').forEach(b => b.classList.remove('active'));
+      const qb = document.getElementById(`q-shape-${shapeName}`);
+      if (qb) qb.classList.add('active');
+    }
 
-      document.querySelectorAll('.shape-btn').forEach(btn => btn.classList.remove('active'));
-      const drawerBtn = document.getElementById(`shape-${shapeName}`);
-      if (drawerBtn) drawerBtn.classList.add('active');
+    // 樂器切換與調弦控制台
+    function changeInstrument(instKey) {
+      currentInstrumentKey = instKey;
+      currentTuningMIDI = [...INSTRUMENTS[instKey].tuning];
+      activeMarkers.clear();
+      renderTuningControls();
+      renderBoard();
+    }
 
-      document.querySelectorAll('.quick-shape-btn').forEach(btn => btn.classList.remove('active'));
-      const quickBtn = document.getElementById(`q-shape-${shapeName}`);
-      if (quickBtn) quickBtn.classList.add('active');
+    function renderTuningControls() {
+      const container = document.getElementById('tuning-controls-container');
+      container.innerHTML = '';
+      const numStrings = currentTuningMIDI.length;
+
+      currentTuningMIDI.forEach((midi, s) => {
+        const row = document.createElement('div');
+        row.className = 'tuning-string-item';
+        row.innerHTML = `
+          <span>第 ${s + 1} 弦</span>
+          <select onchange="updateStringTuning(${s}, this.value)">
+            ${NOTE_NAMES.map((name, i) => {
+              const octave = Math.floor(midi / 12) - 1;
+              const isSelected = (midi % 12 === i);
+              return `<option value="${i}" ${isSelected ? 'selected' : ''}>${name} (${octave})</option>`;
+            }).join('')}
+          </select>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function updateStringTuning(stringIndex, noteVal) {
+      const targetNote = parseInt(noteVal, 10);
+      const curMIDI = currentTuningMIDI[stringIndex];
+      const curOctave = Math.floor(curMIDI / 12);
+      currentTuningMIDI[stringIndex] = curOctave * 12 + targetNote;
+      if (isScaleSyncActive) populateScaleNotes();
+      renderBoard();
+    }
+
+    // 側邊欄色票卡片清單渲染
+    function renderPaletteCards() {
+      const container = document.getElementById('palette-cards-container');
+      container.innerHTML = '';
+      Object.keys(PALETTE_GROUPS).forEach(key => {
+        const pal = PALETTE_GROUPS[key];
+        const card = document.createElement('div');
+        card.className = `palette-group-card ${currentActivePalette === key ? 'active-group' : ''}`;
+        card.id = `pal-card-${key}`;
+        card.innerHTML = `
+          <div class="palette-header" onclick="pickColor('${key}', 'c1', '${pal.c1}')">
+            <span class="palette-name">${pal.name}</span>
+            <span class="palette-radio-label">套用組</span>
+          </div>
+          <div class="palette-swatches-grid-4">
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c1 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c1', '${pal.c1}')">
+              <span class="swatch-dot" style="background:${pal.c1}"></span><span class="swatch-label">Root</span>
+            </div>
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c2 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c2', '${pal.c2}')">
+              <span class="swatch-dot" style="background:${pal.c2}"></span><span class="swatch-label">暗襯底</span>
+            </div>
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c3 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c3', '${pal.c3}')">
+              <span class="swatch-dot" style="background:${pal.c3}"></span><span class="swatch-label">強調 A</span>
+            </div>
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c4 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c4', '${pal.c4}')">
+              <span class="swatch-dot" style="background:${pal.c4}"></span><span class="swatch-label">強調 B</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function updatePaletteUI() {
+      renderPaletteCards();
     }
 
     function changeFretboardStyle(styleKey) {
@@ -1835,15 +969,15 @@
       renderBoard();
     }
 
-    // 自動填滿調內音：根音採用 c1，其餘調內音採用該組專屬的 c2 (高對比暗襯底)
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
       const pal = PALETTE_GROUPS[currentActivePalette];
+      const numStrings = currentTuningMIDI.length;
 
-      for (let s = 0; s < STRINGS; s++) {
+      for (let s = 0; s < numStrings; s++) {
         for (let f = 0; f <= FRETS; f++) {
-          const midi = STRING_TUNING_MIDI[s] + f;
+          const midi = currentTuningMIDI[s] + f;
           const interval = ((midi - currentRoot) % 12 + 12) % 12;
           if (scaleNotes.includes(interval)) {
             const noteColor = (interval === 0) ? pal.c1 : pal.c2;
@@ -1855,22 +989,9 @@
 
     function toggleScaleSync() {
       isScaleSyncActive = !isScaleSyncActive;
-      updateSyncButtonUI();
-      if (isScaleSyncActive) {
-        populateScaleNotes();
-      } else {
-        activeMarkers.clear();
-      }
+      document.getElementById('btn-scale-sync').classList.toggle('sync-active', isScaleSyncActive);
+      if (isScaleSyncActive) populateScaleNotes(); else activeMarkers.clear();
       renderBoard();
-    }
-
-    function updateSyncButtonUI() {
-      const btn = document.getElementById('btn-scale-sync');
-      if (isScaleSyncActive) {
-        btn.classList.add('sync-active');
-      } else {
-        btn.classList.remove('sync-active');
-      }
     }
 
     function changeRoot(rootVal) {
@@ -1888,135 +1009,79 @@
     function setDisplayMode(mode) {
       displayMode = mode;
       document.querySelectorAll('.dock-group button').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(`btn-${mode}`);
-      if (activeBtn) activeBtn.classList.add('active');
+      document.getElementById(`btn-${mode}`).classList.add('active');
       renderBoard();
     }
 
     function clearMarkers() {
       isScaleSyncActive = false;
-      updateSyncButtonUI();
+      document.getElementById('btn-scale-sync').classList.remove('sync-active');
       activeMarkers.clear();
       renderBoard();
     }
 
-    // 抽屜與外部點擊收合
+    // 抽屜與懸浮鈕拖曳控制
     const dragBtn = document.getElementById('sidebar-trigger-btn');
     const panel = document.getElementById('sidebar-panel');
     const overlay = document.getElementById('sidebar-overlay');
-    let isDragging = false;
-    let startPointerX = 0, startPointerY = 0;
-    let initialBtnX = 0, initialBtnY = 0;
-    let hasMoved = false;
+    let isDragging = false, startX_p = 0, startY_p = 0, initialX = 0, initialY = 0, hasMoved = false;
 
-    function openSidebar() {
-      panel.classList.add('open');
-      dragBtn.classList.add('open');
-      overlay.classList.add('active');
-    }
+    function openSidebar() { panel.classList.add('open'); dragBtn.classList.add('open'); overlay.classList.add('active'); }
+    function closeSidebar() { panel.classList.remove('open'); dragBtn.classList.remove('open'); overlay.classList.remove('active'); }
+    function toggleSidebar() { panel.classList.contains('open') ? closeSidebar() : openSidebar(); }
 
-    function closeSidebar() {
-      panel.classList.remove('open');
-      dragBtn.classList.remove('open');
-      overlay.classList.remove('active');
-    }
-
-    function toggleSidebar() {
-      if (panel.classList.contains('open')) {
-        closeSidebar();
-      } else {
-        openSidebar();
-      }
-    }
-
-    panel.addEventListener('pointerdown', (e) => {
-      e.stopPropagation();
+    panel.addEventListener('pointerdown', e => e.stopPropagation());
+    document.addEventListener('pointerdown', e => {
+      if (panel.classList.contains('open') && !dragBtn.contains(e.target)) closeSidebar();
     });
 
-    document.addEventListener('pointerdown', (e) => {
-      if (panel.classList.contains('open') && !dragBtn.contains(e.target)) {
-        closeSidebar();
-      }
-    });
-
-    dragBtn.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      hasMoved = false;
-      startPointerX = e.clientX;
-      startPointerY = e.clientY;
-
-      const rect = dragBtn.getBoundingClientRect();
-      initialBtnX = rect.left;
-      initialBtnY = rect.top;
-
+    dragBtn.addEventListener('pointerdown', e => {
+      isDragging = true; hasMoved = false; startX_p = e.clientX; startY_p = e.clientY;
+      const rect = dragBtn.getBoundingClientRect(); initialX = rect.left; initialY = rect.top;
       dragBtn.setPointerCapture(e.pointerId);
     });
 
-    dragBtn.addEventListener('pointermove', (e) => {
+    dragBtn.addEventListener('pointermove', e => {
       if (!isDragging) return;
-
-      const deltaX = e.clientX - startPointerX;
-      const deltaY = e.clientY - startPointerY;
-
-      if (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6) {
+      const dx = e.clientX - startX_p, dy = e.clientY - startY_p;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
         hasMoved = true;
         dragBtn.classList.add('is-dragging');
         dragBtn.classList.remove('dock-left', 'dock-right');
-
-        let nextX = initialBtnX + deltaX;
-        let nextY = initialBtnY + deltaY;
-
-        const btnW = dragBtn.offsetWidth;
-        const btnH = dragBtn.offsetHeight;
-        nextX = Math.max(8, Math.min(window.innerWidth - btnW - 8, nextX));
-        nextY = Math.max(20, Math.min(window.innerHeight - btnH - 80, nextY));
-
-        dragBtn.style.left = `${nextX}px`;
-        dragBtn.style.top = `${nextY}px`;
-        dragBtn.style.right = 'auto';
+        const nextX = Math.max(8, Math.min(window.innerWidth - 56, initialX + dx));
+        const nextY = Math.max(20, Math.min(window.innerHeight - 120, initialY + dy));
+        dragBtn.style.left = `${nextX}px`; dragBtn.style.top = `${nextY}px`; dragBtn.style.right = 'auto';
       }
     });
 
-    dragBtn.addEventListener('pointerup', (e) => {
+    dragBtn.addEventListener('pointerup', e => {
       if (!isDragging) return;
-      isDragging = false;
-      dragBtn.releasePointerCapture(e.pointerId);
+      isDragging = false; dragBtn.releasePointerCapture(e.pointerId);
       dragBtn.classList.remove('is-dragging');
-
-      if (!hasMoved) {
-        toggleSidebar();
-      } else {
-        const btnRect = dragBtn.getBoundingClientRect();
+      if (!hasMoved) { toggleSidebar(); } else {
+        const btnMid = dragBtn.getBoundingClientRect().left + 24;
         const screenMid = window.innerWidth / 2;
-        const btnCenter = btnRect.left + btnRect.width / 2;
-
-        if (btnCenter < screenMid) {
-          dragBtn.style.left = '0px';
-          dragBtn.style.right = 'auto';
-          dragBtn.classList.add('dock-left');
-          panel.classList.remove('panel-right');
-          panel.classList.add('panel-left');
+        if (btnMid < screenMid) {
+          dragBtn.style.left = '0px'; dragBtn.style.right = 'auto';
+          dragBtn.classList.add('dock-left'); panel.className = 'sidebar-panel panel-left';
         } else {
-          dragBtn.style.left = 'auto';
-          dragBtn.style.right = '0px';
-          dragBtn.classList.add('dock-right');
-          panel.classList.remove('panel-left');
-          panel.classList.add('panel-right');
+          dragBtn.style.left = 'auto'; dragBtn.style.right = '0px';
+          dragBtn.classList.add('dock-right'); panel.className = 'sidebar-panel panel-right';
         }
       }
     });
 
-    // 100% Canvas 原生純繪製 PNG 引擎
+    // 100% Canvas 原生匯出引擎 (自適應各樂器弦數與 3 款材質)
     function exportFretboardPNG() {
       const scale = 2;
+      const numStrings = currentTuningMIDI.length;
       const boardW = FRETS * fretWidth;
-      const boardH = (STRINGS - 1) * stringSpacing + 20;
+      const boardH = (numStrings - 1) * stringSpacing + 20;
       const totalW = 1030;
-      const totalH = 210;
+      const totalH = boardH + startY + 28;
 
       const canvas = document.createElement('canvas');
-      canvas.width = totalW * scale;
-      canvas.height = totalH * scale;
+      canvas.width = totalW * scale; canvas.height = totalH * scale;
       const ctx = canvas.getContext('2d');
       ctx.scale(scale, scale);
 
@@ -2024,157 +1089,94 @@
 
       // 1. 指板木質實體漸層
       const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
-      woodGrad.addColorStop(0, style.bgGradient[0]);
-      woodGrad.addColorStop(0.25, style.bgGradient[1]);
-      woodGrad.addColorStop(0.5, style.bgGradient[2]);
-      woodGrad.addColorStop(0.75, style.bgGradient[3]);
-      woodGrad.addColorStop(1, style.bgGradient[4]);
-
+      style.bg.forEach((c, i) => woodGrad.addColorStop(i / (style.bg.length - 1), c));
       ctx.fillStyle = woodGrad;
       ctx.fillRect(startX, startY - 10, boardW, boardH);
 
-      // 包邊
-      ctx.strokeStyle = style.binding[0];
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = style.binding; ctx.lineWidth = 1.6;
       ctx.strokeRect(startX, startY - 10, boardW, boardH);
 
       // 2. 琴枕
-      ctx.fillStyle = style.nut.fill;
-      ctx.fillRect(startX - 7, startY - 10, 7, boardH);
-      ctx.strokeStyle = style.nut.stroke;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(startX - 7, startY - 10, 7, boardH);
+      const nutW = style.nut.width;
+      const nutGrad = ctx.createLinearGradient(startX - nutW, 0, startX, 0);
+      style.nut.fill.forEach((c, i) => nutGrad.addColorStop(i / (style.nut.fill.length - 1), c));
+      ctx.fillStyle = nutGrad;
+      ctx.fillRect(startX - nutW, startY - 10, nutW, boardH);
+      ctx.strokeStyle = style.nut.stroke; ctx.lineWidth = 1.2;
+      ctx.strokeRect(startX - nutW, startY - 10, nutW, boardH);
 
-      // 3. 把位點
-      const inlays = [3, 5, 7, 9, 12, 15];
-      inlays.forEach(f => {
+      // 3. 把位點 (Inlays)
+      [3, 5, 7, 9, 12, 15].forEach(f => {
         if (f > FRETS) return;
         const ix = startX + (f - 0.5) * fretWidth;
-        ctx.fillStyle = style.inlay;
-        ctx.globalAlpha = style.inlayOpacity;
-
+        const midY = startY + ((numStrings - 1) * stringSpacing) / 2;
+        ctx.fillStyle = style.inlay; ctx.globalAlpha = style.inlayOpacity;
         if (f === 12) {
-          ctx.beginPath();
-          ctx.arc(ix, startY + stringSpacing * 1.5, 4.2, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(ix, startY + stringSpacing * 3.5, 4.2, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(ix, midY - 15, 3.8, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(ix, midY + 15, 3.8, 0, Math.PI * 2); ctx.fill();
         } else {
-          ctx.beginPath();
-          ctx.arc(ix, startY + stringSpacing * 2.5, 4.6, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(ix, midY, 4.2, 0, Math.PI * 2); ctx.fill();
         }
         ctx.globalAlpha = 1.0;
       });
 
       // 4. 品絲與數字
       ctx.font = '500 11.5px "JetBrains Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (let f = 1; f <= FRETS; f++) {
         const fx = startX + f * fretWidth;
+        ctx.strokeStyle = style.shadow; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(fx + 1, startY - 10); ctx.lineTo(fx + 1, startY - 10 + boardH); ctx.stroke();
 
-        ctx.strokeStyle = style.shadow;
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(fx + 1, startY - 10);
-        ctx.lineTo(fx + 1, startY - 10 + boardH);
-        ctx.stroke();
-
-        ctx.strokeStyle = style.wire;
-        ctx.lineWidth = 2.0;
-        ctx.beginPath();
-        ctx.moveTo(fx, startY - 10);
-        ctx.lineTo(fx, startY - 10 + boardH);
-        ctx.stroke();
+        ctx.strokeStyle = style.wire; ctx.lineWidth = 2.0;
+        ctx.beginPath(); ctx.moveTo(fx, startY - 10); ctx.lineTo(fx, startY - 10 + boardH); ctx.stroke();
 
         ctx.fillStyle = style.fretNum;
         ctx.fillText(f, fx - fretWidth / 2, startY + boardH + 16);
       }
 
-      // 5. 琴弦 (6 Strings)
-      const stringProps = [
-        { stroke: "#dcd8cf", width: 0.95 },
-        { stroke: "#ccc5b8", width: 1.25 },
-        { stroke: "#9b9487", width: 1.6 },
-        { stroke: "#b89771", width: 2.1 },
-        { stroke: "#ab8860", width: 2.6 },
-        { stroke: "#99754f", width: 3.1 }
-      ];
-
-      for (let s = 0; s < STRINGS; s++) {
+      // 5. 琴弦
+      for (let s = 0; s < numStrings; s++) {
         const sy = startY + s * stringSpacing;
-        ctx.strokeStyle = stringProps[s].stroke;
-        ctx.lineWidth = stringProps[s].width;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(startX - 22, sy);
-        ctx.lineTo(startX + boardW, sy);
-        ctx.stroke();
+        const thick = 0.95 + (s * (2.4 / (numStrings - 1 || 1)));
+        ctx.strokeStyle = s < 2 ? "#525b6a" : "#1e293b";
+        ctx.lineWidth = thick; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(startX - nutW - 10, sy); ctx.lineTo(startX + boardW, sy); ctx.stroke();
       }
 
-      // 6. 標記幾何形狀與文字
+      // 6. 幾何標記與文字
       ctx.font = '600 11px "JetBrains Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-      activeMarkers.forEach((markerData, key) => {
+      activeMarkers.forEach((markerData) => {
         const { s, f, shape, color } = markerData;
-        const mx = f === 0 ? startX - 16 : startX + (f - 0.5) * fretWidth;
+        const mx = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
         const my = startY + s * stringSpacing;
-
-        const midi = STRING_TUNING_MIDI[s] + f;
+        const midi = currentTuningMIDI[s] + f;
         const noteName = NOTE_NAMES[midi % 12];
         const interval = ((midi - currentRoot) % 12 + 12) % 12;
         const degreeName = DEGREE_NAMES[interval];
 
         ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.45)';
-        ctx.shadowBlur = 5;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2;
 
         if (shape === 'circle') {
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.arc(mx, my, 11.2, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.fillStyle = color; ctx.beginPath(); ctx.arc(mx, my, 11.2, 0, Math.PI * 2); ctx.fill();
         } else if (shape === 'ring') {
-          ctx.fillStyle = 'rgba(0,0,0,0.35)';
-          ctx.beginPath();
-          ctx.arc(mx, my, 9.8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 2.8;
-          ctx.stroke();
+          ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.arc(mx, my, 9.8, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = color; ctx.lineWidth = 2.8; ctx.stroke();
         } else if (shape === 'diamond') {
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.moveTo(mx, my - 13);
-          ctx.lineTo(mx + 13, my);
-          ctx.lineTo(mx, my + 13);
-          ctx.lineTo(mx - 13, my);
-          ctx.closePath();
-          ctx.fill();
+          ctx.fillStyle = color; ctx.beginPath();
+          ctx.moveTo(mx, my - 13); ctx.lineTo(mx + 13, my); ctx.lineTo(mx, my + 13); ctx.lineTo(mx - 13, my);
+          ctx.closePath(); ctx.fill();
         } else if (shape === 'triangle') {
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.moveTo(mx, my - 12);
-          ctx.lineTo(mx + 12.5, my + 9);
-          ctx.lineTo(mx - 12.5, my + 9);
-          ctx.closePath();
-          ctx.fill();
+          ctx.fillStyle = color; ctx.beginPath();
+          ctx.moveTo(mx, my - 12); ctx.lineTo(mx + 12.5, my + 9); ctx.lineTo(mx - 12.5, my + 9);
+          ctx.closePath(); ctx.fill();
         } else if (shape === 'cross') {
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 2.8;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.moveTo(mx - 7, my - 7);
-          ctx.lineTo(mx + 7, my + 7);
-          ctx.moveTo(mx + 7, my - 7);
-          ctx.lineTo(mx - 7, my + 7);
-          ctx.stroke();
+          ctx.strokeStyle = color; ctx.lineWidth = 2.8; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(mx - 7, my - 7); ctx.lineTo(mx + 7, my + 7);
+          ctx.moveTo(mx + 7, my - 7); ctx.lineTo(mx - 7, my + 7); ctx.stroke();
         }
         ctx.restore();
 
@@ -2188,16 +1190,18 @@
       const pngURL = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
       const rootName = NOTE_NAMES[currentRoot];
-      downloadLink.download = `Guitar_Fretboard_${rootName}_${currentScale}.png`;
+      downloadLink.download = `${INSTRUMENTS[currentInstrumentKey].name}_${rootName}_${currentScale}.png`;
       downloadLink.href = pngURL;
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
     }
 
-    // 初始化渲染
-    renderBoard();
+    // 初始化應用
     renderQuickColorBar();
+    renderPaletteCards();
+    renderTuningControls();
+    renderBoard();
   </script>
 </body>
 </html>
