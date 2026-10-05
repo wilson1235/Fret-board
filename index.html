@@ -2,161 +2,189 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>指板幾何視覺化 - Studio Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-metal: #121316;
-      --panel-bg: rgba(30, 32, 38, 0.78);
-      --panel-border: rgba(255, 255, 255, 0.12);
-      --panel-bevel: inset 0 1px 1px rgba(255, 255, 255, 0.18);
-      --panel-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-      --text-main: #F5F5F7;
-      --text-sub: #86868B;
-      --wood-dark: #1E1715;
-      
-      /* 預設主題：經典工作室 */
-      --c-root: #FF3B30;     /* Root 主音 */
-      --c-bg: #2C2C2E;       /* 暗底襯底色 */
-      --c-accent1: #FF9500;  /* 強調色 A */
-      --c-accent2: #007AFF;  /* 強調色 B */
+      --metal-bg: #e5e7eb;
+      --metal-card: rgba(248, 249, 251, 0.82);
+      --metal-dock: rgba(243, 245, 248, 0.88);
+      --metal-border: rgba(180, 185, 195, 0.55);
+      --metal-bevel-light: inset 0 1px 0.5px rgba(255, 255, 255, 0.95);
+      --metal-bevel-dark: inset 0 -1px 0.5px rgba(0, 0, 0, 0.08);
+      --metal-text-primary: #1d1d1f;
+      --metal-text-secondary: #48484a;
+      --metal-text-tertiary: #86868b;
+      --metal-blue: #0071e3;
+      --metal-shadow-float: 0 12px 36px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02);
+      --metal-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.07);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     body {
-      background-color: var(--bg-metal);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
+      margin: 0; padding: 0; min-height: 100vh;
+      background: var(--metal-bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.65) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(195, 200, 210, 0.45) 0px, transparent 50%),
+        linear-gradient(180deg, #edeff2 0%, #dfe2e6 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      color: var(--metal-text-primary);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
     }
 
-    /* 頂部極簡標題 */
-    header {
-      position: absolute;
-      top: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0.85;
-    }
-    .badge-studio {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid var(--panel-border);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 1.5px;
-    }
-    .app-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
-
-    /* 中央指板工作區 */
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: -15px;
+    .top-status-bar {
+      position: fixed; top: 18px; left: 24px; right: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none; z-index: 10;
     }
 
-    /* 緊貼指板正上方的畫筆與和弦工具列 */
-    .top-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 16px;
-      background: var(--panel-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--panel-border);
-      border-radius: 14px;
-      box-shadow: var(--panel-bevel), var(--panel-shadow);
-    }
-    .tool-group { display: flex; align-items: center; gap: 6px; }
-    .divider { width: 1px; height: 20px; background: rgba(255,255,255,0.12); margin: 0 4px; }
-
-    .tool-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid transparent;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      outline: none;
-      font-size: 13px;
-    }
-    .tool-btn.active {
-      background: rgba(255,255,255,0.16);
-      border-color: rgba(255,255,255,0.3);
+    .brand-stamp {
+      display: inline-flex; align-items: center; gap: 8px; pointer-events: auto;
     }
 
-    /* 色票按鈕 */
-    .color-swatch {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .color-swatch.active { border-color: #FFF; box-shadow: 0 0 10px rgba(255,255,255,0.6); }
-
-    .select-input {
-      background: rgba(0,0,0,0.35);
-      border: 1px solid var(--panel-border);
-      color: #FFF;
-      border-radius: 8px;
-      padding: 5px 8px;
-      font-size: 13px;
-      outline: none;
+    .brand-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 1.2px;
+      padding: 3.5px 8px; border-radius: 7px;
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
+      color: #f5f5f7; font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
-    /* 指板外框容器（相對定位以放置浮動徽章） */
-    .fretboard-box {
+    .brand-title {
+      font-size: 14px; font-weight: 600; color: var(--metal-text-primary);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    /* 指板主展示舞台 */
+    .stage-container {
+      width: 100%; max-width: 1220px;
+      padding: 20px 20px 40px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+
+    /* 頂部操作工具列（畫筆 + CAGED 手型按鈕） */
+    .board-attached-toolbar {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--metal-dock);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--metal-border);
+      box-shadow: var(--metal-bevel-light), 0 2px 8px rgba(0, 0, 0, 0.03);
+      flex-wrap: wrap; justify-content: center;
+    }
+
+    .quick-shape-group, .quick-color-group, .quick-chord-group {
+      display: inline-flex; align-items: center;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 999px;
+    }
+    .quick-shape-group { padding: 2px 3px; gap: 2px; }
+    .quick-color-group { padding: 3px 5px; gap: 5px; }
+    .quick-chord-group { padding: 2px 6px; gap: 5px; }
+
+    .quick-shape-btn {
+      width: 26px; height: 26px; border-radius: 50%; border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+      transition: background-color 0.15s ease;
+    }
+    .quick-shape-btn:hover { background: rgba(255, 255, 255, 0.7); }
+    .quick-shape-btn.active {
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    .quick-divider { width: 1px; height: 16px; background: rgba(180, 185, 195, 0.45); margin: 0 1px; }
+
+    .quick-color-btn {
+      width: 21px; height: 21px; border-radius: 50%; border: 2px solid transparent;
+      cursor: pointer; padding: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.22);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 700; color: #ffffff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .quick-color-btn.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .chord-select-label {
+      font-size: 10.5px; font-weight: 600; color: var(--metal-text-tertiary);
+      letter-spacing: 0.3px; text-transform: uppercase; margin-left: 2px;
+    }
+
+    .chord-pill-select {
+      appearance: none; background: #ffffff; border: 1px solid var(--metal-border);
+      padding: 3px 20px 3px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600;
+      color: var(--metal-text-primary); cursor: pointer; outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 6px center;
+    }
+
+    /* ========================================================
+       🎹 CAGED 五鍵分段切換器 (Segmented Controls)
+       ======================================================== */
+    .caged-btn-group {
+      display: inline-flex; align-items: center;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 999px; padding: 2px; gap: 2px;
+    }
+
+    .caged-btn {
+      background: transparent; border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px; font-weight: 600; color: var(--metal-text-secondary);
+      padding: 2.5px 7.5px; border-radius: 999px; cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .caged-btn:hover { color: var(--metal-text-primary); }
+    .caged-btn.active {
+      background: #ffffff; color: var(--metal-blue); font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    /* 指板卡片本體 */
+    .fretboard-card {
       position: relative;
-      border-radius: 12px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
-      overflow: hidden;
-      display: inline-block;
+      background: var(--metal-card); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--metal-border); border-radius: 24px; padding: 28px 24px;
+      box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
+      overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch;
     }
 
-    /* 指板左上方：即時和弦辨識徽章 */
+    /* ========================================================
+       🎵 指板左上方：即時和弦辨識徽章 (Pill Badge)
+       ======================================================== */
     .chord-detector-badge {
       position: absolute;
       top: 14px;
       left: 18px;
-      z-index: 20;
+      z-index: 25;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
+      gap: 7px;
+      padding: 5px 12px;
       border-radius: 999px;
-      background: rgba(20, 22, 26, 0.82);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(28, 28, 30, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       cursor: pointer;
       user-select: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .chord-detector-badge:hover {
+      background: rgba(44, 44, 46, 0.95);
+      border-color: rgba(255, 255, 255, 0.3);
     }
     .chord-detector-badge.hidden {
       opacity: 0;
@@ -167,186 +195,457 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #34C759;
-      box-shadow: 0 0 8px rgba(52, 199, 89, 0.7);
+      background: #34c759;
+      box-shadow: 0 0 7px rgba(52, 199, 89, 0.8);
+      flex-shrink: 0;
     }
-    .chord-title {
-      font-size: 15px;
-      font-weight: 600;
+    .chord-detector-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 700;
       letter-spacing: -0.2px;
-      color: #FFFFFF;
+      color: #ffffff;
     }
-    .chord-alt {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.45);
-      margin-left: 2px;
+    .chord-detector-alt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-left: 1px;
     }
 
-    canvas { display: block; cursor: crosshair; }
-
-    /* 底部 macOS Dock */
-    footer {
-      position: absolute;
-      bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 8px 18px;
-      background: var(--panel-bg);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--panel-border);
-      border-radius: 18px;
-      box-shadow: var(--panel-bevel), var(--panel-shadow);
+    svg { display: block; margin: 0 auto; user-select: none; }
+    .clickable-area { fill: transparent; cursor: pointer; }
+    .clickable-area:hover { fill: rgba(255, 255, 255, 0.08); }
+    .marker-shape { filter: drop-shadow(0 2px 5px rgba(0,0,0,0.45)); }
+    .marker-text {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      text-anchor: middle; dominant-baseline: central; pointer-events: none;
     }
+    .fret-number { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; text-anchor: middle; }
+
+    /* 底部 Dock */
+    .floating-dock {
+      position: fixed; bottom: 24px; background: var(--metal-dock);
+      backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--metal-border); border-radius: 999px; padding: 7px 14px;
+      box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
+      display: flex; align-items: center; gap: 10px; z-index: 90; max-width: calc(100vw - 32px);
+    }
+
+    .dock-row-primary, .dock-row-secondary { display: flex; align-items: center; gap: 8px; }
+
+    .dock-group {
+      display: inline-flex; align-items: center; background: rgba(0, 0, 0, 0.06);
+      box-shadow: var(--metal-shadow-inset); border-radius: 999px; padding: 3px; gap: 2px;
+    }
+
     .dock-btn {
-      padding: 7px 14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: var(--text-main);
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      outline: none;
+      background: transparent; border: none; padding: 6px 14px; font-size: 13px; font-weight: 500;
+      color: var(--metal-text-secondary); border-radius: 999px; cursor: pointer;
+      white-space: nowrap; transition: color 0.15s ease, background-color 0.15s ease;
     }
-    .dock-btn:hover { background: rgba(255,255,255,0.12); }
+    .dock-btn:hover { color: var(--metal-text-primary); }
+    .dock-btn.active {
+      background: #ffffff; color: var(--metal-text-primary); font-weight: 600;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
 
-    /* 抽屜式側邊面板 */
-    aside {
-      position: fixed;
-      right: -360px;
-      top: 0;
-      width: 340px;
-      height: 100vh;
-      background: rgba(24, 25, 29, 0.95);
-      backdrop-filter: blur(30px);
-      border-left: 1px solid var(--panel-border);
-      box-shadow: -10px 0 40px rgba(0,0,0,0.6);
-      z-index: 100;
-      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .dock-select-pill { display: inline-flex; align-items: center; gap: 6px; padding: 0 3px; }
+    .dock-select-pill label { font-size: 11px; font-weight: 600; color: var(--metal-text-tertiary); letter-spacing: 0.3px; }
+    .dock-select-pill select {
+      appearance: none; background: #ffffff; border: 1px solid var(--metal-border);
+      padding: 6px 26px 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      color: var(--metal-text-primary); cursor: pointer; outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 9px center;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
-    aside.open { right: 0; }
-    .drawer-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 99;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+
+    .dock-btn-sync {
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%); color: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.4); padding: 7px 15px; border-radius: 999px;
+      font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;
+      cursor: pointer; white-space: nowrap;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
     }
-    .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+    .dock-btn-sync.sync-active {
+      background: linear-gradient(180deg, #007aff 0%, #0062cc 100%);
+      border-color: #0051b3; box-shadow: 0 2px 10px rgba(0, 122, 255, 0.38);
+    }
+
+    .sync-led { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.45); }
+    .dock-btn-sync.sync-active .sync-led { background: #ffffff; box-shadow: 0 0 7px rgba(255, 255, 255, 0.95); }
+
+    .dock-btn-action, .dock-btn-export {
+      background: #ffffff; border: 1px solid var(--metal-border); padding: 7px 14px;
+      border-radius: 999px; font-size: 13px; color: var(--metal-text-secondary);
+      cursor: pointer; white-space: nowrap;
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .dock-btn-action:hover, .dock-btn-export:hover { color: var(--metal-text-primary); }
+
+    .dock-btn-mute {
+      background: #ffffff; border: 1px solid var(--metal-border); width: 34px; height: 34px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; padding: 0; color: var(--metal-text-primary);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    .dock-btn-mute.is-muted { background: rgba(255, 59, 48, 0.12); border-color: rgba(255, 59, 48, 0.35); color: #ff3b30; }
+
+    .dock-divider { width: 1px; height: 18px; background: var(--metal-border); margin: 0 2px; }
+
+    .sidebar-trigger-btn {
+      position: fixed; top: 50%; right: 0; width: 46px; height: 46px; border-radius: 50%;
+      background: var(--metal-dock); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--metal-border); box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
+      display: flex; align-items: center; justify-content: center; cursor: grab; z-index: 120;
+      opacity: 0.65; user-select: none; touch-action: none; transition: background-color 0.2s, opacity 0.2s;
+    }
+    .sidebar-trigger-btn:active { cursor: grabbing; }
+    .sidebar-trigger-btn.is-dragging { opacity: 1 !important; transform: scale(1.1) !important; }
+    .sidebar-trigger-btn.dock-right { transform: translateX(18px); border-right: none; border-radius: 24px 0 0 24px; }
+    .sidebar-trigger-btn.dock-right:hover { opacity: 1; transform: translateX(0); background: #ffffff; }
+    .sidebar-trigger-btn.dock-left { transform: translateX(-18px); border-left: none; border-radius: 0 24px 24px 0; }
+    .sidebar-trigger-btn.dock-left:hover { opacity: 1; transform: translateX(0); background: #ffffff; }
+    .sidebar-trigger-btn svg { color: var(--metal-text-primary); pointer-events: none; }
+
+    .sidebar-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.28); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 104; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .sidebar-panel {
+      position: fixed; top: 0; bottom: 0; width: 330px;
+      background: rgba(246, 248, 250, 0.92); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14); z-index: 105; padding: 24px 18px;
+      display: flex; flex-direction: column; gap: 20px; overflow-y: auto; transition: right 0.35s ease, left 0.35s ease;
+    }
+    .sidebar-panel.panel-right { right: -350px; left: auto; border-left: 1px solid var(--metal-border); }
+    .sidebar-panel.panel-right.open { right: 0; }
+    .sidebar-panel.panel-left { left: -350px; right: auto; border-right: 1px solid var(--metal-border); }
+    .sidebar-panel.panel-left.open { left: 0; }
+
+    .sidebar-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 1px solid var(--metal-border);
+    }
+    .sidebar-title { font-size: 15px; font-weight: 600; color: var(--metal-text-primary); }
+    .close-btn {
+      background: rgba(0, 0, 0, 0.06); border: none; font-size: 14px; color: var(--metal-text-secondary);
+      cursor: pointer; width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .section-label {
+      font-size: 11px; font-weight: 600; color: var(--metal-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 9px;
+    }
+
+    .tuning-rows {
+      display: flex; flex-direction: column; gap: 6px;
+      background: #ffffff; border: 1px solid var(--metal-border); border-radius: 14px;
+      padding: 10px 12px; box-shadow: var(--metal-bevel-light);
+    }
+    .tuning-string-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 500; color: var(--metal-text-secondary);
+    }
+    .tuning-string-item select {
+      appearance: none; background: #f3f4f6; border: 1px solid var(--metal-border);
+      padding: 3px 20px 3px 8px; border-radius: 8px; font-size: 11.5px; font-weight: 600;
+      color: var(--metal-text-primary); cursor: pointer; outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 6px center;
+    }
+
+    .palette-group-card {
+      background: #ffffff; border: 1px solid var(--metal-border); border-radius: 14px;
+      padding: 10px 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;
+      box-shadow: var(--metal-bevel-light);
+    }
+    .palette-group-card.active-group { border-color: var(--metal-blue); box-shadow: 0 0 0 1px var(--metal-blue); }
+    .palette-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .palette-name { font-size: 12.5px; font-weight: 600; }
+    .palette-radio-label { font-size: 10.5px; color: var(--metal-blue); font-weight: 500; }
+
+    .palette-swatches-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .swatch-chip {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 48px; border-radius: 10px; border: 1.5px solid transparent;
+      background: rgba(0, 0, 0, 0.04); cursor: pointer; padding: 4px;
+    }
+    .swatch-chip.active-chip { border-color: var(--metal-text-primary); background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .swatch-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.22); }
+    .swatch-label { font-size: 10px; font-weight: 600; margin-top: 3px; }
+
+    .wood-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .wood-card {
+      border: 1px solid var(--metal-border); border-radius: 12px; padding: 10px 12px;
+      background: #ffffff; cursor: pointer; display: flex; align-items: center; gap: 12px;
+      box-shadow: var(--metal-bevel-light);
+    }
+    .wood-card.active { border-color: var(--metal-blue); box-shadow: 0 0 0 1px var(--metal-blue); }
+    .wood-preview { width: 50px; height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+    .wood-meta { display: flex; flex-direction: column; gap: 2px; }
+    .wood-name { font-size: 12px; font-weight: 600; color: var(--metal-text-primary); }
+    .wood-desc { font-size: 10px; color: var(--metal-text-tertiary); }
+
+    @media (max-width: 768px) {
+      body { justify-content: flex-start; padding-bottom: 140px; }
+      .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 12px 14px 4px; width: 100%; }
+      .brand-title { font-size: 13px; }
+
+      .stage-container { padding: 8px 0 20px; width: 100vw; gap: 8px; }
+      .board-attached-toolbar { padding: 4px 6px; gap: 4px; border-radius: 18px; }
+      .quick-shape-btn { width: 23px; height: 23px; }
+      .quick-shape-btn svg { width: 13px; height: 13px; }
+      .quick-color-btn { width: 18px; height: 18px; font-size: 9px; }
+      .caged-btn { font-size: 10.5px; padding: 2px 5.5px; }
+
+      .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 16px 0 12px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
+      svg { margin-left: 12px; }
+
+      .floating-dock {
+        bottom: 14px; left: 10px; right: 10px; width: auto; max-width: none;
+        padding: 8px 10px; border-radius: 22px; flex-direction: column; gap: 7px;
+      }
+      .dock-divider { display: none; }
+      .dock-row-primary, .dock-row-secondary { width: 100%; justify-content: space-between; }
+      .dock-row-primary .dock-group { flex: 1.1; justify-content: center; }
+      .dock-row-primary .dock-btn { padding: 6px 7px; font-size: 11.5px; flex: 1; text-align: center; }
+      .dock-row-primary .dock-select-pill { flex: 0.9; gap: 4px; }
+      .dock-row-primary .dock-select-pill select { width: 100%; padding: 6px 18px 6px 7px; font-size: 11.5px; }
+      .dock-row-secondary { width: 100%; }
+      .dock-row-secondary .dock-btn-sync { flex: 1.5; padding: 6px 8px; font-size: 11.5px; justify-content: center; }
+      .dock-row-secondary .dock-btn-action { flex: 0.7; padding: 6px 5px; font-size: 11.5px; text-align: center; }
+      .dock-row-secondary .dock-btn-export { flex: 1.1; padding: 6px 8px; font-size: 11.5px; justify-content: center; }
+      .sidebar-trigger-btn { width: 44px; height: 44px; }
+
+      .sidebar-panel.panel-right, .sidebar-panel.panel-left {
+        top: auto !important; bottom: -100% !important; left: 0 !important; right: 0 !important;
+        width: 100% !important; height: 75vh !important; border-radius: 24px 24px 0 0 !important;
+        border-left: none !important; border-right: none !important; border-top: 1px solid var(--metal-border) !important;
+        transition: bottom 0.35s ease !important; padding: 20px 18px 36px !important;
+      }
+      .sidebar-panel.open { bottom: 0 !important; }
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <span class="badge-studio">STUDIO</span>
-    <span class="app-title">指板幾何視覺化</span>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <header class="top-status-bar">
+    <div class="brand-stamp">
+      <span class="brand-badge">STUDIO</span>
+      <span class="brand-title">指板幾何視覺化</span>
+    </div>
   </header>
 
-  <main>
-    <!-- 頂部吸附工具列 -->
-    <div class="top-toolbar">
-      <!-- 5 種幾何圖形 -->
-      <div class="tool-group">
-        <button class="tool-btn active" data-shape="circle" title="實心圓">●</button>
-        <button class="tool-btn" data-shape="ring" title="空心圈">○</button>
-        <button class="tool-btn" data-shape="diamond" title="菱形">◆</button>
-        <button class="tool-btn" data-shape="triangle" title="三角形">▲</button>
-        <button class="tool-btn" data-shape="cross" title="悶音叉叉">✕</button>
+  <!-- 指板主舞台 (中央配置，上方整合畫筆與 CAGED 手型按鈕) -->
+  <main class="stage-container">
+    <div class="board-attached-toolbar">
+      <!-- 幾何形狀 -->
+      <div class="quick-shape-group">
+        <button class="quick-shape-btn active" id="q-shape-circle" onclick="setShape('circle')" title="實心圓">
+          <svg width="15" height="15" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#1c1c1e"/></svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-ring" onclick="setShape('ring')" title="空心圓圈">
+          <svg width="15" height="15" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" fill="none" stroke="#1c1c1e" stroke-width="2.6"/></svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-diamond" onclick="setShape('diamond')" title="菱形">
+          <svg width="15" height="15" viewBox="0 0 20 20"><polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e"/></svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-triangle" onclick="setShape('triangle')" title="三角形">
+          <svg width="15" height="15" viewBox="0 0 20 20"><polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e"/></svg>
+        </button>
+        <button class="quick-shape-btn" id="q-shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
+          <svg width="15" height="15" viewBox="0 0 20 20">
+            <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
 
-      <div class="divider"></div>
+      <div class="quick-divider"></div>
+      <!-- 畫筆 4 色 -->
+      <div class="quick-color-group" id="quick-color-container"></div>
 
-      <!-- 4 色色票體系 -->
-      <div class="tool-group">
-        <div class="color-swatch active" data-color="root" style="background: var(--c-root); color: #FFF;" title="Root 主音">R</div>
-        <div class="color-swatch" data-color="bg" style="background: var(--c-bg);" title="暗底襯底色"></div>
-        <div class="color-swatch" data-color="accent1" style="background: var(--c-accent1);" title="強調色 A"></div>
-        <div class="color-swatch" data-color="accent2" style="background: var(--c-accent2);" title="強調色 B"></div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- CAGED 與和弦快選 -->
-      <div class="tool-group">
-        <select id="chord-root" class="select-input">
-          <option value="0">C</option><option value="1">C#</option><option value="2">D</option><option value="3">D#</option>
-          <option value="4">E</option><option value="5">F</option><option value="6">F#</option><option value="7">G</option>
-          <option value="8">G#</option><option value="9">A</option><option value="10">A#</option><option value="11">B</option>
+      <div class="quick-divider"></div>
+      <!-- 和弦選單 + CAGED 五顆專屬直覺按鈕 -->
+      <div class="quick-chord-group">
+        <span class="chord-select-label">和弦</span>
+        <select class="chord-pill-select" id="chord-root-select" onchange="applySelectedChord()">
+          <option value="0">C</option><option value="1">C#</option><option value="2">D</option>
+          <option value="3">D#</option><option value="4">E</option><option value="5">F</option>
+          <option value="6">F#</option><option value="7">G</option><option value="8">G#</option>
+          <option value="9">A</option><option value="10">A#</option><option value="11">B</option>
         </select>
-        <select id="chord-type" class="select-input">
-          <option value="maj">Maj</option><option value="min">min</option><option value="7">7</option>
-          <option value="maj7">Maj7</option><option value="m7">m7</option><option value="m7b5">m7b5</option>
-          <option value="dim7">dim7</option><option value="sus4">sus4</option><option value="add9">add9</option>
+        <select class="chord-pill-select" id="chord-type-select" onchange="applySelectedChord()">
+          <option value="maj">Maj (大三)</option>
+          <option value="min">m (小三)</option>
+          <option value="7">7 (屬七)</option>
+          <option value="maj7">Maj7 (大七)</option>
+          <option value="m7">m7 (小七)</option>
+          <option value="m7b5">m7b5 (半減七)</option>
+          <option value="6">6 (大六)</option>
+          <option value="m6">m6 (小六)</option>
+          <option value="dim7">Dim7 (減七)</option>
+          <option value="sus4">Sus4</option>
+          <option value="add9">Add9</option>
         </select>
-      </div>
 
-      <div class="tool-group">
-        <button class="tool-btn caged-btn" data-shape-key="C">C</button>
-        <button class="tool-btn caged-btn" data-shape-key="A">A</button>
-        <button class="tool-btn caged-btn" data-shape-key="G">G</button>
-        <button class="tool-btn caged-btn" data-shape-key="E">E</button>
-        <button class="tool-btn caged-btn" data-shape-key="D">D</button>
+        <!-- 正統 CAGED 五鍵分段按鈕 -->
+        <div class="caged-btn-group">
+          <button class="caged-btn active" id="caged-btn-C" onclick="selectCAGEDShape('C')">C</button>
+          <button class="caged-btn" id="caged-btn-A" onclick="selectCAGEDShape('A')">A</button>
+          <button class="caged-btn" id="caged-btn-G" onclick="selectCAGEDShape('G')">G</button>
+          <button class="caged-btn" id="caged-btn-E" onclick="selectCAGEDShape('E')">E</button>
+          <button class="caged-btn" id="caged-btn-D" onclick="selectCAGEDShape('D')">D</button>
+        </div>
       </div>
     </div>
 
-    <!-- 指板本體與即時辨識徽章 -->
-    <div class="fretboard-box">
-      <div id="chord-detector-badge" class="chord-detector-badge hidden" title="點擊切換同音異名">
+    <!-- 指板卡片本體 -->
+    <div class="fretboard-card">
+      <!-- 🎵 指板左上方：即時和弦辨識膠囊徽章 -->
+      <div id="chord-detector-badge" class="chord-detector-badge hidden" onclick="cycleDetectedChord()" title="點擊切換同音異名解釋">
         <span class="detector-dot"></span>
-        <span id="detected-chord-name" class="chord-title">--</span>
-        <span id="detected-chord-alt" class="chord-alt"></span>
+        <span id="detected-chord-title" class="chord-detector-title">--</span>
+        <span id="detected-chord-alt" class="chord-detector-alt"></span>
       </div>
-      <canvas id="fretboard" width="1080" height="280"></canvas>
+
+      <svg id="fretboard" width="1030" height="210"></svg>
     </div>
   </main>
 
-  <!-- 底部 macOS Dock -->
-  <footer>
-    <div class="tool-group">
-      <button id="btn-toggle-display" class="dock-btn">顯示：音名</button>
-      <button id="btn-clear" class="dock-btn">清空指板</button>
-      <button id="btn-sound" class="dock-btn">發聲：開</button>
-      <button id="btn-export" class="dock-btn">匯出 Retina 圖片</button>
+  <footer class="floating-dock">
+    <div class="dock-row-primary">
+      <div class="dock-group">
+        <button class="dock-btn active" id="btn-degree" onclick="setDisplayMode('degree')">首調</button>
+        <button class="dock-btn" id="btn-note" onclick="setDisplayMode('note')">音名</button>
+        <button class="dock-btn" id="btn-dot" onclick="setDisplayMode('dot')">點</button>
+      </div>
+
+      <div class="dock-select-pill">
+        <label>Key</label>
+        <select id="root-select" onchange="changeRoot(this.value)">
+          <option value="0">C</option><option value="1">C#</option><option value="2">D</option>
+          <option value="3">D#</option><option value="4">E</option><option value="5">F</option>
+          <option value="6">F#</option><option value="7">G</option><option value="8">G#</option>
+          <option value="9">A</option><option value="10">A#</option><option value="11">B</option>
+        </select>
+      </div>
+
+      <div class="dock-select-pill">
+        <label>Scale</label>
+        <select id="scale-type" onchange="changeScaleType(this.value)">
+          <optgroup label="自然與五聲">
+            <option value="major">大調</option><option value="minor">自然小調</option>
+            <option value="major_pentatonic">大調五聲</option><option value="minor_pentatonic">小調五聲</option>
+          </optgroup>
+          <optgroup label="教會調式">
+            <option value="ionian">Ionian</option><option value="dorian">Dorian</option>
+            <option value="phrygian">Phrygian</option><option value="lydian">Lydian</option>
+            <option value="mixolydian">Mixolydian</option><option value="aeolian">Aeolian</option>
+            <option value="locrian">Locrian</option>
+          </optgroup>
+          <optgroup label="衍生音階">
+            <option value="harmonic_minor">和聲小調</option><option value="melodic_minor">爵士小調</option>
+          </optgroup>
+        </select>
+      </div>
     </div>
-    <div class="divider"></div>
-    <button id="btn-open-drawer" class="dock-btn">調弦 / 樂器設定 ⚙</button>
+
+    <div class="dock-divider"></div>
+
+    <div class="dock-row-secondary">
+      <button class="dock-btn-sync" id="btn-scale-sync" onclick="toggleScaleSync()">
+        <span class="sync-led"></span>
+        <span>顯示調內音</span>
+      </button>
+
+      <button class="dock-btn-action" onclick="clearMarkers()">清除</button>
+
+      <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
+        <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      </button>
+
+      <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
+    </div>
   </footer>
 
-  <!-- 抽屜式側邊欄 -->
-  <div class="drawer-backdrop" id="drawer-backdrop"></div>
-  <aside id="settings-drawer">
-    <h3 style="font-size: 16px; margin-bottom: 8px;">樂器與各弦調音</h3>
-    <div style="display:flex; flex-direction:column; gap:10px;">
-      <label style="font-size:12px; color:var(--text-sub);">樂器預設</label>
-      <select id="instrument-select" class="select-input">
-        <option value="guitar_6" selected>6 弦吉他 (E A D G B E)</option>
-        <option value="guitar_7">7 弦吉他 (+B)</option>
-        <option value="bass_4">4 弦貝斯 (E A D G)</option>
-        <option value="bass_5">5 弦貝斯 (+B)</option>
-        <option value="ukulele_4">4 弦烏克麗麗 (G C E A)</option>
-      </select>
+  <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+
+  <aside class="sidebar-panel panel-right" id="sidebar-panel">
+    <div class="sidebar-header">
+      <div class="sidebar-title">樂器與外觀設定</div>
+      <button class="close-btn" onclick="closeSidebar()">✕</button>
     </div>
-    <div style="margin-top: 15px;">
-      <label style="font-size:12px; color:var(--text-sub);">主題色調</label>
-      <div style="display:flex; gap:10px; margin-top:8px;">
-        <button class="dock-btn theme-btn" data-theme="studio">工作室原創</button>
-        <button class="dock-btn theme-btn" data-theme="cyber">冷冽賽博</button>
+
+    <div>
+      <div class="section-label">樂器類型與弦數</div>
+      <div class="dock-select-pill" style="width: 100%; margin-bottom: 8px;">
+        <select id="instrument-select" style="width: 100%;" onchange="changeInstrument(this.value)">
+          <option value="guitar_6" selected>6 弦吉他 (Guitar)</option>
+          <option value="guitar_7">7 弦吉他 (7-String)</option>
+          <option value="bass_4">4 弦貝斯 (4-String Bass)</option>
+          <option value="bass_5">5 弦貝斯 (5-String Bass)</option>
+          <option value="ukulele_4">4 弦烏克麗麗 (Ukulele)</option>
+        </select>
+      </div>
+
+      <div class="section-label">各弦定音微調 (由第 1 弦至最粗弦)</div>
+      <div class="tuning-rows" id="tuning-controls-container"></div>
+    </div>
+
+    <div>
+      <div class="section-label">調性配色庫</div>
+      <div id="palette-cards-container"></div>
+    </div>
+
+    <div>
+      <div class="section-label">指板風格</div>
+      <div class="wood-grid">
+        <div class="wood-card active" id="fret-btn-studio_white" onclick="changeFretboardStyle('studio_white')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #ffffff, #e8ecf2);"></div>
+          <div class="wood-meta">
+            <div class="wood-name">純淨工作室白 (Studio White)</div>
+            <div class="wood-desc">啞光白陶瓷 ✕ 12px 加粗原木枕</div>
+          </div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-brushed_silver" onclick="changeFretboardStyle('brushed_silver')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #edf0f5, #b8bec9);"></div>
+          <div class="wood-meta">
+            <div class="wood-name">極光冷銀鋁 (Brushed Silver)</div>
+            <div class="wood-desc">陽極氧化鋁 ✕ 黑鎳弦</div>
+          </div>
+        </div>
+
+        <div class="wood-card" id="fret-btn-modern_rosewood" onclick="changeFretboardStyle('modern_rosewood')">
+          <div class="wood-preview" style="background: linear-gradient(180deg, #3a251d, #180e0a);"></div>
+          <div class="wood-meta">
+            <div class="wood-name">精品深焙玫瑰木 (Studio Rosewood)</div>
+            <div class="wood-desc">深邃油潤紅褐 ✕ 象牙骨枕</div>
+          </div>
+        </div>
       </div>
     </div>
   </aside>
 
   <script>
-    // --- 核心音階與和弦定義 ---
-    const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-    const CHORD_FORMULAS = [
+    const FRETS = 15;
+    const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const DEGREE_NAMES = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"];
+
+    // 逆向和弦辨識字典庫
+    const REVERSE_CHORD_FORMULAS = [
       { suffix: '', intervals: [0, 4, 7] },
       { suffix: 'm', intervals: [0, 3, 7] },
       { suffix: 'dim', intervals: [0, 3, 6] },
@@ -359,6 +658,7 @@
       { suffix: 'mMaj7', intervals: [0, 3, 7, 11] },
       { suffix: 'm7b5', intervals: [0, 3, 6, 10] },
       { suffix: 'dim7', intervals: [0, 3, 6, 9] },
+      { suffix: '7sus4', intervals: [0, 5, 7, 10] },
       { suffix: '6', intervals: [0, 4, 7, 9] },
       { suffix: 'm6', intervals: [0, 3, 7, 9] },
       { suffix: 'add9', intervals: [0, 2, 4, 7] },
@@ -368,299 +668,900 @@
       { suffix: '5', intervals: [0, 7] }
     ];
 
-    // --- 應用狀態 ---
-    const state = {
-      shape: 'circle',
-      color: 'root',
-      displayMode: 'note', // 'note' 或 'degree'
-      sound: true,
-      currentTuning: [64, 59, 55, 50, 45, 40], // 1弦至6弦 (E4, B3, G3, D3, A2, E2)
-      placedNotes: [], // { stringIdx, fret, shape, color }
-      rootPitch: 0 // 當前定調 Root (0 = C)
+    let detectedChordMatches = [];
+    let detectedChordIndex = 0;
+
+    const INSTRUMENTS = {
+      guitar_6:  { name: "6 弦吉他",  tuning: [64, 59, 55, 50, 45, 40] },
+      guitar_7:  { name: "7 弦吉他",  tuning: [64, 59, 55, 50, 45, 40, 35] },
+      bass_4:    { name: "4 弦貝斯",  tuning: [43, 38, 33, 28] },
+      bass_5:    { name: "5 弦貝斯",  tuning: [43, 38, 33, 28, 23] },
+      ukulele_4: { name: "4 弦烏克麗麗", tuning: [69, 64, 60, 67] }
     };
 
-    let detectedMatches = [];
-    let detectedMatchIdx = 0;
+    let currentInstrumentKey = 'guitar_6';
+    let currentTuningMIDI = [64, 59, 55, 50, 45, 40];
 
-    // --- DOM 快取 ---
-    const canvas = document.getElementById('fretboard');
-    const ctx = canvas.getContext('2d');
-    const detectorBadge = document.getElementById('chord-detector-badge');
-    const detectedTitle = document.getElementById('detected-chord-name');
-    const detectedAlt = document.getElementById('detected-chord-alt');
+    const SCALES = {
+      major:             { notes: [0, 2, 4, 5, 7, 9, 11] },
+      minor:             { notes: [0, 2, 3, 5, 7, 8, 10] },
+      major_pentatonic:  { notes: [0, 2, 4, 7, 9] },
+      minor_pentatonic:  { notes: [0, 3, 5, 7, 10] },
+      ionian:            { notes: [0, 2, 4, 5, 7, 9, 11] },
+      dorian:            { notes: [0, 2, 3, 5, 7, 9, 10] },
+      phrygian:          { notes: [0, 1, 3, 5, 7, 8, 10] },
+      lydian:            { notes: [0, 2, 4, 6, 7, 9, 11] },
+      mixolydian:        { notes: [0, 2, 4, 5, 7, 9, 10] },
+      aeolian:           { notes: [0, 2, 3, 5, 7, 8, 10] },
+      locrian:           { notes: [0, 1, 3, 5, 6, 8, 10] },
+      harmonic_minor:    { notes: [0, 2, 3, 5, 7, 8, 11] },
+      melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
+    };
 
-    // --- Web Audio 擬真琴聲合成 ---
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playGuitarTone(midi) {
-      if (!state.sound) return;
+    const PALETTE_GROUPS = {
+      apple_classic: { name: "經典原色 (Classic Tint)", c1: "#ff3b30", c2: "#2c3e50", c3: "#ff9500", c4: "#30d158" },
+      rose:          { name: "復古嫣紅 (Vintage Rose)", c1: "#d13b63", c2: "#382933", c3: "#eab308", c4: "#06b6d4" },
+      terracotta:    { name: "陶土紅褐 (Terracotta Earth)", c1: "#c84126", c2: "#2e3d36", c3: "#e59b34", c4: "#52b788" },
+      crimson:       { name: "深焙酒紅 (Crimson Velvet)", c1: "#b91c1c", c2: "#2b2d42", c3: "#f59e0b", c4: "#8b5cf6" }
+    };
+
+    const FRETBOARD_STYLES = {
+      studio_white: {
+        bg: ['#ffffff', '#f8f9fc', '#f1f3f7', '#e8ecf2'],
+        binding: '#cbd2dc',
+        nut: { fill: ['#cbb088', '#e8d5b5', '#dcc39e', '#b89c72'], stroke: '#a6885b', width: 13, isWood: true },
+        wire: '#94a3b8', shadow: '#b0b7c3', inlay: '#475569', inlayOpacity: 0.65, fretNum: '#86868b'
+      },
+      brushed_silver: {
+        bg: ['#edf0f5', '#dde1e8', '#cbd0d9', '#b8bec9'],
+        binding: '#9ea6b5',
+        nut: { fill: ['#e2e8f0', '#ffffff', '#cbd5e1'], stroke: '#94a3b8', width: 9, isWood: false },
+        wire: '#525b6a', shadow: '#717a8a', inlay: '#1e293b', inlayOpacity: 0.75, fretNum: '#64748b'
+      },
+      modern_rosewood: {
+        bg: ['#2d1c16', '#3a251d', '#251711', '#180e0a'],
+        binding: '#ded5c4',
+        nut: { fill: ['#ede4d3', '#fdfbf7', '#dfd3be'], stroke: '#c4b69d', width: 9, isWood: false },
+        wire: '#d5d9e0', shadow: '#120805', inlay: '#f1ece1', inlayOpacity: 0.9, fretNum: '#94a3b8'
+      }
+    };
+
+    // ========================================================
+    // 🎸 正統 CAGED 五大封閉手型相對陣列
+    // ========================================================
+    const CAGED_SHAPES_DATA = {
+      maj: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 0, 1, 0] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 0, 0, 0, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 2, 1, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 2] }
+      },
+      min: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 1, 0, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 1, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 1, 0, 0, -1, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 2, 0, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 1] }
+      },
+      "7": {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 3, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 0, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 0, 0, 0, 1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 0, 1, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 1, 2] }
+      },
+      maj7: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 0, 0, 0] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 1, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 0, 0, 0, 2] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, 1, 1, 0, -1] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 2, 2] }
+      },
+      m7: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 1, 3, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 0, 1, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 1, 0, 0, 3, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 0, 0, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 1, 1] }
+      },
+      m7b5: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 4, 3, 4, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 1, 0, 1, -1] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, -1, 3, 3, 2, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, 0, 0, -1, -1] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 1, 1, 1] }
+      },
+      "6": {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 2, -1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 2, 2] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 2, 0, 0, 0] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, -1, 1, 2, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 0, 2] }
+      },
+      m6: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 1, 2, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 1, 2] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 1, 2, 0, -1, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, -1, 0, 2, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 0, 1] }
+      },
+      dim7: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 4, 2, 4, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 1, -1, 1, -1] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, -1, 2, 3, 2, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, -1, 0, -1, -1] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 1, 0, 1] }
+      },
+      sus4: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 3, 0, 1, 1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 3, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 3, 0, 0, 1, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 2, 2, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 3] }
+      },
+      add9: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 0, 3, 0] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 4, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 0, 0, 2, 0, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 4, 1, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 0] }
+      }
+    };
+
+    let selectedCAGEDShape = 'C';
+
+    let displayMode = 'degree';
+    let currentRoot = 0;
+    let currentScale = 'major';
+    let currentFretboardStyle = 'studio_white';
+    let currentSelectedShape = 'circle';
+    let currentActivePalette = 'apple_classic';
+    let currentBrushType = 'c1';
+    let isScaleSyncActive = false;
+    const activeMarkers = new Map();
+
+    let audioCtx = null, isMuted = false;
+    function playGuitarTone(midiNote) {
+      if (isMuted) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
+      const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      const freq = 440 * Math.pow(2, (midi - 69) / 12);
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 1.2);
+      const now = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + 1.3);
     }
 
-    // --- 和弦即時辨識 (Reverse Chord Identifier) ---
-    function identifyChords() {
-      const active = state.placedNotes
-        .filter(n => n.shape !== 'cross')
-        .map(n => {
-          const midi = state.currentTuning[n.stringIdx] + n.fret;
-          return { midi, pc: midi % 12 };
-        })
-        .sort((a, b) => a.midi - b.midi);
+    function toggleMute() {
+      isMuted = !isMuted;
+      document.getElementById('btn-mute-toggle').classList.toggle('is-muted', isMuted);
+      document.getElementById('icon-sound').style.display = isMuted ? 'none' : 'block';
+      document.getElementById('icon-mute').style.display = isMuted ? 'block' : 'none';
+    }
 
-      if (active.length < 2) return [];
+    const svg = document.getElementById('fretboard');
+    const startX = 64, startY = 32, fretWidth = 62, stringSpacing = 26;
 
-      const bassPc = active[0].pc;
-      const uniquePcs = Array.from(new Set(active.map(n => n.pc)));
+    // ========================================================
+    // 🧠 逆向和弦辨識核心引擎 (Reverse Chord Detector)
+    // ========================================================
+    function identifyActiveChord() {
+      const activePitches = [];
+      activeMarkers.forEach(marker => {
+        if (marker.shape !== 'cross') {
+          const midi = currentTuningMIDI[marker.s] + marker.f;
+          activePitches.push({ midi, pc: midi % 12 });
+        }
+      });
+
+      if (activePitches.length < 2) return [];
+
+      activePitches.sort((a, b) => a.midi - b.midi);
+      const bassPc = activePitches[0].pc;
+      const uniquePcs = Array.from(new Set(activePitches.map(p => p.pc)));
       const matches = [];
 
       for (const root of uniquePcs) {
-        const intervals = uniquePcs.map(p => (p - root + 12) % 12).sort((a, b) => a - b);
-        const key = intervals.join(',');
-        for (const f of CHORD_FORMULAS) {
-          if (f.intervals.join(',') === key) {
+        const intervals = uniquePcs.map(pc => (pc - root + 12) % 12).sort((a, b) => a - b);
+        const intervalKey = intervals.join(',');
+
+        for (const formula of REVERSE_CHORD_FORMULAS) {
+          if (formula.intervals.join(',') === intervalKey) {
             const rootName = NOTE_NAMES[root];
             const isSlash = root !== bassPc;
             const bassName = NOTE_NAMES[bassPc];
             matches.push({
-              fullName: `${rootName}${f.suffix}${isSlash ? '/' + bassName : ''}`,
+              fullName: `${rootName}${formula.suffix}${isSlash ? '/' + bassName : ''}`,
               isBassRoot: !isSlash
             });
           }
         }
       }
+
       return matches.sort((a, b) => (b.isBassRoot ? 1 : 0) - (a.isBassRoot ? 1 : 0));
     }
 
-    function updateDetectedChordBadge() {
-      detectedMatches = identifyChords();
-      detectedMatchIdx = 0;
-      if (detectedMatches.length === 0) {
-        detectorBadge.classList.add('hidden');
+    function updateChordDetection() {
+      const badge = document.getElementById('chord-detector-badge');
+      if (!badge) return;
+
+      detectedChordMatches = identifyActiveChord();
+      detectedChordIndex = 0;
+
+      if (detectedChordMatches.length === 0) {
+        badge.classList.add('hidden');
         return;
       }
-      detectorBadge.classList.remove('hidden');
-      renderBadgeContent();
+
+      badge.classList.remove('hidden');
+      renderDetectedChordBadge();
     }
 
-    function renderBadgeContent() {
-      const cur = detectedMatches[detectedMatchIdx];
-      detectedTitle.textContent = cur.fullName;
-      detectedAlt.textContent = detectedMatches.length > 1 ? `(${detectedMatchIdx + 1}/${detectedMatches.length})` : '';
-    }
+    function renderDetectedChordBadge() {
+      const titleEl = document.getElementById('detected-chord-title');
+      const altEl = document.getElementById('detected-chord-alt');
+      const current = detectedChordMatches[detectedChordIndex];
 
-    detectorBadge.addEventListener('click', () => {
-      if (detectedMatches.length > 1) {
-        detectedMatchIdx = (detectedMatchIdx + 1) % detectedMatches.length;
-        renderBadgeContent();
+      titleEl.textContent = current.fullName;
+      if (detectedChordMatches.length > 1) {
+        altEl.textContent = `(${detectedChordIndex + 1}/${detectedChordMatches.length})`;
+      } else {
+        altEl.textContent = '';
       }
-    });
+    }
 
-    // --- 繪圖引擎 (Retina Canvas 2X) ---
-    const TOTAL_FRETS = 15;
-    const NUT_WIDTH = 12;
-    const PADDING_LEFT = 40;
-    const PADDING_TOP = 30;
-    const FRET_W = 66;
+    function cycleDetectedChord() {
+      if (detectedChordMatches.length > 1) {
+        detectedChordIndex = (detectedChordIndex + 1) % detectedChordMatches.length;
+        renderDetectedChordBadge();
+      }
+    }
 
-    function renderFretboard() {
-      const numStrings = state.currentTuning.length;
-      const boardH = 220;
-      const stringSpacing = boardH / (numStrings - 1);
+    function renderBoard() {
+      const numStrings = currentTuningMIDI.length;
+      const boardW = FRETS * fretWidth;
+      const boardH = (numStrings - 1) * stringSpacing + 20;
+      const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const totalSVGHeight = boardH + startY + 28;
+      svg.setAttribute("height", totalSVGHeight);
 
-      // 琴木背景
-      ctx.fillStyle = '#1C1614';
-      ctx.fillRect(PADDING_LEFT, PADDING_TOP, TOTAL_FRETS * FRET_W, boardH);
+      const defsHTML = `
+        <defs>
+          <linearGradient id="dyn-wood-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            ${style.bg.map((c, i) => `<stop offset="${(i / (style.bg.length - 1)) * 100}%" stop-color="${c}"/>`).join('')}
+          </linearGradient>
+          <linearGradient id="dyn-nut-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            ${style.nut.fill.map((c, i) => `<stop offset="${(i / (style.nut.fill.length - 1)) * 100}%" stop-color="${c}"/>`).join('')}
+          </linearGradient>
+        </defs>
+      `;
+      svg.innerHTML = defsHTML;
 
-      // 琴枕 (Nut)
-      ctx.fillStyle = '#E6E1D3';
-      ctx.fillRect(PADDING_LEFT - NUT_WIDTH, PADDING_TOP - 2, NUT_WIDTH, boardH + 4);
+      // 1. 指板底圖
+      const woodRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      woodRect.setAttribute("x", startX); woodRect.setAttribute("y", startY - 10);
+      woodRect.setAttribute("width", boardW); woodRect.setAttribute("height", boardH);
+      woodRect.setAttribute("rx", "6"); woodRect.setAttribute("fill", "url(#dyn-wood-grad)");
+      woodRect.setAttribute("stroke", style.binding); woodRect.setAttribute("stroke-width", "1.6");
+      svg.appendChild(woodRect);
 
-      // 品絲 (Frets)
-      for (let f = 1; f <= TOTAL_FRETS; f++) {
-        const x = PADDING_LEFT + f * FRET_W;
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-        ctx.fillRect(x, PADDING_TOP, 2, boardH);
+      // 2. 琴枕
+      const nutW = style.nut.width;
+      const nut = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      nut.setAttribute("x", startX - nutW); nut.setAttribute("y", startY - 10);
+      nut.setAttribute("width", nutW); nut.setAttribute("height", boardH);
+      nut.setAttribute("rx", "2.5"); nut.setAttribute("fill", "url(#dyn-nut-grad)");
+      nut.setAttribute("stroke", style.nut.stroke); nut.setAttribute("stroke-width", "1.2");
+      svg.appendChild(nut);
 
-        // 鑲嵌點 (Inlays)
-        if ([3, 5, 7, 9, 12, 15].includes(f)) {
-          const midX = x - FRET_W / 2;
-          ctx.fillStyle = 'rgba(255,255,255,0.18)';
-          if (f === 12) {
-            ctx.beginPath();
-            ctx.arc(midX, PADDING_TOP + boardH * 0.3, 4, 0, Math.PI * 2);
-            ctx.arc(midX, PADDING_TOP + boardH * 0.7, 4, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            ctx.beginPath();
-            ctx.arc(midX, PADDING_TOP + boardH / 2, 4.5, 0, Math.PI * 2);
-            ctx.fill();
+      if (style.nut.isWood) {
+        const grain = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        grain.setAttribute("x1", startX - nutW + 4); grain.setAttribute("y1", startY - 8);
+        grain.setAttribute("x2", startX - nutW + 4); grain.setAttribute("y2", startY - 12 + boardH);
+        grain.setAttribute("stroke", "#bfa378"); grain.setAttribute("stroke-width", "0.8"); grain.setAttribute("opacity", "0.7");
+        svg.appendChild(grain);
+      }
+
+      // 3. 把位點 (Inlays)
+      [3, 5, 7, 9, 12, 15].forEach(f => {
+        if (f > FRETS) return;
+        const x = startX + (f - 0.5) * fretWidth;
+        const midY = startY + ((numStrings - 1) * stringSpacing) / 2;
+        if (f === 12) {
+          drawCircle(x, midY - 15, 3.8, style.inlay, style.inlayOpacity);
+          drawCircle(x, midY + 15, 3.8, style.inlay, style.inlayOpacity);
+        } else {
+          drawCircle(x, midY, 4.2, style.inlay, style.inlayOpacity);
+        }
+      });
+
+      // 4. 品絲與數字
+      for (let f = 1; f <= FRETS; f++) {
+        const x = startX + f * fretWidth;
+        const shadow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        shadow.setAttribute("x1", x + 1); shadow.setAttribute("y1", startY - 10);
+        shadow.setAttribute("x2", x + 1); shadow.setAttribute("y2", startY - 10 + boardH);
+        shadow.setAttribute("stroke", style.shadow); shadow.setAttribute("stroke-width", "1.2");
+        svg.appendChild(shadow);
+
+        const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        wire.setAttribute("x1", x); wire.setAttribute("y1", startY - 10);
+        wire.setAttribute("x2", x); wire.setAttribute("y2", startY - 10 + boardH);
+        wire.setAttribute("stroke", style.wire); wire.setAttribute("stroke-width", "2.0");
+        svg.appendChild(wire);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x - fretWidth / 2); text.setAttribute("y", startY + boardH + 16);
+        text.setAttribute("class", "fret-number"); text.setAttribute("fill", style.fretNum);
+        text.textContent = f;
+        svg.appendChild(text);
+      }
+
+      // 5. 琴弦
+      for (let s = 0; s < numStrings; s++) {
+        const y = startY + s * stringSpacing;
+        const stringThick = 0.95 + (s * (2.4 / (numStrings - 1 || 1)));
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", startX - nutW - 12); line.setAttribute("y1", y);
+        line.setAttribute("x2", startX + boardW); line.setAttribute("y2", y);
+        line.setAttribute("stroke", s < 2 ? "#525b6a" : "#1e293b");
+        line.setAttribute("stroke-width", stringThick);
+        line.setAttribute("stroke-linecap", "round");
+        svg.appendChild(line);
+      }
+
+      // 6. 點擊感應區與標記點渲染
+      const curPal = PALETTE_GROUPS[currentActivePalette];
+      for (let s = 0; s < numStrings; s++) {
+        for (let f = 0; f <= FRETS; f++) {
+          const x = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
+          const y = startY + s * stringSpacing;
+          const key = `${s}-${f}`;
+
+          const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          hitArea.setAttribute("x", x - (f === 0 ? 12 : fretWidth / 2));
+          hitArea.setAttribute("y", y - stringSpacing / 2);
+          hitArea.setAttribute("width", f === 0 ? 24 : fretWidth);
+          hitArea.setAttribute("height", stringSpacing);
+          hitArea.setAttribute("class", "clickable-area");
+          hitArea.onclick = () => toggleMarker(s, f);
+          svg.appendChild(hitArea);
+
+          if (activeMarkers.has(key)) {
+            const markerData = activeMarkers.get(key);
+            const actualColor = curPal[markerData.colorKey] || markerData.color;
+            renderMarker(x, y, s, f, markerData.shape, actualColor);
           }
         }
       }
 
-      // 琴弦 (Strings)
-      for (let s = 0; s < numStrings; s++) {
-        const y = PADDING_TOP + s * stringSpacing;
-        const thickness = 1 + (numStrings - 1 - s) * 0.45;
-        ctx.fillStyle = 'rgba(215, 220, 225, 0.75)';
-        ctx.fillRect(PADDING_LEFT - NUT_WIDTH, y - thickness / 2, TOTAL_FRETS * FRET_W + NUT_WIDTH, thickness);
+      // 同步更新左上方和弦即時辨識徽章
+      updateChordDetection();
+    }
+
+    function renderMarker(x, y, s, f, shape, color) {
+      const midi = currentTuningMIDI[s] + f;
+      const noteName = NOTE_NAMES[midi % 12];
+      const interval = ((midi - currentRoot) % 12 + 12) % 12;
+      const degreeName = DEGREE_NAMES[interval];
+
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+      if (shape === 'circle') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        el.setAttribute("cx", x); el.setAttribute("cy", y); el.setAttribute("r", 11.2);
+        el.setAttribute("fill", color); el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'ring') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        el.setAttribute("cx", x); el.setAttribute("cy", y); el.setAttribute("r", 9.8);
+        el.setAttribute("fill", "rgba(0,0,0,0.35)"); el.setAttribute("stroke", color);
+        el.setAttribute("stroke-width", "2.8"); el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'diamond') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        el.setAttribute("points", `${x},${y - 13} ${x + 13},${y} ${x},${y + 13} ${x - 13},${y}`);
+        el.setAttribute("fill", color); el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'triangle') {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        el.setAttribute("points", `${x},${y - 12} ${x + 12.5},${y + 9} ${x - 12.5},${y + 9}`);
+        el.setAttribute("fill", color); el.setAttribute("class", "marker-shape");
+        g.appendChild(el);
+      } else if (shape === 'cross') {
+        const l1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        l1.setAttribute("x1", x - 6); l1.setAttribute("y1", y - 6);
+        l1.setAttribute("x2", x + 6); l1.setAttribute("y2", y + 6);
+        l1.setAttribute("stroke", "#8e8e93");
+        l1.setAttribute("stroke-width", "2.4"); l1.setAttribute("stroke-linecap", "round");
+        const l2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        l2.setAttribute("x1", x + 6); l2.setAttribute("y1", y - 6);
+        l2.setAttribute("x2", x - 6); l2.setAttribute("y2", y + 6);
+        l2.setAttribute("stroke", "#8e8e93");
+        l2.setAttribute("stroke-width", "2.4"); l2.setAttribute("stroke-linecap", "round");
+        g.appendChild(l1); g.appendChild(l2);
       }
 
-      // 標記點繪製
-      state.placedNotes.forEach(note => {
-        const y = PADDING_TOP + note.stringIdx * stringSpacing;
-        const x = note.fret === 0 ? PADDING_LEFT - NUT_WIDTH / 2 : PADDING_LEFT + note.fret * FRET_W - FRET_W / 2;
-        
-        let color = '#2C2C2E';
-        if (note.color === 'root') color = '#FF3B30';
-        else if (note.color === 'accent1') color = '#FF9500';
-        else if (note.color === 'accent2') color = '#007AFF';
+      if (displayMode !== 'dot' && shape !== 'cross') {
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x); text.setAttribute("y", shape === 'triangle' ? y + 2 : y);
+        text.setAttribute("class", "marker-text"); text.setAttribute("fill", "#ffffff");
+        text.textContent = displayMode === 'note' ? noteName : degreeName;
+        g.appendChild(text);
+      }
 
-        ctx.save();
-        ctx.fillStyle = color;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2.5;
+      g.onclick = () => toggleMarker(s, f);
+      svg.appendChild(g);
+    }
 
-        // 幾何形狀
-        if (note.shape === 'circle') {
-          ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.fill();
-        } else if (note.shape === 'ring') {
-          ctx.beginPath(); ctx.arc(x, y, 11, 0, Math.PI * 2); ctx.stroke();
-        } else if (note.shape === 'diamond') {
-          ctx.beginPath(); ctx.moveTo(x, y - 13); ctx.lineTo(x + 13, y); ctx.lineTo(x, y + 13); ctx.lineTo(x - 13, y); ctx.closePath(); ctx.fill();
-        } else if (note.shape === 'triangle') {
-          ctx.beginPath(); ctx.moveTo(x, y - 13); ctx.lineTo(x + 12, y + 10); ctx.lineTo(x - 12, y + 10); ctx.closePath(); ctx.fill();
-        } else if (note.shape === 'cross') {
-          ctx.strokeStyle = '#FF453A'; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.moveTo(x - 8, y - 8); ctx.lineTo(x + 8, y + 8); ctx.moveTo(x + 8, y - 8); ctx.lineTo(x - 8, y + 8); ctx.stroke();
+    function drawCircle(cx, cy, r, fill, opacity) {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", r);
+      c.setAttribute("fill", fill); c.setAttribute("opacity", opacity);
+      svg.appendChild(c);
+    }
+
+    function toggleMarker(s, f) {
+      const midi = currentTuningMIDI[s] + f;
+      playGuitarTone(midi);
+
+      const targetKey = `${s}-${f}`;
+
+      if (currentBrushType === 'c1') {
+        const newRoot = midi % 12;
+        currentRoot = newRoot;
+        document.getElementById('root-select').value = newRoot;
+
+        activeMarkers.forEach((item, k) => {
+          if (k !== targetKey && item.colorKey === 'c1') {
+            item.colorKey = 'c2';
+          }
+        });
+
+        activeMarkers.set(targetKey, { s, f, shape: currentSelectedShape, colorKey: 'c1' });
+
+        if (isScaleSyncActive) {
+          populateScaleNotes();
         }
 
-        // 文字（音名或度數）
-        if (note.shape !== 'cross') {
-          const midi = state.currentTuning[note.stringIdx] + note.fret;
-          const text = state.displayMode === 'note' ? NOTE_NAMES[midi % 12] : `${((midi % 12) - state.rootPitch + 12) % 12 || 'R'}`;
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = '600 11px -apple-system, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(text, x, y);
+        pickColor(currentActivePalette, 'c2');
+        renderBoard();
+        return;
+      }
+
+      const isDegreeOne = (midi % 12 === currentRoot);
+      const assignedColorKey = isDegreeOne ? 'c1' : currentBrushType;
+
+      if (activeMarkers.has(targetKey)) {
+        const cur = activeMarkers.get(targetKey);
+        if (cur.shape === currentSelectedShape && cur.colorKey === assignedColorKey) {
+          activeMarkers.delete(targetKey);
+        } else {
+          cur.shape = currentSelectedShape;
+          cur.colorKey = assignedColorKey;
+          activeMarkers.set(targetKey, cur);
         }
-        ctx.restore();
+      } else {
+        activeMarkers.set(targetKey, { s, f, shape: currentSelectedShape, colorKey: assignedColorKey });
+      }
+
+      renderBoard();
+    }
+
+    // ========================================================
+    // 🎼 正統 CAGED 五大形狀精準推算引擎
+    // ========================================================
+    function selectCAGEDShape(shapeLetter) {
+      selectedCAGEDShape = shapeLetter;
+      document.querySelectorAll('.caged-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`caged-btn-${shapeLetter}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      applySelectedChord();
+    }
+
+    function applySelectedChord() {
+      const chordRoot = parseInt(document.getElementById('chord-root-select').value, 10);
+      const chordType = document.getElementById('chord-type-select').value;
+
+      currentRoot = chordRoot;
+      document.getElementById('root-select').value = chordRoot;
+
+      activeMarkers.clear();
+
+      const typeData = CAGED_SHAPES_DATA[chordType];
+      if (!typeData || !typeData[selectedCAGEDShape]) return;
+
+      const shapeInfo = typeData[selectedCAGEDShape];
+      const baseFrets = shapeInfo.frets;
+      const baseRoot = shapeInfo.baseRoot;
+
+      // 計算 CAGED 平移把位差
+      const offset = ((chordRoot - baseRoot) % 12 + 12) % 12;
+
+      for (let str = 0; str < 6; str++) {
+        const sIndex = 5 - str;
+        const baseFret = baseFrets[str];
+
+        if (baseFret === -1) {
+          // 悶音：琴枕處標記灰叉
+          activeMarkers.set(`${sIndex}-0`, { s: sIndex, f: 0, shape: 'cross', colorKey: 'c2' });
+        } else {
+          let actualFret = baseFret + offset;
+          // 若超過 15 品，平移至低八度把位
+          if (actualFret > FRETS) {
+            actualFret -= 12;
+          }
+          if (actualFret < 0 || actualFret > FRETS) continue;
+
+          const midi = currentTuningMIDI[sIndex] + actualFret;
+          const interval = ((midi - currentRoot) % 12 + 12) % 12;
+
+          let role = 'c2'; // 3度、5度等骨幹音為暗底襯底
+          if (interval === 0) role = 'c1'; // 根音 Root 為第 1 色
+          else if (interval === 9 || interval === 10 || interval === 11 || interval === 6) role = 'c3'; // 6th, 7th, b5 特徵音
+
+          const shape = (actualFret === 0) ? 'ring' : 'circle';
+          activeMarkers.set(`${sIndex}-${actualFret}`, { s: sIndex, f: actualFret, shape: shape, colorKey: role });
+        }
+      }
+
+      renderBoard();
+    }
+
+    function renderQuickColorBar() {
+      const container = document.getElementById('quick-color-container');
+      const pal = PALETTE_GROUPS[currentActivePalette];
+      const colors = [
+        { key: 'c1', hex: pal.c1, title: 'Root (主音，點擊自動定調並切換第二色)', isRoot: true },
+        { key: 'c2', hex: pal.c2, title: '暗底襯底', isRoot: false },
+        { key: 'c3', hex: pal.c3, title: '強調色 A', isRoot: false },
+        { key: 'c4', hex: pal.c4, title: '強調色 B', isRoot: false }
+      ];
+      container.innerHTML = '';
+      colors.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-color-btn' + (currentBrushType === item.key ? ' active' : '');
+        btn.style.backgroundColor = item.hex;
+        btn.title = item.title;
+        if (item.isRoot) {
+          btn.textContent = 'R';
+        }
+        btn.onclick = () => pickColor(currentActivePalette, item.key);
+        container.appendChild(btn);
       });
     }
 
-    // --- 互動與標記點擊 ---
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+    function pickColor(groupKey, type) {
+      currentActivePalette = groupKey;
+      currentBrushType = type;
+      renderQuickColorBar();
+      updatePaletteUI();
+      if (isScaleSyncActive) { populateScaleNotes(); }
+      renderBoard();
+    }
 
-      const numStrings = state.currentTuning.length;
-      const stringSpacing = 220 / (numStrings - 1);
-      
-      const sIdx = Math.round((clickY - PADDING_TOP) / stringSpacing);
-      if (sIdx < 0 || sIdx >= numStrings) return;
+    function setShape(shapeName) {
+      currentSelectedShape = shapeName;
+      document.querySelectorAll('.quick-shape-btn').forEach(b => b.classList.remove('active'));
+      const qb = document.getElementById(`q-shape-${shapeName}`);
+      if (qb) qb.classList.add('active');
+    }
 
-      let fret = -1;
-      if (clickX >= PADDING_LEFT - NUT_WIDTH && clickX <= PADDING_LEFT) {
-        fret = 0;
-      } else if (clickX > PADDING_LEFT) {
-        fret = Math.ceil((clickX - PADDING_LEFT) / FRET_W);
-      }
-      if (fret < 0 || fret > TOTAL_FRETS) return;
+    function changeInstrument(instKey) {
+      currentInstrumentKey = instKey;
+      currentTuningMIDI = [...INSTRUMENTS[instKey].tuning];
+      activeMarkers.clear();
+      renderTuningControls();
+      renderBoard();
+    }
 
-      // 切換開關邏輯
-      const existIdx = state.placedNotes.findIndex(n => n.stringIdx === sIdx && n.fret === fret);
-      if (existIdx >= 0) {
-        state.placedNotes.splice(existIdx, 1);
-      } else {
-        const midi = state.currentTuning[sIdx] + fret;
-        let appliedColor = state.color;
+    function renderTuningControls() {
+      const container = document.getElementById('tuning-controls-container');
+      container.innerHTML = '';
+      currentTuningMIDI.forEach((midi, s) => {
+        const row = document.createElement('div');
+        row.className = 'tuning-string-item';
+        row.innerHTML = `
+          <span>第 ${s + 1} 弦</span>
+          <select onchange="updateStringTuning(${s}, this.value)">
+            ${NOTE_NAMES.map((name, i) => {
+              const octave = Math.floor(midi / 12) - 1;
+              const isSelected = (midi % 12 === i);
+              return `<option value="${i}" ${isSelected ? 'selected' : ''}>${name} (${octave})</option>`;
+            }).join('')}
+          </select>
+        `;
+        container.appendChild(row);
+      });
+    }
 
-        // 規則：音程 1 自動上 Root 色；若主動標記 Root 則定調並降階舊 Root
-        if (appliedColor === 'root') {
-          state.rootPitch = midi % 12;
-          state.placedNotes.forEach(n => { if (n.color === 'root') n.color = 'bg'; });
-          state.color = 'bg';
-          document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-          document.querySelector('.color-swatch[data-color="bg"]')?.classList.add('active');
+    function updateStringTuning(stringIndex, noteVal) {
+      const targetNote = parseInt(noteVal, 10);
+      const curMIDI = currentTuningMIDI[stringIndex];
+      const curOctave = Math.floor(curMIDI / 12);
+      currentTuningMIDI[stringIndex] = curOctave * 12 + targetNote;
+      if (isScaleSyncActive) populateScaleNotes();
+      renderBoard();
+    }
+
+    function renderPaletteCards() {
+      const container = document.getElementById('palette-cards-container');
+      container.innerHTML = '';
+      Object.keys(PALETTE_GROUPS).forEach(key => {
+        const pal = PALETTE_GROUPS[key];
+        const card = document.createElement('div');
+        card.className = `palette-group-card ${currentActivePalette === key ? 'active-group' : ''}`;
+        card.id = `pal-card-${key}`;
+        card.innerHTML = `
+          <div class="palette-header" onclick="pickColor('${key}', 'c1')">
+            <span class="palette-name">${pal.name}</span>
+            <span class="palette-radio-label">套用組</span>
+          </div>
+          <div class="palette-swatches-grid-4">
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c1' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c1')">
+              <span class="swatch-dot" style="background:${pal.c1}"></span><span class="swatch-label">Root</span>
+            </div>
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c2' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c2')">
+              <span class="swatch-dot" style="background:${pal.c2}"></span><span class="swatch-label">暗襯底</span>
+            </div>
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c3' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c3')">
+              <span class="swatch-dot" style="background:${pal.c3}"></span><span class="swatch-label">強調 A</span>
+            </div>
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c4' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c4')">
+              <span class="swatch-dot" style="background:${pal.c4}"></span><span class="swatch-label">強調 B</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function updatePaletteUI() {
+      renderPaletteCards();
+    }
+
+    function changeFretboardStyle(styleKey) {
+      currentFretboardStyle = styleKey;
+      document.querySelectorAll('.wood-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById(`fret-btn-${styleKey}`);
+      if (activeCard) activeCard.classList.add('active');
+      renderBoard();
+    }
+
+    function populateScaleNotes() {
+      activeMarkers.clear();
+      const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
+      const numStrings = currentTuningMIDI.length;
+
+      for (let s = 0; s < numStrings; s++) {
+        for (let f = 0; f <= FRETS; f++) {
+          const midi = currentTuningMIDI[s] + f;
+          const interval = ((midi - currentRoot) % 12 + 12) % 12;
+          if (scaleNotes.includes(interval)) {
+            const roleKey = (interval === 0) ? 'c1' : 'c2';
+            activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, colorKey: roleKey });
+          }
         }
+      }
+    }
 
-        state.placedNotes.push({ stringIdx: sIdx, fret, shape: state.shape, color: appliedColor });
-        playGuitarTone(midi);
+    function toggleScaleSync() {
+      isScaleSyncActive = !isScaleSyncActive;
+      document.getElementById('btn-scale-sync').classList.toggle('sync-active', isScaleSyncActive);
+      if (isScaleSyncActive) populateScaleNotes(); else activeMarkers.clear();
+      renderBoard();
+    }
+
+    function changeRoot(rootVal) {
+      currentRoot = parseInt(rootVal, 10);
+      if (isScaleSyncActive) populateScaleNotes();
+      renderBoard();
+    }
+
+    function changeScaleType(scaleVal) {
+      currentScale = scaleVal;
+      if (isScaleSyncActive) populateScaleNotes();
+      renderBoard();
+    }
+
+    function setDisplayMode(mode) {
+      displayMode = mode;
+      document.querySelectorAll('.dock-group button').forEach(b => b.classList.remove('active'));
+      document.getElementById(`btn-${mode}`).classList.add('active');
+      renderBoard();
+    }
+
+    function clearMarkers() {
+      isScaleSyncActive = false;
+      document.getElementById('btn-scale-sync').classList.remove('sync-active');
+      activeMarkers.clear();
+      renderBoard();
+    }
+
+    const dragBtn = document.getElementById('sidebar-trigger-btn');
+    const panel = document.getElementById('sidebar-panel');
+    const overlay = document.getElementById('sidebar-overlay');
+    let isDragging = false, startX_p = 0, startY_p = 0, initialX = 0, initialY = 0, hasMoved = false;
+
+    function openSidebar() { panel.classList.add('open'); dragBtn.classList.add('open'); overlay.classList.add('active'); }
+    function closeSidebar() { panel.classList.remove('open'); dragBtn.classList.remove('open'); overlay.classList.remove('active'); }
+    function toggleSidebar() { panel.classList.contains('open') ? closeSidebar() : openSidebar(); }
+
+    panel.addEventListener('pointerdown', e => e.stopPropagation());
+    document.addEventListener('pointerdown', e => {
+      if (panel.classList.contains('open') && !dragBtn.contains(e.target)) closeSidebar();
+    });
+
+    dragBtn.addEventListener('pointerdown', e => {
+      isDragging = true; hasMoved = false; startX_p = e.clientX; startY_p = e.clientY;
+      const rect = dragBtn.getBoundingClientRect(); initialX = rect.left; initialY = rect.top;
+      dragBtn.setPointerCapture(e.pointerId);
+    });
+
+    dragBtn.addEventListener('pointermove', e => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX_p, dy = e.clientY - startY_p;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+        hasMoved = true;
+        dragBtn.classList.add('is-dragging');
+        dragBtn.classList.remove('dock-left', 'dock-right');
+        const nextX = Math.max(8, Math.min(window.innerWidth - 56, initialX + dx));
+        const nextY = Math.max(20, Math.min(window.innerHeight - 120, initialY + dy));
+        dragBtn.style.left = `${nextX}px`; dragBtn.style.top = `${nextY}px`; dragBtn.style.right = 'auto';
+      }
+    });
+
+    dragBtn.addEventListener('pointerup', e => {
+      if (!isDragging) return;
+      isDragging = false; dragBtn.releasePointerCapture(e.pointerId);
+      dragBtn.classList.remove('is-dragging');
+      if (!hasMoved) { toggleSidebar(); } else {
+        const btnMid = dragBtn.getBoundingClientRect().left + 24;
+        const screenMid = window.innerWidth / 2;
+        if (btnMid < screenMid) {
+          dragBtn.style.left = '0px'; dragBtn.style.right = 'auto';
+          dragBtn.classList.add('dock-left'); panel.className = 'sidebar-panel panel-left';
+        } else {
+          dragBtn.style.left = 'auto'; dragBtn.style.right = '0px';
+          dragBtn.classList.add('dock-right'); panel.className = 'sidebar-panel panel-right';
+        }
+      }
+    });
+
+    function exportFretboardPNG() {
+      const scale = 2;
+      const numStrings = currentTuningMIDI.length;
+      const boardW = FRETS * fretWidth;
+      const boardH = (numStrings - 1) * stringSpacing + 20;
+      const totalW = 1030;
+      const totalH = boardH + startY + 28;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = totalW * scale; canvas.height = totalH * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      const style = FRETBOARD_STYLES[currentFretboardStyle];
+
+      const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
+      style.bg.forEach((c, i) => woodGrad.addColorStop(i / (style.bg.length - 1), c));
+      ctx.fillStyle = woodGrad;
+      ctx.fillRect(startX, startY - 10, boardW, boardH);
+
+      ctx.strokeStyle = style.binding; ctx.lineWidth = 1.6;
+      ctx.strokeRect(startX, startY - 10, boardW, boardH);
+
+      const nutW = style.nut.width;
+      const nutGrad = ctx.createLinearGradient(startX - nutW, 0, startX, 0);
+      style.nut.fill.forEach((c, i) => nutGrad.addColorStop(i / (style.nut.fill.length - 1), c));
+      ctx.fillStyle = nutGrad;
+      ctx.fillRect(startX - nutW, startY - 10, nutW, boardH);
+      ctx.strokeStyle = style.nut.stroke; ctx.lineWidth = 1.2;
+      ctx.strokeRect(startX - nutW, startY - 10, nutW, boardH);
+
+      [3, 5, 7, 9, 12, 15].forEach(f => {
+        if (f > FRETS) return;
+        const ix = startX + (f - 0.5) * fretWidth;
+        const midY = startY + ((numStrings - 1) * stringSpacing) / 2;
+        ctx.fillStyle = style.inlay; ctx.globalAlpha = style.inlayOpacity;
+        if (f === 12) {
+          ctx.beginPath(); ctx.arc(ix, midY - 15, 3.8, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(ix, midY + 15, 3.8, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.beginPath(); ctx.arc(ix, midY, 4.2, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+      });
+
+      ctx.font = '500 11.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let f = 1; f <= FRETS; f++) {
+        const fx = startX + f * fretWidth;
+        ctx.strokeStyle = style.shadow; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(fx + 1, startY - 10); ctx.lineTo(fx + 1, startY - 10 + boardH); ctx.stroke();
+
+        ctx.strokeStyle = style.wire; ctx.lineWidth = 2.0;
+        ctx.beginPath(); ctx.moveTo(fx, startY - 10); ctx.lineTo(fx, startY - 10 + boardH); ctx.stroke();
+
+        ctx.fillStyle = style.fretNum;
+        ctx.fillText(f, fx - fretWidth / 2, startY + boardH + 16);
       }
 
-      renderFretboard();
-      updateDetectedChordBadge();
-    });
+      for (let s = 0; s < numStrings; s++) {
+        const sy = startY + s * stringSpacing;
+        const thick = 0.95 + (s * (2.4 / (numStrings - 1 || 1)));
+        ctx.strokeStyle = s < 2 ? "#525b6a" : "#1e293b";
+        ctx.lineWidth = thick; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(startX - nutW - 10, sy); ctx.lineTo(startX + boardW, sy); ctx.stroke();
+      }
 
-    // --- 工具列切換事件 ---
-    document.querySelectorAll('.tool-btn[data-shape]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tool-btn[data-shape]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.shape = btn.dataset.shape;
+      ctx.font = '600 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const curPal = PALETTE_GROUPS[currentActivePalette];
+
+      activeMarkers.forEach((markerData) => {
+        const { s, f, shape, colorKey } = markerData;
+        const color = curPal[colorKey] || curPal.c1;
+        const mx = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
+        const my = startY + s * stringSpacing;
+        const midi = currentTuningMIDI[s] + f;
+        const noteName = NOTE_NAMES[midi % 12];
+        const interval = ((midi - currentRoot) % 12 + 12) % 12;
+        const degreeName = DEGREE_NAMES[interval];
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2;
+
+        if (shape === 'circle') {
+          ctx.fillStyle = color; ctx.beginPath(); ctx.arc(mx, my, 11.2, 0, Math.PI * 2); ctx.fill();
+        } else if (shape === 'ring') {
+          ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.arc(mx, my, 9.8, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = color; ctx.lineWidth = 2.8; ctx.stroke();
+        } else if (shape === 'diamond') {
+          ctx.fillStyle = color; ctx.beginPath();
+          ctx.moveTo(mx, my - 13); ctx.lineTo(mx + 13, my); ctx.lineTo(mx, my + 13); ctx.lineTo(mx - 13, my);
+          ctx.closePath(); ctx.fill();
+        } else if (shape === 'triangle') {
+          ctx.fillStyle = color; ctx.beginPath();
+          ctx.moveTo(mx, my - 12); ctx.lineTo(mx + 12.5, my + 9); ctx.lineTo(mx - 12.5, my + 9);
+          ctx.closePath(); ctx.fill();
+        } else if (shape === 'cross') {
+          ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(mx - 6, my - 6); ctx.lineTo(mx + 6, my + 6);
+          ctx.moveTo(mx + 6, my - 6); ctx.lineTo(mx - 6, my + 6);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        if (displayMode !== 'dot' && shape !== 'cross') {
+          ctx.fillStyle = '#ffffff';
+          const labelY = shape === 'triangle' ? my + 2 : my;
+          ctx.fillText(displayMode === 'note' ? noteName : degreeName, mx, labelY);
+        }
       });
-    });
 
-    document.querySelectorAll('.color-swatch').forEach(swatch => {
-      swatch.addEventListener('click', () => {
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-        state.color = swatch.dataset.color;
-      });
-    });
+      const pngURL = canvas.toDataURL('image/png');
+      const downloadLink = document.createElement('a');
+      const rootName = NOTE_NAMES[currentRoot];
+      downloadLink.download = `${INSTRUMENTS[currentInstrumentKey].name}_${rootName}_${currentScale}.png`;
+      downloadLink.href = pngURL;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
 
-    document.getElementById('btn-clear').addEventListener('click', () => {
-      state.placedNotes = [];
-      renderFretboard();
-      updateDetectedChordBadge();
-    });
-
-    document.getElementById('btn-toggle-display').addEventListener('click', (e) => {
-      state.displayMode = state.displayMode === 'note' ? 'degree' : 'note';
-      e.target.textContent = state.displayMode === 'note' ? '顯示：音名' : '顯示：度數';
-      renderFretboard();
-    });
-
-    document.getElementById('btn-sound').addEventListener('click', (e) => {
-      state.sound = !state.sound;
-      e.target.textContent = state.sound ? '發聲：開' : '發聲：靜音';
-    });
-
-    document.getElementById('btn-export').addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = 'fretboard-studio.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
-
-    // 抽屜控制
-    const drawer = document.getElementById('settings-drawer');
-    const backdrop = document.getElementById('drawer-backdrop');
-    document.getElementById('btn-open-drawer').addEventListener('click', () => {
-      drawer.classList.add('open');
-      backdrop.classList.add('open');
-    });
-    backdrop.addEventListener('click', () => {
-      drawer.classList.remove('open');
-      backdrop.classList.remove('open');
-    });
-
-    // 初始化
-    renderFretboard();
+    renderQuickColorBar();
+    renderPaletteCards();
+    renderTuningControls();
+    renderBoard();
   </script>
 </body>
 </html>
