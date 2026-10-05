@@ -65,14 +65,23 @@
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    .top-quick-toolbar {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--metal-dock); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-      padding: 6px 12px; border-radius: 999px; border: 1px solid var(--metal-border);
-      box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
-      pointer-events: auto; transition: all 0.25s var(--sf-spring);
+    /* 指板主展示舞台 */
+    .stage-container {
+      width: 100%; max-width: 1220px; padding: 75px 20px 125px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
-    .top-quick-toolbar:hover { background: #ffffff; box-shadow: var(--metal-bevel-light), 0 8px 24px rgba(0,0,0,0.09); }
+
+    /* 指板正上方的隨身快捷畫筆工具列 */
+    .board-attached-toolbar {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--metal-dock); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      padding: 6px 14px; border-radius: 999px; border: 1px solid var(--metal-border);
+      box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
+      transition: all 0.25s var(--sf-spring);
+    }
+    .board-attached-toolbar:hover {
+      background: #ffffff; box-shadow: var(--metal-bevel-light), 0 8px 24px rgba(0,0,0,0.09);
+    }
 
     .quick-shape-group, .quick-color-group {
       display: inline-flex; align-items: center; background: rgba(0, 0, 0, 0.06);
@@ -105,11 +114,6 @@
     .quick-color-btn.active {
       border-color: #ffffff; transform: scale(1.22);
       box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.28);
-    }
-
-    .stage-container {
-      width: 100%; max-width: 1220px; padding: 75px 20px 125px;
-      display: flex; justify-content: center; align-items: center;
     }
 
     .fretboard-card {
@@ -318,13 +322,13 @@
       body { justify-content: flex-start; padding-bottom: 140px; }
       .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 14px 14px 6px; width: 100%; }
       .brand-title { font-size: 13px; }
-      .top-quick-toolbar { padding: 4px 7px; gap: 5px; }
+      .board-attached-toolbar { padding: 4px 8px; gap: 6px; }
       .quick-shape-btn { width: 24px; height: 24px; }
-      .quick-shape-btn svg { width: 15px; height: 15px; }
+      .quick-shape-btn svg { width: 14px; height: 14px; }
       .quick-color-btn { width: 18px; height: 18px; }
 
-      .stage-container { padding: 8px 0 20px; width: 100vw; }
-      .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 20px 0 16px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
+      .stage-container { padding: 4px 0 20px; width: 100vw; }
+      .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 18px 0 14px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
       svg { margin-left: 12px; }
 
       .floating-dock {
@@ -362,8 +366,11 @@
       <span class="brand-badge">STUDIO</span>
       <span class="brand-title">指板幾何視覺化</span>
     </div>
+  </header>
 
-    <div class="top-quick-toolbar">
+  <!-- 指板主舞台：畫筆直接常駐在指板正上方 -->
+  <main class="stage-container">
+    <div class="board-attached-toolbar">
       <div class="quick-shape-group">
         <button class="quick-shape-btn active" id="q-shape-circle" onclick="setShape('circle')" title="實心圓">
           <svg width="15" height="15" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#1c1c1e"/></svg>
@@ -388,9 +395,7 @@
       <div class="quick-divider"></div>
       <div class="quick-color-group" id="quick-color-container"></div>
     </div>
-  </header>
 
-  <main class="stage-container">
     <div class="fretboard-card">
       <svg id="fretboard" width="1030" height="210"></svg>
     </div>
@@ -454,7 +459,7 @@
   </footer>
 
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
@@ -580,8 +585,7 @@
     let currentFretboardStyle = 'studio_white';
     let currentSelectedShape = 'circle';
     let currentActivePalette = 'apple_classic';
-    let currentBrushColor = '#ff3b30';
-    let currentBrushType = 'c1';
+    let currentBrushType = 'c1'; // 當前使用的色票角色 ('c1' | 'c2' | 'c3' | 'c4')
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
@@ -622,7 +626,6 @@
       const totalSVGHeight = boardH + startY + 28;
       svg.setAttribute("height", totalSVGHeight);
 
-      // 安全直接建立 defs，不重複查詢避免 DOM 銷毀錯誤
       const defsHTML = `
         <defs>
           <linearGradient id="dyn-wood-grad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -709,6 +712,7 @@
       }
 
       // 6. 點擊感應區與標記點渲染
+      const curPal = PALETTE_GROUPS[currentActivePalette];
       for (let s = 0; s < numStrings; s++) {
         for (let f = 0; f <= FRETS; f++) {
           const x = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
@@ -726,7 +730,9 @@
 
           if (activeMarkers.has(key)) {
             const markerData = activeMarkers.get(key);
-            renderMarker(x, y, s, f, markerData.shape, markerData.color);
+            // 每次渲染自動依據當前色彩套組與 marker 的 colorKey 取出最新顏色，不寫死舊色
+            const actualColor = curPal[markerData.colorKey] || markerData.color;
+            renderMarker(x, y, s, f, markerData.shape, actualColor);
           }
         }
       }
@@ -790,6 +796,7 @@
       svg.appendChild(c);
     }
 
+    // 點擊琴格 (記錄 colorKey，使手動標記也能隨色彩套組即時聯動變色)
     function toggleMarker(s, f) {
       const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
@@ -806,18 +813,20 @@
       const key = `${s}-${f}`;
       if (activeMarkers.has(key)) {
         const cur = activeMarkers.get(key);
-        if (cur.shape === currentSelectedShape && cur.color === currentBrushColor) {
+        if (cur.shape === currentSelectedShape && cur.colorKey === currentBrushType) {
           activeMarkers.delete(key);
         } else {
-          cur.shape = currentSelectedShape; cur.color = currentBrushColor;
+          cur.shape = currentSelectedShape;
+          cur.colorKey = currentBrushType;
           activeMarkers.set(key, cur);
         }
       } else {
-        activeMarkers.set(key, { s, f, shape: currentSelectedShape, color: currentBrushColor });
+        activeMarkers.set(key, { s, f, shape: currentSelectedShape, colorKey: currentBrushType });
       }
       renderBoard();
     }
 
+    // 快捷工具列渲染
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
@@ -830,21 +839,21 @@
       container.innerHTML = '';
       colors.forEach(item => {
         const btn = document.createElement('button');
-        btn.className = 'quick-color-btn' + (currentBrushColor === item.hex ? ' active' : '');
+        btn.className = 'quick-color-btn' + (currentBrushType === item.key ? ' active' : '');
         btn.style.backgroundColor = item.hex; btn.title = item.title;
-        btn.onclick = () => pickColor(currentActivePalette, item.key, item.hex);
+        btn.onclick = () => pickColor(currentActivePalette, item.key);
         container.appendChild(btn);
       });
     }
 
-    function pickColor(groupKey, type, hexColor) {
+    // 自由挑選色彩
+    function pickColor(groupKey, type) {
       currentActivePalette = groupKey;
-      currentBrushColor = hexColor;
       currentBrushType = type;
       renderQuickColorBar();
       updatePaletteUI();
       if (isScaleSyncActive) { populateScaleNotes(); }
-      renderBoard();
+      renderBoard(); // 手動點的所有標記會自動依新的 groupKey 換上對應顏色！
     }
 
     function setShape(shapeName) {
@@ -900,21 +909,21 @@
         card.className = `palette-group-card ${currentActivePalette === key ? 'active-group' : ''}`;
         card.id = `pal-card-${key}`;
         card.innerHTML = `
-          <div class="palette-header" onclick="pickColor('${key}', 'c1', '${pal.c1}')">
+          <div class="palette-header" onclick="pickColor('${key}', 'c1')">
             <span class="palette-name">${pal.name}</span>
             <span class="palette-radio-label">套用組</span>
           </div>
           <div class="palette-swatches-grid-4">
-            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c1 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c1', '${pal.c1}')">
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c1' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c1')">
               <span class="swatch-dot" style="background:${pal.c1}"></span><span class="swatch-label">Root</span>
             </div>
-            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c2 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c2', '${pal.c2}')">
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c2' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c2')">
               <span class="swatch-dot" style="background:${pal.c2}"></span><span class="swatch-label">暗襯底</span>
             </div>
-            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c3 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c3', '${pal.c3}')">
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c3' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c3')">
               <span class="swatch-dot" style="background:${pal.c3}"></span><span class="swatch-label">強調 A</span>
             </div>
-            <div class="swatch-chip ${currentActivePalette === key && currentBrushColor === pal.c4 ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c4', '${pal.c4}')">
+            <div class="swatch-chip ${currentActivePalette === key && currentBrushType === 'c4' ? 'active-chip' : ''}" onclick="pickColor('${key}', 'c4')">
               <span class="swatch-dot" style="background:${pal.c4}"></span><span class="swatch-label">強調 B</span>
             </div>
           </div>
@@ -938,7 +947,6 @@
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
-      const pal = PALETTE_GROUPS[currentActivePalette];
       const numStrings = currentTuningMIDI.length;
 
       for (let s = 0; s < numStrings; s++) {
@@ -946,8 +954,8 @@
           const midi = currentTuningMIDI[s] + f;
           const interval = ((midi - currentRoot) % 12 + 12) % 12;
           if (scaleNotes.includes(interval)) {
-            const noteColor = (interval === 0) ? pal.c1 : pal.c2;
-            activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, color: noteColor });
+            const roleKey = (interval === 0) ? 'c1' : 'c2';
+            activeMarkers.set(`${s}-${f}`, { s, f, shape: currentSelectedShape, colorKey: roleKey });
           }
         }
       }
@@ -1111,9 +1119,11 @@
       // 6. 幾何標記與文字
       ctx.font = '600 11px "JetBrains Mono", monospace';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const curPal = PALETTE_GROUPS[currentActivePalette];
 
       activeMarkers.forEach((markerData) => {
-        const { s, f, shape, color } = markerData;
+        const { s, f, shape, colorKey } = markerData;
+        const color = curPal[colorKey] || curPal.c1;
         const mx = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
         const my = startY + s * stringSpacing;
         const midi = currentTuningMIDI[s] + f;
@@ -1161,7 +1171,6 @@
       document.body.removeChild(downloadLink);
     }
 
-    // 初始化執行
     renderQuickColorBar();
     renderPaletteCards();
     renderTuningControls();
