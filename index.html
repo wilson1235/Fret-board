@@ -35,7 +35,7 @@
         linear-gradient(180deg, #edeff2 0%, #dfe2e6 100%);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
       color: var(--metal-text-primary);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; /* 穩定鎖定於螢幕視覺正中央 */
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       overflow-x: hidden; -webkit-font-smoothing: antialiased;
     }
 
@@ -62,14 +62,12 @@
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    /* 指板主展示舞台 (居中配置) */
     .stage-container {
       width: 100%; max-width: 1220px;
       padding: 20px 20px 40px;
       display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
 
-    /* 畫筆工具列 (固定不跳動) */
     .board-attached-toolbar {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--metal-dock);
@@ -114,7 +112,6 @@
       box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    /* 指板外框 (固定穩定) */
     .fretboard-card {
       background: var(--metal-card); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
       border: 1px solid var(--metal-border); border-radius: 24px; padding: 28px 24px;
@@ -132,7 +129,6 @@
     }
     .fret-number { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; text-anchor: middle; }
 
-    /* 底部 Dock */
     .floating-dock {
       position: fixed; bottom: 24px; background: var(--metal-dock);
       backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
@@ -306,7 +302,7 @@
       .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 12px 14px 4px; width: 100%; }
       .brand-title { font-size: 13px; }
 
-      .stage-container { padding: 12px 0 20px; width: 100vw; gap: 8px; }
+      .stage-container { padding: 8px 0 20px; width: 100vw; gap: 8px; }
       .board-attached-toolbar { padding: 3px 6px; gap: 5px; }
       .quick-shape-btn { width: 23px; height: 23px; }
       .quick-shape-btn svg { width: 13px; height: 13px; }
@@ -352,7 +348,7 @@
     </div>
   </header>
 
-  <!-- 指板主舞台 (垂直置中平順展開) -->
+  <!-- 指板主舞台 (垂直居中平穩展示) -->
   <main class="stage-container">
     <div class="board-attached-toolbar">
       <div class="quick-shape-group">
@@ -435,7 +431,7 @@
 
       <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
         <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/></svg>
       </button>
 
       <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
@@ -569,7 +565,7 @@
     let currentFretboardStyle = 'studio_white';
     let currentSelectedShape = 'circle';
     let currentActivePalette = 'apple_classic';
-    let currentBrushType = 'c1'; // 'c1'(Root) | 'c2'(暗底) | 'c3' | 'c4'
+    let currentBrushType = 'c1';
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
@@ -752,10 +748,12 @@
         g.appendChild(el);
       } else if (shape === 'cross') {
         const l1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l1.setAttribute("x1", x - 7); l1.setAttribute("y1", y - 7); l1.setAttribute("x2", x + 7); l1.setAttribute("y2", y + 7);
+        l1.setAttribute("x1", x - 7); l1.setAttribute("y1", y - 7);
+        l1.setAttribute("x2", x + 7); l1.setAttribute("y2", y + 7);
         l1.setAttribute("stroke", color); l1.setAttribute("stroke-width", "2.8"); l1.setAttribute("stroke-linecap", "round");
         const l2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        l2.setAttribute("x1", x + 7); l2.setAttribute("y1", y - 7); l2.setAttribute("x2", x - 7); l2.setAttribute("y2", y + 7);
+        l2.setAttribute("x1", x + 7); l2.setAttribute("y1", y - 7);
+        l2.setAttribute("x2", x - 7); l2.setAttribute("y2", y + 7);
         l2.setAttribute("stroke", color); l2.setAttribute("stroke-width", "2.8"); l2.setAttribute("stroke-linecap", "round");
         g.appendChild(l1); g.appendChild(l2);
       }
@@ -779,51 +777,65 @@
       svg.appendChild(c);
     }
 
-    // 點擊琴格 (完美實現：新點 Root 時，舊的 Root 自動降為第 2 色暗底襯底！)
+    // 點擊琴格：定調後自動切成第 2 色，且任何顏色點到「1」時強制顯示 Root 第 1 色
     function toggleMarker(s, f) {
       const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
 
       const targetKey = `${s}-${f}`;
 
+      // 1. 若手持 Root (c1) 筆刷點下：定調，並自動切換畫筆為第 2 色 (c2)
       if (currentBrushType === 'c1') {
         const newRoot = midi % 12;
         currentRoot = newRoot;
         document.getElementById('root-select').value = newRoot;
 
-        // 遍歷現有點，將所有先前標記為 c1 (Root) 的舊點自動改為 c2 (暗底襯底)
+        // 原本所有舊的 Root 標記降階為第 2 色
         activeMarkers.forEach((item, k) => {
           if (k !== targetKey && item.colorKey === 'c1') {
             item.colorKey = 'c2';
           }
         });
 
+        // 標記該點為 Root
+        activeMarkers.set(targetKey, { s, f, shape: currentSelectedShape, colorKey: 'c1' });
+
         if (isScaleSyncActive) {
           populateScaleNotes();
         }
+
+        // 定好調後：自動將目前筆刷切換為第 2 色 (c2 暗襯底)
+        pickColor(currentActivePalette, 'c2');
+        renderBoard();
+        return;
       }
+
+      // 2. 手持其他筆刷 (c2, c3, c4)：如果點到的音正好是「1」(跟根音同音階音度)，強制變第 1 色 Root
+      const isDegreeOne = (midi % 12 === currentRoot);
+      const assignedColorKey = isDegreeOne ? 'c1' : currentBrushType;
 
       if (activeMarkers.has(targetKey)) {
         const cur = activeMarkers.get(targetKey);
-        if (cur.shape === currentSelectedShape && cur.colorKey === currentBrushType) {
+        if (cur.shape === currentSelectedShape && cur.colorKey === assignedColorKey) {
           activeMarkers.delete(targetKey);
         } else {
           cur.shape = currentSelectedShape;
-          cur.colorKey = currentBrushType;
+          cur.colorKey = assignedColorKey;
           activeMarkers.set(targetKey, cur);
         }
       } else {
-        activeMarkers.set(targetKey, { s, f, shape: currentSelectedShape, colorKey: currentBrushType });
+        activeMarkers.set(targetKey, { s, f, shape: currentSelectedShape, colorKey: assignedColorKey });
       }
+
       renderBoard();
     }
 
-    // 渲染上方畫筆 4 色 (只在第 1 顆圈內標註 R，其餘文字全除)
+    // 渲染上方畫筆 4 色 (第 1 顆圈內標註 R，去掉文字)
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
       const colors = [
-        { key: 'c1', hex: pal.c1, title: 'Root (主音，點擊自動鎖定 Key)', isRoot: true },
+        { key: 'c1', hex: pal.c1, title: 'Root (主音，點擊自動定調並切換第二色)', isRoot: true },
         { key: 'c2', hex: pal.c2, title: '暗底襯底', isRoot: false },
         { key: 'c3', hex: pal.c3, title: '強調色 A', isRoot: false },
         { key: 'c4', hex: pal.c4, title: '強調色 B', isRoot: false }
@@ -1139,8 +1151,7 @@
         } else if (shape === 'cross') {
           ctx.strokeStyle = color; ctx.lineWidth = 2.8; ctx.lineCap = 'round';
           ctx.beginPath(); ctx.moveTo(mx - 7, my - 7); ctx.lineTo(mx + 7, my + 7);
-          ctx.moveTo(mx + 7, my - 7); ctx.lineTo(mx - 7, my + 7);
-          ctx.stroke();
+          ctx.moveTo(mx + 7, my - 7); ctx.lineTo(mx - 7, my + 7); ctx.stroke();
         }
         ctx.restore();
 
