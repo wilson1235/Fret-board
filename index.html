@@ -6,12 +6,12 @@
   <title>指板幾何視覺化 - Studio Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --metal-bg: #e5e7eb;
-      --metal-card: rgba(248, 249, 251, 0.78);
+      --metal-card: rgba(248, 249, 251, 0.82);
       --metal-dock: rgba(243, 245, 248, 0.88);
       --metal-border: rgba(180, 185, 195, 0.55);
       --metal-bevel-light: inset 0 1px 0.5px rgba(255, 255, 255, 0.95);
@@ -68,52 +68,83 @@
     /* 指板主展示舞台 */
     .stage-container {
       width: 100%; max-width: 1220px; padding: 75px 20px 125px;
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
     }
 
-    /* 指板正上方的隨身快捷畫筆工具列 */
+    /* ========================================================
+       🎨 指板上方低調輕量畫筆列（平常通透融於背景，指到時浮雕動態）
+       ======================================================== */
     .board-attached-toolbar {
       display: inline-flex; align-items: center; gap: 10px;
-      background: var(--metal-dock); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-      padding: 6px 14px; border-radius: 999px; border: 1px solid var(--metal-border);
-      box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
-      transition: all 0.25s var(--sf-spring);
+      background: rgba(240, 242, 245, 0.45);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      padding: 4px 12px; border-radius: 999px;
+      border: 1px solid rgba(180, 185, 195, 0.35);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      opacity: 0.85;
+      transform: translateY(0);
+      transition: all 0.28s var(--sf-spring);
     }
+
+    /* 指到時平滑浮起、增加光澤感 */
     .board-attached-toolbar:hover {
-      background: #ffffff; box-shadow: var(--metal-bevel-light), 0 8px 24px rgba(0,0,0,0.09);
+      opacity: 1;
+      transform: translateY(-2px) scale(1.015);
+      background: var(--metal-dock);
+      border-color: var(--metal-border);
+      box-shadow: var(--metal-bevel-light), 0 10px 26px rgba(0, 0, 0, 0.08);
     }
 
     .quick-shape-group, .quick-color-group {
-      display: inline-flex; align-items: center; background: rgba(0, 0, 0, 0.06);
-      box-shadow: var(--metal-shadow-inset); border-radius: 999px;
+      display: inline-flex; align-items: center;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 999px;
     }
-    .quick-shape-group { padding: 3px; gap: 2px; }
-    .quick-color-group { padding: 4px 6px; gap: 6px; }
+    .quick-shape-group { padding: 2.5px; gap: 2px; }
+    .quick-color-group { padding: 3px 6px; gap: 6px; }
 
     .quick-shape-btn {
-      width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent;
+      width: 26px; height: 26px; border-radius: 50%; border: none; background: transparent;
       display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
       transition: all 0.2s var(--sf-spring);
     }
-    .quick-shape-btn:hover { transform: scale(1.1); }
+    .quick-shape-btn:hover { transform: scale(1.15); background: rgba(255, 255, 255, 0.6); }
     .quick-shape-btn:active { transform: scale(0.92); }
     .quick-shape-btn.active {
-      background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
-      transform: scale(1.05);
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+      transform: scale(1.08);
     }
 
-    .quick-divider { width: 1px; height: 18px; background: var(--metal-border); margin: 0 2px; }
+    .quick-divider { width: 1px; height: 16px; background: rgba(180, 185, 195, 0.45); margin: 0 1px; }
+
+    /* 色票晶片按鈕容器 */
+    .quick-color-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      cursor: pointer; position: relative;
+    }
 
     .quick-color-btn {
-      width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent;
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent;
       cursor: pointer; padding: 0; transition: all 0.22s var(--sf-spring);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.22);
+      position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.22);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px; font-weight: 700; color: #ffffff;
     }
-    .quick-color-btn:hover { transform: scale(1.18); }
-    .quick-color-btn:active { transform: scale(0.9); }
+    .quick-color-chip:hover .quick-color-btn { transform: scale(1.16); }
+    .quick-color-chip:active .quick-color-btn { transform: scale(0.9); }
     .quick-color-btn.active {
       border-color: #ffffff; transform: scale(1.22);
       box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.28);
+    }
+
+    /* 第一顆色票的 Root 標籤 */
+    .root-tag-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 600; color: var(--metal-text-secondary);
+      letter-spacing: 0.2px; padding-right: 2px;
+      user-select: none;
     }
 
     .fretboard-card {
@@ -174,7 +205,7 @@
       color: var(--metal-text-primary); cursor: pointer; outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 9px center;
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
       transition: all 0.22s var(--sf-spring);
     }
     .dock-select-pill select:hover { transform: scale(1.04); border-color: #a0a6b2; }
@@ -199,7 +230,7 @@
       background: #ffffff; border: 1px solid var(--metal-border); padding: 8px 14px;
       border-radius: 999px; font-size: 13px; color: var(--metal-text-secondary);
       cursor: pointer; transition: all 0.22s var(--sf-spring); white-space: nowrap;
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
     }
     .dock-btn-action:hover, .dock-btn-export:hover { transform: scale(1.05); color: var(--metal-text-primary); }
 
@@ -207,7 +238,7 @@
       background: #ffffff; border: 1px solid var(--metal-border); width: 36px; height: 36px;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.22s var(--sf-spring); padding: 0; color: var(--metal-text-primary);
-      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
     .dock-btn-mute:hover { transform: scale(1.08); }
     .dock-btn-mute.is-muted { background: rgba(255, 59, 48, 0.12); border-color: rgba(255, 59, 48, 0.35); color: #ff3b30; }
@@ -325,7 +356,8 @@
       .board-attached-toolbar { padding: 4px 8px; gap: 6px; }
       .quick-shape-btn { width: 24px; height: 24px; }
       .quick-shape-btn svg { width: 14px; height: 14px; }
-      .quick-color-btn { width: 18px; height: 18px; }
+      .quick-color-btn { width: 18px; height: 18px; font-size: 8.5px; }
+      .root-tag-label { font-size: 9px; }
 
       .stage-container { padding: 4px 0 20px; width: 100vw; }
       .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 18px 0 14px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
@@ -368,7 +400,7 @@
     </div>
   </header>
 
-  <!-- 指板主舞台：畫筆直接常駐在指板正上方 -->
+  <!-- 指板主舞台：輕量化畫筆列緊貼指板正上方 -->
   <main class="stage-container">
     <div class="board-attached-toolbar">
       <div class="quick-shape-group">
@@ -451,7 +483,7 @@
 
       <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
         <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/></svg>
       </button>
 
       <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
@@ -459,7 +491,7 @@
   </footer>
 
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
@@ -585,7 +617,7 @@
     let currentFretboardStyle = 'studio_white';
     let currentSelectedShape = 'circle';
     let currentActivePalette = 'apple_classic';
-    let currentBrushType = 'c1'; // 當前使用的色票角色 ('c1' | 'c2' | 'c3' | 'c4')
+    let currentBrushType = 'c1';
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
@@ -730,7 +762,6 @@
 
           if (activeMarkers.has(key)) {
             const markerData = activeMarkers.get(key);
-            // 每次渲染自動依據當前色彩套組與 marker 的 colorKey 取出最新顏色，不寫死舊色
             const actualColor = curPal[markerData.colorKey] || markerData.color;
             renderMarker(x, y, s, f, markerData.shape, actualColor);
           }
@@ -796,7 +827,7 @@
       svg.appendChild(c);
     }
 
-    // 點擊琴格 (記錄 colorKey，使手動標記也能隨色彩套組即時聯動變色)
+    // 點擊琴格 (記錄 colorKey，切換色彩庫時能全部自動變色)
     function toggleMarker(s, f) {
       const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
@@ -826,34 +857,50 @@
       renderBoard();
     }
 
-    // 快捷工具列渲染
+    // 渲染上方畫筆 4 色 (第一顆特製 Root 標籤與 R 字)
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
       const colors = [
-        { key: 'c1', hex: pal.c1, title: 'Root (設為首調 1)' },
-        { key: 'c2', hex: pal.c2, title: '暗底襯底' },
-        { key: 'c3', hex: pal.c3, title: '強調色 A' },
-        { key: 'c4', hex: pal.c4, title: '強調色 B' }
+        { key: 'c1', hex: pal.c1, title: 'Root (主音，點擊自動鎖定 Key)', isRoot: true },
+        { key: 'c2', hex: pal.c2, title: '暗底襯底', isRoot: false },
+        { key: 'c3', hex: pal.c3, title: '強調色 A', isRoot: false },
+        { key: 'c4', hex: pal.c4, title: '強調色 B', isRoot: false }
       ];
       container.innerHTML = '';
       colors.forEach(item => {
+        const chip = document.createElement('div');
+        chip.className = 'quick-color-chip';
+        chip.onclick = () => pickColor(currentActivePalette, item.key);
+
         const btn = document.createElement('button');
         btn.className = 'quick-color-btn' + (currentBrushType === item.key ? ' active' : '');
-        btn.style.backgroundColor = item.hex; btn.title = item.title;
-        btn.onclick = () => pickColor(currentActivePalette, item.key);
-        container.appendChild(btn);
+        btn.style.backgroundColor = item.hex;
+        btn.title = item.title;
+        if (item.isRoot) {
+          btn.textContent = 'R';
+        }
+
+        chip.appendChild(btn);
+
+        if (item.isRoot) {
+          const label = document.createElement('span');
+          label.className = 'root-tag-label';
+          label.textContent = 'Root';
+          chip.appendChild(label);
+        }
+
+        container.appendChild(chip);
       });
     }
 
-    // 自由挑選色彩
     function pickColor(groupKey, type) {
       currentActivePalette = groupKey;
       currentBrushType = type;
       renderQuickColorBar();
       updatePaletteUI();
       if (isScaleSyncActive) { populateScaleNotes(); }
-      renderBoard(); // 手動點的所有標記會自動依新的 groupKey 換上對應顏色！
+      renderBoard();
     }
 
     function setShape(shapeName) {
@@ -1077,7 +1124,7 @@
       ctx.strokeStyle = style.nut.stroke; ctx.lineWidth = 1.2;
       ctx.strokeRect(startX - nutW, startY - 10, nutW, boardH);
 
-      // 3. 把位點 (Inlays)
+      // 3. 把位點
       [3, 5, 7, 9, 12, 15].forEach(f => {
         if (f > FRETS) return;
         const ix = startX + (f - 0.5) * fretWidth;
