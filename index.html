@@ -62,12 +62,14 @@
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
+    /* 指板主展示舞台 */
     .stage-container {
       width: 100%; max-width: 1220px;
       padding: 20px 20px 40px;
       display: flex; flex-direction: column; align-items: center; gap: 10px;
     }
 
+    /* 頂部操作工具列（畫筆 + CAGED 手型按鈕） */
     .board-attached-toolbar {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--metal-dock);
@@ -127,6 +129,28 @@
       background-repeat: no-repeat; background-position: right 6px center;
     }
 
+    /* ========================================================
+       🎹 CAGED 五鍵分段切換器 (Segmented Controls)
+       ======================================================== */
+    .caged-btn-group {
+      display: inline-flex; align-items: center;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 999px; padding: 2px; gap: 2px;
+    }
+
+    .caged-btn {
+      background: transparent; border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px; font-weight: 600; color: var(--metal-text-secondary);
+      padding: 2.5px 7.5px; border-radius: 999px; cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .caged-btn:hover { color: var(--metal-text-primary); }
+    .caged-btn.active {
+      background: #ffffff; color: var(--metal-blue); font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
     .fretboard-card {
       background: var(--metal-card); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
       border: 1px solid var(--metal-border); border-radius: 24px; padding: 28px 24px;
@@ -144,6 +168,7 @@
     }
     .fret-number { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; text-anchor: middle; }
 
+    /* 底部 Dock */
     .floating-dock {
       position: fixed; bottom: 24px; background: var(--metal-dock);
       backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
@@ -322,6 +347,7 @@
       .quick-shape-btn { width: 23px; height: 23px; }
       .quick-shape-btn svg { width: 13px; height: 13px; }
       .quick-color-btn { width: 18px; height: 18px; font-size: 9px; }
+      .caged-btn { font-size: 10.5px; padding: 2px 5.5px; }
 
       .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 16px 0 12px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
       svg { margin-left: 12px; }
@@ -363,7 +389,7 @@
     </div>
   </header>
 
-  <!-- 指板主舞台 (中央配置，上方整合畫筆與和弦下拉選單) -->
+  <!-- 指板主舞台 (中央配置，上方整合畫筆與 CAGED 手型按鈕) -->
   <main class="stage-container">
     <div class="board-attached-toolbar">
       <!-- 幾何形狀 -->
@@ -393,7 +419,7 @@
       <div class="quick-color-group" id="quick-color-container"></div>
 
       <div class="quick-divider"></div>
-      <!-- 和弦手形快捷下拉選單 -->
+      <!-- 和弦選單 + CAGED 五顆專屬直覺按鈕 -->
       <div class="quick-chord-group">
         <span class="chord-select-label">和弦</span>
         <select class="chord-pill-select" id="chord-root-select" onchange="applySelectedChord()">
@@ -415,11 +441,15 @@
           <option value="sus4">Sus4</option>
           <option value="add9">Add9</option>
         </select>
-        <select class="chord-pill-select" id="chord-voicing-select" onchange="applySelectedChord()">
-          <option value="0">把位 1</option>
-          <option value="1">把位 2</option>
-          <option value="2">把位 3</option>
-        </select>
+
+        <!-- 正統 CAGED 五鍵分段按鈕 -->
+        <div class="caged-btn-group">
+          <button class="caged-btn active" id="caged-btn-C" onclick="selectCAGEDShape('C')">C</button>
+          <button class="caged-btn" id="caged-btn-A" onclick="selectCAGEDShape('A')">A</button>
+          <button class="caged-btn" id="caged-btn-G" onclick="selectCAGEDShape('G')">G</button>
+          <button class="caged-btn" id="caged-btn-E" onclick="selectCAGEDShape('E')">E</button>
+          <button class="caged-btn" id="caged-btn-D" onclick="selectCAGEDShape('D')">D</button>
+        </div>
       </div>
     </div>
 
@@ -478,7 +508,7 @@
 
       <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
         <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
       </button>
 
       <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
@@ -486,7 +516,7 @@
   </footer>
 
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
@@ -607,67 +637,92 @@
     };
 
     // ========================================================
-    // 🎸 全新：封閉手型相對偏移引擎 (Relative Barre Model)
-    // 陣列對應: [6弦, 5弦, 4弦, 3弦, 2弦, 1弦]
-    // 數值代表「相對於封閉弦根音品位」的加算琴格，-1 代表悶音不彈
+    // 🎸 正統 CAGED 五大封閉手型相對陣列
+    // [6弦, 5弦, 4弦, 3弦, 2弦, 1弦]
+    // rootString: 根音所在弦 (5: 6弦, 4: 5弦, 3: 4弦)
+    // baseRoot: 該 Shape 在開放狀態下的自然根音 (C:0, A:9, G:7, E:4, D:2)
     // ========================================================
-    const RELATIVE_CHORDS = {
-      maj: [
-        { type: "barre", rootString: 5, relativeFrets: [0, 2, 2, 1, 0, 0] }, // E 型封閉 (根音在 6 弦)
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 2, 0] }, // A 型封閉 (根音在 5 弦)
-        { type: "open_c", targetRoot: 0, frets: [-1, 3, 2, 0, 1, 0] }         // C 開放把位
-      ],
-      min: [
-        { type: "barre", rootString: 5, relativeFrets: [0, 2, 2, 0, 0, 0] }, // Em 型封閉
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 1, 0] }, // Am 型封閉
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 3, 1] } // Dm 型封閉 (根音在 4 弦)
-      ],
-      "7": [
-        { type: "barre", rootString: 5, relativeFrets: [0, 2, 0, 1, 0, 0] }, // E7 型封閉
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 0, 2, 0] }, // A7 型封閉
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 1, 2] } // D7 型封閉
-      ],
-      maj7: [
-        { type: "barre", rootString: 5, relativeFrets: [0, -1, 1, 1, 0, -1] }, // 爵士 E 根音 Maj7
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 1, 2, 0] },  // A 根音 Maj7
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 2, 2] }  // D 根音 Maj7
-      ],
-      m7: [
-        { type: "barre", rootString: 5, relativeFrets: [0, 2, 0, 0, 0, 0] }, // Em7 型封閉
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 0, 1, 0] }, // Am7 型封閉
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 1, 1] } // Dm7 型封閉
-      ],
-      m7b5: [
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 1, 0, 1, -1] }, // A 根音 m7b5 (最常用)
-        { type: "barre", rootString: 5, relativeFrets: [0, -1, 0, 0, -1, -1] }, // E 根音 m7b5
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 1, 1, 1] }  // D 根音 m7b5
-      ],
-      "6": [
-        { type: "barre", rootString: 5, relativeFrets: [0, -1, -1, 1, 2, 0] }, // E 根音 6
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 2, 2] }, // A 根音 6
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 0, 2] }  // D 根音 6
-      ],
-      m6: [
-        { type: "barre", rootString: 5, relativeFrets: [0, -1, -1, 0, 2, 0] }, // E 根音 m6 (小六和弦常用)
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 1, 2] }, // A 根音 m6
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 0, 1] }  // D 根音 m6
-      ],
-      dim7: [
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 1, -1, 1, -1] }, // A 根音 Dim7
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 1, 0, 1] },  // D 根音 Dim7
-        { type: "barre", rootString: 5, relativeFrets: [0, -1, -1, 0, -1, -1] }  // E 根音 Dim7
-      ],
-      sus4: [
-        { type: "barre", rootString: 5, relativeFrets: [0, 2, 2, 2, 0, 0] }, // Esus4 型
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 2, 3, 0] }, // Asus4 型
-        { type: "barre", rootString: 3, relativeFrets: [-1, -1, 0, 2, 3, 3] }  // Dsus4 型
-      ],
-      add9: [
-        { type: "barre", rootString: 4, relativeFrets: [-1, 0, 2, 4, 2, 0] }, // A 根音 Add9
-        { type: "barre", rootString: 5, relativeFrets: [0, 2, 4, 1, 0, 0] }, // E 根音 Add9
-        { type: "open_c", targetRoot: 0, frets: [-1, 3, 2, 0, 3, 0] }         // Cadd9 開放把位
-      ]
+    const CAGED_SHAPES_DATA = {
+      maj: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 0, 1, 0] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 0, 0, 0, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 2, 1, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 2] }
+      },
+      min: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 1, 0, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 1, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 1, 0, 0, -1, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 2, 0, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 1] }
+      },
+      "7": {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 3, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 0, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 0, 0, 0, 1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 0, 1, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 1, 2] }
+      },
+      maj7: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 0, 0, 0] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 1, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 0, 0, 0, 2] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, 1, 1, 0, -1] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 2, 2] }
+      },
+      m7: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 1, 3, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 0, 1, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 1, 0, 0, 3, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 0, 0, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 1, 1] }
+      },
+      m7b5: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 4, 3, 4, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 1, 0, 1, -1] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, -1, 3, 3, 2, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, 0, 0, -1, -1] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 1, 1, 1] }
+      },
+      "6": {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 2, -1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 2, 2] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 2, 2, 0, 0, 0] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, -1, 1, 2, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 0, 2] }
+      },
+      m6: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 1, 2, 1, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 1, 2] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 1, 2, 0, -1, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, -1, 0, 2, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 0, 1] }
+      },
+      dim7: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 4, 2, 4, -1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 1, -1, 1, -1] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, -1, 2, 3, 2, -1] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, -1, -1, 0, -1, -1] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 1, 0, 1] }
+      },
+      sus4: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 3, 0, 1, 1] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 2, 3, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 3, 0, 0, 1, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 2, 2, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 3] }
+      },
+      add9: {
+        C: { rootStr: 4, baseRoot: 0, frets: [-1, 3, 2, 0, 3, 0] },
+        A: { rootStr: 4, baseRoot: 9, frets: [-1, 0, 2, 4, 2, 0] },
+        G: { rootStr: 5, baseRoot: 7, frets: [3, 0, 0, 2, 0, 3] },
+        E: { rootStr: 5, baseRoot: 4, frets: [0, 2, 4, 1, 0, 0] },
+        D: { rootStr: 3, baseRoot: 2, frets: [-1, -1, 0, 2, 3, 0] }
+      }
     };
+
+    let selectedCAGEDShape = 'C'; // 當前選中的 CAGED 手型
 
     let displayMode = 'degree';
     let currentRoot = 0;
@@ -937,71 +992,56 @@
     }
 
     // ========================================================
-    // 🎼 核心修復：嚴謹封閉把位相對偏移引擎 (100% 正確和弦音)
+    // 🎼 正統 CAGED 五大形狀精準推算引擎
     // ========================================================
+    function selectCAGEDShape(shapeLetter) {
+      selectedCAGEDShape = shapeLetter;
+      document.querySelectorAll('.caged-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`caged-btn-${shapeLetter}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      applySelectedChord();
+    }
+
     function applySelectedChord() {
       const chordRoot = parseInt(document.getElementById('chord-root-select').value, 10);
       const chordType = document.getElementById('chord-type-select').value;
-      const voicingIndex = parseInt(document.getElementById('chord-voicing-select').value, 10);
 
       currentRoot = chordRoot;
       document.getElementById('root-select').value = chordRoot;
 
       activeMarkers.clear();
 
-      const voicings = RELATIVE_CHORDS[chordType];
-      if (!voicings || !voicings[voicingIndex]) return;
+      const typeData = CAGED_SHAPES_DATA[chordType];
+      if (!typeData || !typeData[selectedCAGEDShape]) return;
 
-      const v = voicings[voicingIndex];
+      const shapeInfo = typeData[selectedCAGEDShape];
+      const baseFrets = shapeInfo.frets;
+      const baseRoot = shapeInfo.baseRoot;
 
-      if (v.type === "open_c") {
-        if (chordRoot === v.targetRoot) {
-          for (let str = 0; str < 6; str++) {
-            const sIndex = 5 - str;
-            const fret = v.frets[str];
-            if (fret === -1) {
-              activeMarkers.set(`${sIndex}-0`, { s: sIndex, f: 0, shape: 'cross', colorKey: 'c2' });
-            } else {
-              const midi = currentTuningMIDI[sIndex] + fret;
-              const interval = ((midi - currentRoot) % 12 + 12) % 12;
-              let role = (interval === 0) ? 'c1' : ((interval === 9 || interval === 10 || interval === 11 || interval === 6) ? 'c3' : 'c2');
-              const shape = fret === 0 ? 'ring' : 'circle';
-              activeMarkers.set(`${sIndex}-${fret}`, { s: sIndex, f: fret, shape: shape, colorKey: role });
-            }
-          }
-          renderBoard();
-          return;
-        }
-      }
-
-      // 標準封閉把位運算
-      const rootStr = v.rootString; // 5(6弦), 4(5弦), 3(4弦)
-      const openMidiOnRootStr = currentTuningMIDI[rootStr] % 12;
-      const barreFret = ((chordRoot - openMidiOnRootStr) % 12 + 12) % 12;
-
-      // 檢查是否超過品絲上限 (15品)，超過時往低八度收束 (如果可行)
-      let offset = barreFret;
-      if (offset > 10 && (offset - 12) >= 0) {
-        offset -= 12;
-      }
+      // 計算 CAGED 平移把位差
+      const offset = ((chordRoot - baseRoot) % 12 + 12) % 12;
 
       for (let str = 0; str < 6; str++) {
         const sIndex = 5 - str;
-        const relFret = v.relativeFrets[str];
+        const baseFret = baseFrets[str];
 
-        if (relFret === -1) {
+        if (baseFret === -1) {
           // 悶音：琴枕處標記灰叉
           activeMarkers.set(`${sIndex}-0`, { s: sIndex, f: 0, shape: 'cross', colorKey: 'c2' });
         } else {
-          const actualFret = offset + relFret;
-          if (actualFret > FRETS || actualFret < 0) continue;
+          let actualFret = baseFret + offset;
+          // 若超過 15 品，平移至低八度把位
+          if (actualFret > FRETS) {
+            actualFret -= 12;
+          }
+          if (actualFret < 0 || actualFret > FRETS) continue;
 
           const midi = currentTuningMIDI[sIndex] + actualFret;
           const interval = ((midi - currentRoot) % 12 + 12) % 12;
 
-          let role = 'c2';
-          if (interval === 0) role = 'c1'; // 根音必為 Root 紅
-          else if (interval === 9 || interval === 10 || interval === 11 || interval === 6) role = 'c3'; // 特徵音
+          let role = 'c2'; // 3度、5度等骨幹音為暗底襯底
+          if (interval === 0) role = 'c1'; // 根音 Root 為第 1 色
+          else if (interval === 9 || interval === 10 || interval === 11 || interval === 6) role = 'c3'; // 6th, 7th, b5 特徵音
 
           const shape = (actualFret === 0) ? 'ring' : 'circle';
           activeMarkers.set(`${sIndex}-${actualFret}`, { s: sIndex, f: actualFret, shape: shape, colorKey: role });
