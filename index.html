@@ -268,7 +268,7 @@
       text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 9px;
     }
 
-    /* 樂器定音控制台 (Tuning Controls) */
+    /* 樂器調弦控制台 */
     .tuning-rows {
       display: flex; flex-direction: column; gap: 6px;
       background: #ffffff; border: 1px solid var(--metal-border); border-radius: 14px;
@@ -309,7 +309,7 @@
     .swatch-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.22); }
     .swatch-label { font-size: 10px; font-weight: 600; margin-top: 3px; }
 
-    /* 3款精緻指板風格卡片 */
+    /* 指板風格選單 */
     .wood-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
     .wood-card {
       border: 1px solid var(--metal-border); border-radius: 12px; padding: 10px 12px;
@@ -323,7 +323,7 @@
     .wood-name { font-size: 12px; font-weight: 600; color: var(--metal-text-primary); }
     .wood-desc { font-size: 10px; color: var(--metal-text-tertiary); }
 
-    /* 手機專屬響應式 */
+    /* 手機版排版 */
     @media (max-width: 768px) {
       body { justify-content: flex-start; padding-bottom: 140px; }
       .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 14px 14px 6px; width: 100%; }
@@ -347,6 +347,7 @@
       .dock-row-primary .dock-btn { padding: 6px 7px; font-size: 11.5px; flex: 1; text-align: center; }
       .dock-row-primary .dock-select-pill { flex: 0.9; gap: 4px; }
       .dock-row-primary .dock-select-pill select { width: 100%; padding: 6px 18px 6px 7px; font-size: 11.5px; }
+      .dock-row-secondary { width: 100%; }
       .dock-row-secondary .dock-btn-sync { flex: 1.5; padding: 6px 8px; font-size: 11.5px; justify-content: center; }
       .dock-row-secondary .dock-btn-action { flex: 0.7; padding: 6px 5px; font-size: 11.5px; text-align: center; }
       .dock-row-secondary .dock-btn-export { flex: 1.1; padding: 6px 8px; font-size: 11.5px; justify-content: center; }
@@ -470,17 +471,17 @@
 
   <!-- 懸浮齒輪鈕 -->
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
-  <!-- 抽屜面板 (已移除幾何形狀，加入樂器與各弦調音控制) -->
+  <!-- 抽屜面板 -->
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
     <div class="sidebar-header">
       <div class="sidebar-title">樂器與外觀設定</div>
       <button class="close-btn" onclick="closeSidebar()">✕</button>
     </div>
 
-    <!-- 1. 樂器預設與自訂調弦 -->
+    <!-- 1. 樂器與各弦調音控制 -->
     <div>
       <div class="section-label">樂器類型與弦數</div>
       <div class="dock-select-pill" style="width: 100%; margin-bottom: 8px;">
@@ -493,7 +494,7 @@
         </select>
       </div>
 
-      <div class="section-label">各弦定音微調 (由高音弦至低音弦)</div>
+      <div class="section-label">各弦定音微調 (由第 1 弦至最粗弦)</div>
       <div class="tuning-rows" id="tuning-controls-container"></div>
     </div>
 
@@ -503,7 +504,7 @@
       <div id="palette-cards-container"></div>
     </div>
 
-    <!-- 3. 三款 Apple 現代精緻風格 -->
+    <!-- 3. 三款 Apple 精緻風格 -->
     <div>
       <div class="section-label">指板風格</div>
       <div class="wood-grid">
@@ -539,17 +540,17 @@
     const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const DEGREE_NAMES = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"];
 
-    // 樂器預設資料庫 (由高音弦至低音弦：index 0 為第 1 弦)
+    // 樂器預設資料庫 (index 0 為第 1 弦高音弦)
     const INSTRUMENTS = {
       guitar_6:  { name: "6 弦吉他",  tuning: [64, 59, 55, 50, 45, 40] }, // E4, B3, G3, D3, A2, E2
       guitar_7:  { name: "7 弦吉他",  tuning: [64, 59, 55, 50, 45, 40, 35] }, // + B1
       bass_4:    { name: "4 弦貝斯",  tuning: [43, 38, 33, 28] }, // G2, D2, A1, E1
       bass_5:    { name: "5 弦貝斯",  tuning: [43, 38, 33, 28, 23] }, // + B0
-      ukulele_4: { name: "4 弦烏克麗麗", tuning: [69, 64, 60, 67] } // A4, E4, C4, G4 (High-G)
+      ukulele_4: { name: "4 弦烏克麗麗", tuning: [69, 64, 60, 67] } // A4, E4, C4, G4
     };
 
     let currentInstrumentKey = 'guitar_6';
-    let currentTuningMIDI = [...INSTRUMENTS[guitar_6 = 'guitar_6'].tuning];
+    let currentTuningMIDI = [64, 59, 55, 50, 45, 40]; // 修正宣告問題
 
     const SCALES = {
       major:             { notes: [0, 2, 4, 5, 7, 9, 11] },
@@ -575,7 +576,7 @@
       crimson:       { name: "深焙酒紅 (Crimson Velvet)", c1: "#b91c1c", c2: "#2b2d42", c3: "#f59e0b", c4: "#8b5cf6" }
     };
 
-    // 3 款新版指板外觀參數
+    // 3 款指板外觀參數
     const FRETBOARD_STYLES = {
       studio_white: {
         bg: ['#ffffff', '#f8f9fc', '#f1f3f7', '#e8ecf2'],
@@ -604,11 +605,11 @@
     let currentSelectedShape = 'circle';
     let currentActivePalette = 'apple_classic';
     let currentBrushColor = '#ff3b30';
-    let currentBrushType = 'c1'; // 是否為 Root
+    let currentBrushType = 'c1';
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
-    // Web Audio 音訊發聲
+    // 音訊控制
     let audioCtx = null, isMuted = false;
     function playGuitarTone(midiNote) {
       if (isMuted) return;
@@ -657,7 +658,6 @@
       const boardH = (numStrings - 1) * stringSpacing + 20;
       const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      // 自動調整 SVG 畫布高度以適配 4~7 弦
       const totalSVGHeight = boardH + startY + 28;
       svg.setAttribute("height", totalSVGHeight);
       svg.innerHTML = '';
@@ -671,7 +671,7 @@
       woodRect.setAttribute("stroke", style.binding); woodRect.setAttribute("stroke-width", "1.6");
       svg.appendChild(woodRect);
 
-      // 2. 琴枕 (支援 12px 加粗木紋)
+      // 2. 琴枕
       const nutW = style.nut.width;
       const nut = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       nut.setAttribute("x", startX - nutW); nut.setAttribute("y", startY - 10);
@@ -723,7 +723,7 @@
         svg.appendChild(text);
       }
 
-      // 5. 琴弦 (根據樂器弦數自適應粗細漸變)
+      // 5. 琴弦 (4~7 弦自適應粗細)
       for (let s = 0; s < numStrings; s++) {
         const y = startY + s * stringSpacing;
         const stringThick = 0.95 + (s * (2.4 / (numStrings - 1 || 1)));
@@ -736,7 +736,7 @@
         svg.appendChild(line);
       }
 
-      // 6. 點擊感應區與標記點渲染
+      // 6. 點擊感應區與標記點
       for (let s = 0; s < numStrings; s++) {
         for (let f = 0; f <= FRETS; f++) {
           const x = f === 0 ? startX - (nutW + 12) / 2 : startX + (f - 0.5) * fretWidth;
@@ -818,7 +818,7 @@
       svg.appendChild(c);
     }
 
-    // 點擊琴格 (Root 筆刷智慧鎖定為 Key / 首調 1)
+    // 點擊琴格 (Root 筆刷自動設為 Key / 首調 1)
     function toggleMarker(s, f) {
       const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
@@ -884,7 +884,7 @@
       if (qb) qb.classList.add('active');
     }
 
-    // 樂器切換與調弦控制台
+    // 樂器切換與調弦控制
     function changeInstrument(instKey) {
       currentInstrumentKey = instKey;
       currentTuningMIDI = [...INSTRUMENTS[instKey].tuning];
@@ -896,8 +896,6 @@
     function renderTuningControls() {
       const container = document.getElementById('tuning-controls-container');
       container.innerHTML = '';
-      const numStrings = currentTuningMIDI.length;
-
       currentTuningMIDI.forEach((midi, s) => {
         const row = document.createElement('div');
         row.className = 'tuning-string-item';
@@ -924,7 +922,7 @@
       renderBoard();
     }
 
-    // 側邊欄色票卡片清單渲染
+    // 側邊欄色票卡片
     function renderPaletteCards() {
       const container = document.getElementById('palette-cards-container');
       container.innerHTML = '';
@@ -1020,7 +1018,7 @@
       renderBoard();
     }
 
-    // 抽屜與懸浮鈕拖曳控制
+    // 抽屜控制
     const dragBtn = document.getElementById('sidebar-trigger-btn');
     const panel = document.getElementById('sidebar-panel');
     const overlay = document.getElementById('sidebar-overlay');
@@ -1071,7 +1069,7 @@
       }
     });
 
-    // 100% Canvas 原生匯出引擎 (自適應各樂器弦數與 3 款材質)
+    // 100% Canvas 原生匯出引擎
     function exportFretboardPNG() {
       const scale = 2;
       const numStrings = currentTuningMIDI.length;
@@ -1105,7 +1103,7 @@
       ctx.strokeStyle = style.nut.stroke; ctx.lineWidth = 1.2;
       ctx.strokeRect(startX - nutW, startY - 10, nutW, boardH);
 
-      // 3. 把位點 (Inlays)
+      // 3. 把位點
       [3, 5, 7, 9, 12, 15].forEach(f => {
         if (f > FRETS) return;
         const ix = startX + (f - 0.5) * fretWidth;
@@ -1197,7 +1195,7 @@
       document.body.removeChild(downloadLink);
     }
 
-    // 初始化應用
+    // 初始化呼叫
     renderQuickColorBar();
     renderPaletteCards();
     renderTuningControls();
