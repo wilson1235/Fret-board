@@ -6,16 +6,24 @@
   <title>指板幾何視覺化 - Studio Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-base: #f4f1ea;
-      --dock-bg: rgba(255, 255, 255, 0.88);
-      --dock-border: rgba(214, 208, 196, 0.8);
-      --text-main: #2b2825;
-      --text-muted: #857e75;
-      --shadow-float: 0 14px 40px rgba(45, 35, 25, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
+      /* Apple System Color Palette (iOS / macOS 規範) */
+      --sf-bg-base: #f2f2f7;
+      --sf-card-bg: rgba(255, 255, 255, 0.78);
+      --sf-dock-bg: rgba(255, 255, 255, 0.82);
+      --sf-separator: rgba(60, 60, 67, 0.12);
+      --sf-separator-opaque: #e5e5ea;
+      --sf-text-primary: #000000;
+      --sf-text-secondary: #3c3c43;
+      --sf-text-tertiary: #8e8e93;
+      --sf-fill-tertiary: rgba(118, 118, 128, 0.12);
+      --sf-blue: #007aff;
+      --sf-blue-pressed: #0062cc;
+      --sf-shadow-float: 0 10px 32px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --sf-shadow-panel: 0 20px 48px rgba(0, 0, 0, 0.12);
     }
 
     * {
@@ -27,11 +35,9 @@
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      background-color: var(--bg-base);
-      background-image: radial-gradient(rgba(120, 113, 108, 0.1) 1.2px, transparent 0);
-      background-size: 24px 24px;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text-main);
+      background-color: var(--sf-bg-base);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      color: var(--sf-text-primary);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -40,12 +46,12 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 頂部標頭 */
+    /* 頂部導覽列 (Apple Navigation Bar 風格) */
     .top-status-bar {
       position: fixed;
-      top: 24px;
-      left: 32px;
-      right: 32px;
+      top: 20px;
+      left: 28px;
+      right: 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -56,51 +62,53 @@
     .brand-stamp {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       pointer-events: auto;
     }
 
     .brand-badge {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
-      letter-spacing: 1.5px;
-      padding: 3px 8px;
+      letter-spacing: 1px;
+      padding: 3px 7px;
       border-radius: 6px;
-      background: #2b2825;
-      color: #f5f2eb;
+      background: var(--sf-text-primary);
+      color: #ffffff;
       font-weight: 600;
     }
 
     .brand-title {
       font-size: 14px;
       font-weight: 600;
-      color: #3b3530;
+      color: var(--sf-text-primary);
       letter-spacing: -0.2px;
     }
 
     .current-brush-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      padding: 5px 14px;
-      border-radius: 24px;
-      border: 1px solid var(--dock-border);
+      gap: 7px;
+      background: var(--sf-dock-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 0.5px solid var(--sf-separator);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       pointer-events: auto;
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--sf-text-secondary);
       font-weight: 500;
     }
 
     .brush-preview-dot {
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
     }
 
-    /* 指板主舞台 */
+    /* 指板展示區 */
     .stage-container {
       width: 100%;
       max-width: 1180px;
@@ -111,13 +119,13 @@
     }
 
     .fretboard-card {
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--dock-border);
-      border-radius: 22px;
-      padding: 30px 24px;
-      box-shadow: 0 10px 30px rgba(45, 35, 25, 0.04);
+      background: var(--sf-card-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 0.5px solid var(--sf-separator);
+      border-radius: 20px;
+      padding: 28px 22px;
+      box-shadow: var(--sf-shadow-float);
       overflow-x: auto;
       max-width: 100%;
       -webkit-overflow-scrolling: touch;
@@ -135,12 +143,12 @@
     }
 
     .clickable-area:hover {
-      fill: rgba(255, 255, 255, 0.06);
+      fill: rgba(255, 255, 255, 0.08);
     }
 
     .marker-shape {
       transition: fill 0.15s ease, stroke 0.15s ease;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
     }
 
     .marker-text {
@@ -155,24 +163,24 @@
     .fret-number {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11.5px;
-      font-weight: 400;
+      font-weight: 500;
       text-anchor: middle;
     }
 
-    /* 底部 Dock */
+    /* 底部 Apple Floating Dock */
     .floating-dock {
       position: fixed;
-      bottom: 26px;
-      background: var(--dock-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--dock-border);
-      border-radius: 40px;
-      padding: 6px 12px;
-      box-shadow: var(--shadow-float);
+      bottom: 24px;
+      background: var(--sf-dock-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 0.5px solid var(--sf-separator);
+      border-radius: 999px;
+      padding: 6px 10px;
+      box-shadow: var(--sf-shadow-float);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       z-index: 90;
       max-width: calc(100vw - 32px);
     }
@@ -180,164 +188,195 @@
     .dock-row-primary, .dock-row-secondary {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
+    /* Apple Segmented Control */
     .dock-group {
       display: inline-flex;
       align-items: center;
-      background: rgba(230, 224, 214, 0.65);
-      border-radius: 30px;
-      padding: 3px;
-      gap: 2px;
+      background: rgba(118, 118, 128, 0.12);
+      border-radius: 999px;
+      padding: 2.5px;
+      gap: 1px;
     }
 
     .dock-btn {
       background: transparent;
       border: none;
-      padding: 7px 13px;
-      font-size: 12.5px;
+      padding: 6px 12px;
+      font-size: 12px;
       font-weight: 500;
-      color: var(--text-muted);
-      border-radius: 20px;
+      color: var(--sf-text-secondary);
+      border-radius: 999px;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
       white-space: nowrap;
     }
 
     .dock-btn.active {
       background: #ffffff;
-      color: var(--text-main);
+      color: var(--sf-text-primary);
       font-weight: 600;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
+    /* Apple Select Capsule */
     .dock-select-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 0 4px;
+      gap: 5px;
+      padding: 0 2px;
     }
 
     .dock-select-pill label {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: var(--sf-text-tertiary);
+      letter-spacing: 0.2px;
     }
 
     .dock-select-pill select {
       appearance: none;
       background: #ffffff;
-      border: 1px solid var(--dock-border);
-      padding: 7px 26px 7px 11px;
-      border-radius: 20px;
-      font-size: 12.5px;
+      border: 0.5px solid var(--sf-separator-opaque);
+      padding: 6px 24px 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
       font-weight: 500;
-      color: var(--text-main);
+      color: var(--sf-text-primary);
       cursor: pointer;
       outline: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 9px center;
+      background-position: right 8px center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
+    /* Apple 主按鈕 (調內音連動) */
     .dock-btn-sync {
-      background: #2b2825;
-      color: #f5f2eb;
+      background: var(--sf-text-primary);
+      color: #ffffff;
       border: none;
-      padding: 8px 15px;
-      border-radius: 24px;
-      font-size: 12.5px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12px;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.18s ease;
       white-space: nowrap;
     }
 
     .dock-btn-sync.sync-active {
-      background: #3a342e;
+      background: var(--sf-blue);
     }
 
     .sync-led {
-      width: 6.5px;
-      height: 6.5px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: #78716c;
+      background: rgba(255, 255, 255, 0.45);
       transition: all 0.2s ease;
     }
 
     .dock-btn-sync.sync-active .sync-led {
-      background: #6ee7b7;
-      box-shadow: 0 0 7px #6ee7b7;
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
     }
 
     .dock-btn-action {
       background: transparent;
-      border: 1px solid var(--dock-border);
-      padding: 7px 13px;
-      border-radius: 20px;
+      border: 0.5px solid var(--sf-separator-opaque);
+      padding: 6px 12px;
+      border-radius: 999px;
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--sf-text-secondary);
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
     }
 
     .dock-btn-action:hover {
-      background: rgba(230, 224, 214, 0.5);
-      color: var(--text-main);
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--sf-text-primary);
+    }
+
+    /* 靜音切換按鈕 (Apple Mute Button) */
+    .dock-btn-mute {
+      background: #ffffff;
+      border: 0.5px solid var(--sf-separator-opaque);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      padding: 0;
+      color: var(--sf-text-primary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .dock-btn-mute:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .dock-btn-mute.is-muted {
+      background: rgba(255, 59, 48, 0.1);
+      border-color: rgba(255, 59, 48, 0.35);
+      color: #ff3b30;
     }
 
     .dock-btn-export {
-      background: #3f3a34;
-      color: #f5f2eb;
-      border: 1px solid #2b2825;
-      padding: 7px 14px;
-      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--sf-text-primary);
+      border: 0.5px solid var(--sf-separator);
+      padding: 6px 12px;
+      border-radius: 999px;
       font-size: 12px;
+      font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       transition: all 0.15s ease;
       white-space: nowrap;
     }
 
     .dock-btn-export:hover {
-      background: #23201d;
+      background: rgba(0, 0, 0, 0.09);
     }
 
     .dock-divider {
-      width: 1px;
-      height: 20px;
-      background: var(--dock-border);
+      width: 0.5px;
+      height: 18px;
+      background: var(--sf-separator);
       margin: 0 2px;
     }
 
-    /* 懸浮齒輪鈕 (拖曳 & 磁吸) */
+    /* 懸浮齒輪鈕 (AssistiveTouch 風格) */
     .sidebar-trigger-btn {
       position: fixed;
       top: 50%;
       right: 0;
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--dock-border);
-      box-shadow: 0 4px 16px rgba(45, 35, 25, 0.08);
+      background: var(--sf-dock-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 0.5px solid var(--sf-separator);
+      box-shadow: var(--sf-shadow-float);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: grab;
       z-index: 120;
-      opacity: 0.5;
+      opacity: 0.6;
       user-select: none;
       touch-action: none;
       transition: opacity 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -351,36 +390,36 @@
       opacity: 1 !important;
       transition: none !important;
       transform: scale(1.12) !important;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.2) !important;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.18) !important;
     }
 
     .sidebar-trigger-btn.dock-right {
-      transform: translateX(20px);
+      transform: translateX(18px);
       border-right: none;
-      border-radius: 24px 0 0 24px;
+      border-radius: 22px 0 0 22px;
     }
     .sidebar-trigger-btn.dock-right:hover {
       opacity: 1;
       transform: translateX(0);
       background: #ffffff;
-      box-shadow: -4px 6px 18px rgba(0,0,0,0.12);
+      box-shadow: -4px 6px 18px rgba(0,0,0,0.1);
     }
 
     .sidebar-trigger-btn.dock-left {
-      transform: translateX(-20px);
+      transform: translateX(-18px);
       border-left: none;
-      border-radius: 0 24px 24px 0;
+      border-radius: 0 22px 22px 0;
     }
     .sidebar-trigger-btn.dock-left:hover {
       opacity: 1;
       transform: translateX(0);
       background: #ffffff;
-      box-shadow: 4px 6px 18px rgba(0,0,0,0.12);
+      box-shadow: 4px 6px 18px rgba(0,0,0,0.1);
     }
 
     .sidebar-trigger-btn svg {
       transition: transform 0.35s ease;
-      color: #2b2825;
+      color: var(--sf-text-primary);
       pointer-events: none;
     }
 
@@ -392,38 +431,38 @@
       transform: rotate(90deg);
     }
 
-    /* 抽屜面板 */
+    /* 抽屜面板 (Apple Sidebar / Sheet) */
     .sidebar-panel {
       position: fixed;
       top: 0;
       bottom: 0;
-      width: 330px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 0 45px rgba(45, 35, 25, 0.12);
+      width: 320px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: var(--sf-shadow-panel);
       z-index: 105;
-      padding: 26px 20px;
+      padding: 24px 18px;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
       overflow-y: auto;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .sidebar-panel.panel-right {
-      right: -350px;
+      right: -340px;
       left: auto;
-      border-left: 1px solid var(--dock-border);
+      border-left: 0.5px solid var(--sf-separator);
     }
     .sidebar-panel.panel-right.open {
       right: 0;
     }
 
     .sidebar-panel.panel-left {
-      left: -350px;
+      left: -340px;
       right: auto;
-      border-right: 1px solid var(--dock-border);
+      border-right: 0.5px solid var(--sf-separator);
     }
     .sidebar-panel.panel-left.open {
       left: 0;
@@ -434,39 +473,45 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 12px;
-      border-bottom: 1px solid var(--dock-border);
+      border-bottom: 0.5px solid var(--sf-separator);
     }
 
     .sidebar-title {
       font-size: 15px;
       font-weight: 600;
-      color: var(--text-main);
+      color: var(--sf-text-primary);
+      letter-spacing: -0.2px;
     }
 
     .close-btn {
-      background: transparent;
+      background: var(--sf-fill-tertiary);
       border: none;
-      font-size: 18px;
-      color: var(--text-muted);
+      font-size: 14px;
+      color: var(--sf-text-secondary);
       cursor: pointer;
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background-color 0.15s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(118, 118, 128, 0.2);
     }
 
     .section-label {
       font-size: 11px;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--sf-text-tertiary);
       text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      margin-bottom: 9px;
     }
 
-    /* 統一規格與幾何圖標置中對齊 */
+    /* 幾何形狀卡片 (Apple Clean Grid) */
     .shape-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -476,14 +521,14 @@
     .shape-btn {
       aspect-ratio: 1 / 1;
       border-radius: 12px;
-      border: 1.5px solid var(--dock-border);
+      border: 0.5px solid var(--sf-separator-opaque);
       background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.16s ease;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
@@ -493,31 +538,33 @@
     }
 
     .shape-btn:hover {
-      background: #faf8f5;
-      border-color: #a8a29e;
+      background: #fdfdfd;
+      border-color: #c7c7cc;
     }
 
     .shape-btn.active {
       background: #ffffff;
-      border-color: #2b2825;
-      box-shadow: 0 0 0 1.5px #2b2825, 0 2px 6px rgba(0, 0, 0, 0.08);
+      border-color: var(--sf-blue);
+      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.35), 0 2px 6px rgba(0, 0, 0, 0.06);
     }
 
-    /* 色彩庫卡片 (Root 明確標示，其餘純色塊顯示) */
+    /* 調性色票卡片 (Apple Inset Grouped List 風格) */
     .palette-group-card {
       background: #ffffff;
-      border: 1px solid var(--dock-border);
-      border-radius: 12px;
+      border: 0.5px solid var(--sf-separator-opaque);
+      border-radius: 14px;
       padding: 10px 12px;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: border-color 0.15s ease;
     }
 
     .palette-group-card.active-group {
-      border-color: #2b2825;
-      background: #faf8f5;
+      border-color: var(--sf-blue);
+      box-shadow: 0 0 0 1px var(--sf-blue);
     }
 
     .palette-header {
@@ -530,12 +577,12 @@
     .palette-name {
       font-size: 12.5px;
       font-weight: 600;
-      color: var(--text-main);
+      color: var(--sf-text-primary);
     }
 
     .palette-radio-label {
       font-size: 10.5px;
-      color: var(--text-muted);
+      color: var(--sf-blue);
       font-weight: 500;
     }
 
@@ -551,22 +598,22 @@
       align-items: center;
       justify-content: center;
       min-height: 48px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1.5px solid transparent;
-      background: #f5f2eb;
+      background: var(--sf-bg-base);
       cursor: pointer;
       transition: all 0.15s ease;
       padding: 4px;
     }
 
     .swatch-chip:hover {
-      background: #ebe5db;
+      background: #e5e5ea;
     }
 
     .swatch-chip.active-chip {
-      border-color: #2b2825;
+      border-color: var(--sf-text-primary);
       background: #ffffff;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     .swatch-dot {
@@ -574,13 +621,13 @@
       height: 16px;
       border-radius: 50%;
       flex-shrink: 0;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
     }
 
     .swatch-label {
       font-size: 10px;
       font-weight: 600;
-      color: #2b2825;
+      color: var(--sf-text-primary);
       margin-top: 3px;
     }
 
@@ -592,8 +639,8 @@
     }
 
     .wood-card {
-      border: 1px solid var(--dock-border);
-      border-radius: 10px;
+      border: 0.5px solid var(--sf-separator-opaque);
+      border-radius: 12px;
       padding: 8px 10px;
       background: #ffffff;
       cursor: pointer;
@@ -601,34 +648,34 @@
       flex-direction: column;
       gap: 5px;
       text-align: left;
+      transition: border-color 0.15s ease;
     }
 
     .wood-card.active {
-      border-color: #2b2825;
-      background: #fbf9f5;
-      box-shadow: 0 0 0 1.5px #2b2825;
+      border-color: var(--sf-blue);
+      box-shadow: 0 0 0 1px var(--sf-blue);
     }
 
     .wood-preview {
       width: 100%;
       height: 20px;
-      border-radius: 5px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      border: 0.5px solid rgba(0, 0, 0, 0.1);
     }
 
     .wood-name {
       font-size: 11.5px;
       font-weight: 600;
-      color: var(--text-main);
+      color: var(--sf-text-primary);
     }
 
     .wood-desc {
       font-size: 9.5px;
-      color: var(--text-muted);
+      color: var(--sf-text-tertiary);
       line-height: 1.2;
     }
 
-    /* 手機專屬響應式 */
+    /* 手機專屬響應式 (Apple Bottom Sheet) */
     @media (max-width: 768px) {
       body {
         justify-content: flex-start;
@@ -652,7 +699,7 @@
       }
 
       .stage-container {
-        padding: 10px 0 20px;
+        padding: 8px 0 20px;
         width: 100vw;
       }
       .fretboard-card {
@@ -660,7 +707,7 @@
         border-left: none;
         border-right: none;
         padding: 20px 0 16px;
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.6);
         box-shadow: none;
         width: 100%;
       }
@@ -669,15 +716,15 @@
       }
 
       .floating-dock {
-        bottom: 16px;
-        left: 12px;
-        right: 12px;
+        bottom: 14px;
+        left: 10px;
+        right: 10px;
         width: auto;
         max-width: none;
-        padding: 10px 12px;
-        border-radius: 20px;
+        padding: 9px 10px;
+        border-radius: 22px;
         flex-direction: column;
-        gap: 8px;
+        gap: 7px;
       }
 
       .dock-divider {
@@ -706,7 +753,7 @@
       }
       .dock-row-primary .dock-select-pill select {
         width: 100%;
-        padding: 6px 20px 6px 7px;
+        padding: 6px 18px 6px 7px;
         font-size: 11.5px;
       }
 
@@ -715,27 +762,27 @@
         justify-content: space-between;
       }
       .dock-row-secondary .dock-btn-sync {
-        flex: 1.6;
-        padding: 7px 10px;
+        flex: 1.5;
+        padding: 6px 8px;
         font-size: 11.5px;
         justify-content: center;
       }
       .dock-row-secondary .dock-btn-action {
-        flex: 0.8;
-        padding: 7px 6px;
+        flex: 0.7;
+        padding: 6px 5px;
         font-size: 11.5px;
         text-align: center;
       }
       .dock-row-secondary .dock-btn-export {
-        flex: 1.2;
-        padding: 7px 8px;
+        flex: 1.1;
+        padding: 6px 8px;
         font-size: 11.5px;
         justify-content: center;
       }
 
       .sidebar-trigger-btn {
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
       }
 
       .sidebar-panel.panel-right,
@@ -749,7 +796,7 @@
         border-radius: 24px 24px 0 0 !important;
         border-left: none !important;
         border-right: none !important;
-        border-top: 1px solid var(--dock-border) !important;
+        border-top: 0.5px solid var(--sf-separator) !important;
         transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
         padding: 20px 18px 36px !important;
       }
@@ -770,8 +817,8 @@
 
     <div class="current-brush-pill">
       <span>畫筆：</span>
-      <span class="brush-preview-dot" id="header-brush-preview" style="background-color: #d84328;"></span>
-      <span id="header-brush-label">Root (磚紅)</span>
+      <span class="brush-preview-dot" id="header-brush-preview" style="background-color: #ff3b30;"></span>
+      <span id="header-brush-label">Root</span>
     </div>
   </header>
 
@@ -847,17 +894,31 @@
 
       <button class="dock-btn-action" onclick="clearMarkers()">清除</button>
 
+      <!-- 靜音切換按鈕 -->
+      <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="開關聲音">
+        <svg id="icon-sound" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <svg id="icon-mute" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+      </button>
+
       <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">
         <span>📷 匯出 PNG</span>
       </button>
     </div>
   </footer>
 
-  <!-- 懸浮齒輪鈕 (自由拖曳) -->
+  <!-- 懸浮齒輪鈕 (AssistiveTouch 拖曳) -->
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="可按住拖曳移動 / 點擊開啟面板">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
     </svg>
   </button>
 
@@ -868,51 +929,74 @@
       <button class="close-btn" onclick="toggleSidebar()">✕</button>
     </div>
 
-    <!-- 1. 幾何形狀 (統一白底質感，鎖定絕對置中) -->
+    <!-- 1. 幾何形狀 (Apple 簡潔純白圓角矩形) -->
     <div>
       <div class="section-label">標記幾何形狀</div>
       <div class="shape-grid">
         <button class="shape-btn active" id="shape-circle" onclick="setShape('circle')" title="實心圓">
           <svg width="20" height="20" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="7.5" fill="#44403c" />
+            <circle cx="10" cy="10" r="7.2" fill="#1c1c1e" />
           </svg>
         </button>
         <button class="shape-btn" id="shape-ring" onclick="setShape('ring')" title="空心圓圈">
           <svg width="20" height="20" viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="6.5" fill="none" stroke="#44403c" stroke-width="2.5" />
+            <circle cx="10" cy="10" r="6.5" fill="none" stroke="#1c1c1e" stroke-width="2.4" />
           </svg>
         </button>
         <button class="shape-btn" id="shape-diamond" onclick="setShape('diamond')" title="菱形">
           <svg width="20" height="20" viewBox="0 0 20 20">
-            <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#44403c" />
+            <polygon points="10,2.5 17.5,10 10,17.5 2.5,10" fill="#1c1c1e" />
           </svg>
         </button>
         <button class="shape-btn" id="shape-triangle" onclick="setShape('triangle')" title="三角形">
           <svg width="20" height="20" viewBox="0 0 20 20">
-            <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#44403c" />
+            <polygon points="10,3 17.5,16.5 2.5,16.5" fill="#1c1c1e" />
           </svg>
         </button>
         <button class="shape-btn" id="shape-cross" onclick="setShape('cross')" title="悶音 / 叉叉">
           <svg width="20" height="20" viewBox="0 0 20 20">
-            <line x1="5" y1="5" x2="15" y2="15" stroke="#44403c" stroke-width="2.6" stroke-linecap="round" />
-            <line x1="15" y1="5" x2="5" y2="15" stroke="#44403c" stroke-width="2.6" stroke-linecap="round" />
+            <line x1="5" y1="5" x2="15" y2="15" stroke="#1c1c1e" stroke-width="2.5" stroke-linecap="round" />
+            <line x1="15" y1="5" x2="5" y2="15" stroke="#1c1c1e" stroke-width="2.5" stroke-linecap="round" />
           </svg>
         </button>
       </div>
     </div>
 
-    <!-- 2. 四色色彩庫 (只保留 Root 標籤，其餘保持純色彈性) -->
+    <!-- 2. 四色色彩庫 (Apple System Color Tones) -->
     <div>
       <div class="section-label">調性配色庫（點選單色指派至指板）</div>
 
-      <!-- 配色組 1: 陶土大地 -->
-      <div class="palette-group-card active-group" id="pal-card-terracotta">
+      <!-- 配色組 1: Apple Red & Mint -->
+      <div class="palette-group-card active-group" id="pal-card-apple_classic">
+        <div class="palette-header" onclick="selectPaletteGroup('apple_classic')">
+          <span class="palette-name">經典原色 (Classic Tint)</span>
+          <span class="palette-radio-label">套用組</span>
+        </div>
+        <div class="palette-swatches-grid-4">
+          <div class="swatch-chip active-chip" id="chip-apple_classic-c1" onclick="pickColorFromPalette('apple_classic', 'c1', '#ff3b30', 'Root (System Red)')">
+            <span class="swatch-dot" style="background: #ff3b30;"></span>
+            <span class="swatch-label">Root</span>
+          </div>
+          <div class="swatch-chip" id="chip-apple_classic-c2" onclick="pickColorFromPalette('apple_classic', 'c2', '#ff9500', '色選 2 (Orange)')">
+            <span class="swatch-dot" style="background: #ff9500;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-apple_classic-c3" onclick="pickColorFromPalette('apple_classic', 'c3', '#34c759', '色選 3 (Green)')">
+            <span class="swatch-dot" style="background: #34c759;"></span>
+          </div>
+          <div class="swatch-chip" id="chip-apple_classic-c4" onclick="pickColorFromPalette('apple_classic', 'c4', '#007aff', '色選 4 (Blue)')">
+            <span class="swatch-dot" style="background: #007aff;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配色組 2: 陶土磚紅大地 -->
+      <div class="palette-group-card" id="pal-card-terracotta">
         <div class="palette-header" onclick="selectPaletteGroup('terracotta')">
           <span class="palette-name">陶土大地 (Terracotta)</span>
           <span class="palette-radio-label">套用組</span>
         </div>
         <div class="palette-swatches-grid-4">
-          <div class="swatch-chip active-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#d84328', 'Root (鮮明磚紅)')">
+          <div class="swatch-chip" id="chip-terracotta-c1" onclick="pickColorFromPalette('terracotta', 'c1', '#d84328', 'Root (磚紅)')">
             <span class="swatch-dot" style="background: #d84328;"></span>
             <span class="swatch-label">Root</span>
           </div>
@@ -928,7 +1012,7 @@
         </div>
       </div>
 
-      <!-- 配色組 2: 暖焙焦糖 -->
+      <!-- 配色組 3: 莫蘭迪焦糖 -->
       <div class="palette-group-card" id="pal-card-caramel">
         <div class="palette-header" onclick="selectPaletteGroup('caramel')">
           <span class="palette-name">莫蘭迪焦糖 (Caramel)</span>
@@ -951,7 +1035,7 @@
         </div>
       </div>
 
-      <!-- 配色組 3: 復古嫣紅 -->
+      <!-- 配色組 4: 復古嫣紅玫瑰 -->
       <div class="palette-group-card" id="pal-card-rose">
         <div class="palette-header" onclick="selectPaletteGroup('rose')">
           <span class="palette-name">復古嫣紅 (Vintage Rose)</span>
@@ -970,29 +1054,6 @@
           </div>
           <div class="swatch-chip" id="chip-rose-c4" onclick="pickColorFromPalette('rose', 'c4', '#597461', '色選 4 (青苔灰綠)')">
             <span class="swatch-dot" style="background: #597461;"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 配色組 4: 冷萃橄欖 -->
-      <div class="palette-group-card" id="pal-card-olive">
-        <div class="palette-header" onclick="selectPaletteGroup('olive')">
-          <span class="palette-name">高山冷萃橄欖 (Alpine)</span>
-          <span class="palette-radio-label">套用組</span>
-        </div>
-        <div class="palette-swatches-grid-4">
-          <div class="swatch-chip" id="chip-olive-c1" onclick="pickColorFromPalette('olive', 'c1', '#829c38', 'Root (鮮青橄欖)')">
-            <span class="swatch-dot" style="background: #829c38;"></span>
-            <span class="swatch-label">Root</span>
-          </div>
-          <div class="swatch-chip" id="chip-olive-c2" onclick="pickColorFromPalette('olive', 'c2', '#afad37', '色選 2 (芥末芥綠)')">
-            <span class="swatch-dot" style="background: #afad37;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-olive-c3" onclick="pickColorFromPalette('olive', 'c3', '#8c705f', '色選 3 (深焙燕麥)')">
-            <span class="swatch-dot" style="background: #8c705f;"></span>
-          </div>
-          <div class="swatch-chip" id="chip-olive-c4" onclick="pickColorFromPalette('olive', 'c4', '#4a6572', '色選 4 (冷墨鋼藍)')">
-            <span class="swatch-dot" style="background: #4a6572;"></span>
           </div>
         </div>
       </div>
@@ -1048,9 +1109,12 @@
     const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const DEGREE_NAMES = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"];
 
-    // Web Audio API
+    // Web Audio API 發聲與靜音控制
     let audioCtx = null;
+    let isMuted = false;
+
     function playGuitarTone(midiNote) {
+      if (isMuted) return; // 靜音時完全不發出音訊
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -1073,6 +1137,23 @@
       osc.stop(now + 1.3);
     }
 
+    function toggleMute() {
+      isMuted = !isMuted;
+      const muteBtn = document.getElementById('btn-mute-toggle');
+      const soundIcon = document.getElementById('icon-sound');
+      const muteIcon = document.getElementById('icon-mute');
+
+      if (isMuted) {
+        muteBtn.classList.add('is-muted');
+        soundIcon.style.display = 'none';
+        muteIcon.style.display = 'block';
+      } else {
+        muteBtn.classList.remove('is-muted');
+        soundIcon.style.display = 'block';
+        muteIcon.style.display = 'none';
+      }
+    }
+
     const SCALES = {
       major:             { notes: [0, 2, 4, 5, 7, 9, 11] },
       minor:             { notes: [0, 2, 3, 5, 7, 8, 10] },
@@ -1089,8 +1170,14 @@
       melodic_minor:     { notes: [0, 2, 3, 5, 7, 9, 11] }
     };
 
-    // 4 色體系：c1(Root高飽和), c2, c3, c4
+    // 4 色體系
     const PALETTE_GROUPS = {
+      apple_classic: {
+        c1: "#ff3b30",
+        c2: "#ff9500",
+        c3: "#34c759",
+        c4: "#007aff"
+      },
       terracotta: {
         c1: "#d84328",
         c2: "#e59b34",
@@ -1108,12 +1195,6 @@
         c2: "#df8075",
         c3: "#475569",
         c4: "#597461"
-      },
-      olive: {
-        c1: "#829c38",
-        c2: "#afad37",
-        c3: "#8c705f",
-        c4: "#4a6572"
       }
     };
 
@@ -1126,7 +1207,7 @@
         inlayOpacity: 0.88,
         wire: '#c8c1b5',
         shadow: '#160c07',
-        fretNum: '#8c827a'
+        fretNum: '#8e8e93'
       },
       roasted_maple: {
         bgGradient: ['#be894e', '#c79255', '#a9733a', '#b78044', '#996631'],
@@ -1146,7 +1227,7 @@
         inlayOpacity: 0.95,
         wire: '#e2e8f0',
         shadow: '#060608',
-        fretNum: '#78716c'
+        fretNum: '#8e8e93'
       },
       vintage_maple: {
         bgGradient: ['#e4c282', '#eccf91', '#dab370', '#e3c07f', '#c99e57'],
@@ -1166,7 +1247,7 @@
         inlayOpacity: 0.82,
         wire: '#b8b2a8',
         shadow: '#1c1511',
-        fretNum: '#80776e'
+        fretNum: '#8e8e93'
       },
       carbon: {
         bgGradient: ['#282c34', '#323741', '#21252c', '#2c313a', '#181a1f'],
@@ -1176,7 +1257,7 @@
         inlayOpacity: 0.9,
         wire: '#94a3b8',
         shadow: '#090d16',
-        fretNum: '#94a3b8'
+        fretNum: '#8e8e93'
       }
     };
 
@@ -1185,8 +1266,8 @@
     let currentScale = 'major';
     let currentFretboardStyle = 'rosewood';
     let currentSelectedShape = 'circle';
-    let currentActivePalette = 'terracotta'; 
-    let currentBrushColor = '#d84328';
+    let currentActivePalette = 'apple_classic'; 
+    let currentBrushColor = '#ff3b30';
     let isScaleSyncActive = false;
     const activeMarkers = new Map();
 
@@ -1338,7 +1419,7 @@
       }
     }
 
-    function renderMarker(x, y, s, f, shape = 'circle', color = '#d84328') {
+    function renderMarker(x, y, s, f, shape = 'circle', color = '#ff3b30') {
       const midi = STRING_TUNING_MIDI[s] + f;
       const noteName = NOTE_NAMES[midi % 12];
       const interval = ((midi - currentRoot) % 12 + 12) % 12;
@@ -1487,7 +1568,7 @@
       renderBoard();
     }
 
-    // 自動填滿調內音（根音用 c1，其他調內音統一用 c3 作為對比色）
+    // 自動填滿調內音
     function populateScaleNotes() {
       activeMarkers.clear();
       const scaleNotes = SCALES[currentScale] ? SCALES[currentScale].notes : [];
@@ -1552,7 +1633,7 @@
       renderBoard();
     }
 
-    // 拖曳引擎
+    // 拖曳引擎 (AssistiveTouch)
     const dragBtn = document.getElementById('sidebar-trigger-btn');
     const panel = document.getElementById('sidebar-panel');
     let isDragging = false;
