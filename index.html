@@ -20,7 +20,7 @@
       --metal-text-secondary: #48484a;
       --metal-text-tertiary: #86868b;
       --metal-blue: #0071e3;
-      --metal-shadow-float: 0 18px 45px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.03);
+      --metal-shadow-float: 0 12px 36px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02);
       --metal-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.07);
       --sf-spring: cubic-bezier(0.2, 0.9, 0.3, 1.25);
     }
@@ -36,143 +36,108 @@
         linear-gradient(180deg, #edeff2 0%, #dfe2e6 100%);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
       color: var(--metal-text-primary);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start; /* 讓整體版面自頂部自然開展 */
       overflow-x: hidden; -webkit-font-smoothing: antialiased;
     }
 
     .top-status-bar {
-      position: fixed; top: 18px; left: 28px; right: 28px;
+      position: fixed; top: 16px; left: 24px; right: 24px;
       display: flex; justify-content: space-between; align-items: center;
       pointer-events: none; z-index: 10;
     }
 
     .brand-stamp {
-      display: inline-flex; align-items: center; gap: 10px; pointer-events: auto;
-      transition: transform 0.25s var(--sf-spring);
+      display: inline-flex; align-items: center; gap: 8px; pointer-events: auto;
     }
-    .brand-stamp:hover { transform: scale(1.02); }
 
     .brand-badge {
       font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 1.2px;
-      padding: 4px 9px; border-radius: 7px;
+      padding: 3.5px 8px; border-radius: 7px;
       background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
       color: #f5f5f7; font-weight: 600;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
     .brand-title {
-      font-size: 15px; font-weight: 600; color: var(--metal-text-primary);
+      font-size: 14px; font-weight: 600; color: var(--metal-text-primary);
       text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    /* 指板主展示舞台 */
+    /* 指板主展示舞台 (大幅縮減上距，整體往上移) */
     .stage-container {
-      width: 100%; max-width: 1220px; padding: 75px 20px 125px;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      width: 100%; max-width: 1220px;
+      padding: 56px 20px 100px; /* 上方從 75px 移上至 56px */
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
     }
 
-    /* ========================================================
-       🎨 指板上方低調輕量畫筆列（平常通透融於背景，指到時浮雕動態）
-       ======================================================== */
+    /* 畫筆工具列 (完全固定不跳動，拿掉所有浮動位移動態) */
     .board-attached-toolbar {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: rgba(240, 242, 245, 0.45);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      padding: 4px 12px; border-radius: 999px;
-      border: 1px solid rgba(180, 185, 195, 0.35);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-      opacity: 0.85;
-      transform: translateY(0);
-      transition: all 0.28s var(--sf-spring);
-    }
-
-    /* 指到時平滑浮起、增加光澤感 */
-    .board-attached-toolbar:hover {
-      opacity: 1;
-      transform: translateY(-2px) scale(1.015);
+      display: inline-flex; align-items: center; gap: 8px;
       background: var(--metal-dock);
-      border-color: var(--metal-border);
-      box-shadow: var(--metal-bevel-light), 0 10px 26px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--metal-border);
+      box-shadow: var(--metal-bevel-light), 0 2px 8px rgba(0, 0, 0, 0.03);
     }
 
     .quick-shape-group, .quick-color-group {
       display: inline-flex; align-items: center;
-      background: rgba(0, 0, 0, 0.04);
+      background: rgba(0, 0, 0, 0.05);
       border-radius: 999px;
     }
-    .quick-shape-group { padding: 2.5px; gap: 2px; }
-    .quick-color-group { padding: 3px 6px; gap: 6px; }
+    .quick-shape-group { padding: 2px 3px; gap: 2px; }
+    .quick-color-group { padding: 3px 5px; gap: 5px; }
 
     .quick-shape-btn {
       width: 26px; height: 26px; border-radius: 50%; border: none; background: transparent;
       display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
-      transition: all 0.2s var(--sf-spring);
+      transition: background-color 0.15s ease;
     }
-    .quick-shape-btn:hover { transform: scale(1.15); background: rgba(255, 255, 255, 0.6); }
-    .quick-shape-btn:active { transform: scale(0.92); }
+    .quick-shape-btn:hover { background: rgba(255, 255, 255, 0.7); }
     .quick-shape-btn.active {
       background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
-      transform: scale(1.08);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
     }
 
     .quick-divider { width: 1px; height: 16px; background: rgba(180, 185, 195, 0.45); margin: 0 1px; }
 
-    /* 色票晶片按鈕容器 */
-    .quick-color-chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      cursor: pointer; position: relative;
-    }
-
     .quick-color-btn {
-      width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent;
-      cursor: pointer; padding: 0; transition: all 0.22s var(--sf-spring);
-      position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.22);
+      width: 21px; height: 21px; border-radius: 50%; border: 2px solid transparent;
+      cursor: pointer; padding: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.22);
       display: flex; align-items: center; justify-content: center;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9.5px; font-weight: 700; color: #ffffff;
+      font-size: 10px; font-weight: 700; color: #ffffff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    .quick-color-chip:hover .quick-color-btn { transform: scale(1.16); }
-    .quick-color-chip:active .quick-color-btn { transform: scale(0.9); }
     .quick-color-btn.active {
-      border-color: #ffffff; transform: scale(1.22);
-      box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 3px 8px rgba(0,0,0,0.28);
+      border-color: #ffffff;
+      box-shadow: 0 0 0 1.5px var(--metal-text-primary), 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    /* 第一顆色票的 Root 標籤 */
-    .root-tag-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 600; color: var(--metal-text-secondary);
-      letter-spacing: 0.2px; padding-right: 2px;
-      user-select: none;
-    }
-
+    /* 指板外框 (完全固定不跳動) */
     .fretboard-card {
       background: var(--metal-card); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-      border: 1px solid var(--metal-border); border-radius: 24px; padding: 30px 24px;
+      border: 1px solid var(--metal-border); border-radius: 24px; padding: 28px 24px;
       box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
       overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch;
-      transition: transform 0.35s var(--sf-spring), box-shadow 0.35s;
-    }
-    .fretboard-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--metal-bevel-light), 0 24px 50px rgba(0,0,0,0.1);
     }
 
     svg { display: block; margin: 0 auto; user-select: none; }
     .clickable-area { fill: transparent; cursor: pointer; }
     .clickable-area:hover { fill: rgba(255, 255, 255, 0.08); }
-    .marker-shape { transition: transform 0.2s var(--sf-spring); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.45)); }
+    .marker-shape { filter: drop-shadow(0 2px 5px rgba(0,0,0,0.45)); }
     .marker-text {
       font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
       text-anchor: middle; dominant-baseline: central; pointer-events: none;
     }
     .fret-number { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; text-anchor: middle; }
 
+    /* 底部 Dock */
     .floating-dock {
-      position: fixed; bottom: 26px; background: var(--metal-dock);
+      position: fixed; bottom: 24px; background: var(--metal-dock);
       backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-      border: 1px solid var(--metal-border); border-radius: 999px; padding: 8px 14px;
+      border: 1px solid var(--metal-border); border-radius: 999px; padding: 7px 14px;
       box-shadow: var(--metal-bevel-light), var(--metal-bevel-dark), var(--metal-shadow-float);
       display: flex; align-items: center; gap: 10px; z-index: 90; max-width: calc(100vw - 32px);
     }
@@ -181,43 +146,38 @@
 
     .dock-group {
       display: inline-flex; align-items: center; background: rgba(0, 0, 0, 0.06);
-      box-shadow: var(--metal-shadow-inset); border-radius: 999px; padding: 3.5px; gap: 2px;
+      box-shadow: var(--metal-shadow-inset); border-radius: 999px; padding: 3px; gap: 2px;
     }
 
     .dock-btn {
-      background: transparent; border: none; padding: 7px 15px; font-size: 13px; font-weight: 500;
+      background: transparent; border: none; padding: 6px 14px; font-size: 13px; font-weight: 500;
       color: var(--metal-text-secondary); border-radius: 999px; cursor: pointer;
-      transition: all 0.22s var(--sf-spring); white-space: nowrap;
+      white-space: nowrap; transition: color 0.15s ease, background-color 0.15s ease;
     }
-    .dock-btn:hover { transform: scale(1.06); color: var(--metal-text-primary); }
-    .dock-btn:active { transform: scale(0.95); }
+    .dock-btn:hover { color: var(--metal-text-primary); }
     .dock-btn.active {
       background: #ffffff; color: var(--metal-text-primary); font-weight: 600;
       box-shadow: 0 2px 7px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
-      transform: scale(1.03);
     }
 
     .dock-select-pill { display: inline-flex; align-items: center; gap: 6px; padding: 0 3px; }
     .dock-select-pill label { font-size: 11px; font-weight: 600; color: var(--metal-text-tertiary); letter-spacing: 0.3px; }
     .dock-select-pill select {
       appearance: none; background: #ffffff; border: 1px solid var(--metal-border);
-      padding: 7px 26px 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      padding: 6px 26px 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
       color: var(--metal-text-primary); cursor: pointer; outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 9px center;
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
-      transition: all 0.22s var(--sf-spring);
     }
-    .dock-select-pill select:hover { transform: scale(1.04); border-color: #a0a6b2; }
 
     .dock-btn-sync {
       background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%); color: #ffffff;
-      border: 1px solid rgba(0, 0, 0, 0.4); padding: 8px 16px; border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.4); padding: 7px 15px; border-radius: 999px;
       font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;
-      cursor: pointer; transition: all 0.22s var(--sf-spring); white-space: nowrap;
+      cursor: pointer; white-space: nowrap;
       box-shadow: 0 2px 7px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
     }
-    .dock-btn-sync:hover { transform: scale(1.05); }
     .dock-btn-sync.sync-active {
       background: linear-gradient(180deg, #007aff 0%, #0062cc 100%);
       border-color: #0051b3; box-shadow: 0 2px 10px rgba(0, 122, 255, 0.38);
@@ -227,40 +187,37 @@
     .dock-btn-sync.sync-active .sync-led { background: #ffffff; box-shadow: 0 0 7px rgba(255, 255, 255, 0.95); }
 
     .dock-btn-action, .dock-btn-export {
-      background: #ffffff; border: 1px solid var(--metal-border); padding: 8px 14px;
+      background: #ffffff; border: 1px solid var(--metal-border); padding: 7px 14px;
       border-radius: 999px; font-size: 13px; color: var(--metal-text-secondary);
-      cursor: pointer; transition: all 0.22s var(--sf-spring); white-space: nowrap;
+      cursor: pointer; white-space: nowrap;
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.03);
     }
-    .dock-btn-action:hover, .dock-btn-export:hover { transform: scale(1.05); color: var(--metal-text-primary); }
+    .dock-btn-action:hover, .dock-btn-export:hover { color: var(--metal-text-primary); }
 
     .dock-btn-mute {
-      background: #ffffff; border: 1px solid var(--metal-border); width: 36px; height: 36px;
+      background: #ffffff; border: 1px solid var(--metal-border); width: 34px; height: 34px;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.22s var(--sf-spring); padding: 0; color: var(--metal-text-primary);
+      cursor: pointer; padding: 0; color: var(--metal-text-primary);
       box-shadow: var(--metal-bevel-light), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
-    .dock-btn-mute:hover { transform: scale(1.08); }
     .dock-btn-mute.is-muted { background: rgba(255, 59, 48, 0.12); border-color: rgba(255, 59, 48, 0.35); color: #ff3b30; }
 
-    .dock-divider { width: 1px; height: 20px; background: var(--metal-border); margin: 0 3px; }
+    .dock-divider { width: 1px; height: 18px; background: var(--metal-border); margin: 0 2px; }
 
     .sidebar-trigger-btn {
-      position: fixed; top: 50%; right: 0; width: 48px; height: 48px; border-radius: 50%;
+      position: fixed; top: 50%; right: 0; width: 46px; height: 46px; border-radius: 50%;
       background: var(--metal-dock); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
       border: 1px solid var(--metal-border); box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
       display: flex; align-items: center; justify-content: center; cursor: grab; z-index: 120;
-      opacity: 0.65; user-select: none; touch-action: none; transition: all 0.25s var(--sf-spring);
+      opacity: 0.65; user-select: none; touch-action: none; transition: background-color 0.2s, opacity 0.2s;
     }
     .sidebar-trigger-btn:active { cursor: grabbing; }
-    .sidebar-trigger-btn.is-dragging { opacity: 1 !important; transform: scale(1.15) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important; }
+    .sidebar-trigger-btn.is-dragging { opacity: 1 !important; transform: scale(1.1) !important; }
     .sidebar-trigger-btn.dock-right { transform: translateX(18px); border-right: none; border-radius: 24px 0 0 24px; }
-    .sidebar-trigger-btn.dock-right:hover { opacity: 1; transform: translateX(0) scale(1.04); background: #ffffff; }
+    .sidebar-trigger-btn.dock-right:hover { opacity: 1; transform: translateX(0); background: #ffffff; }
     .sidebar-trigger-btn.dock-left { transform: translateX(-18px); border-left: none; border-radius: 0 24px 24px 0; }
-    .sidebar-trigger-btn.dock-left:hover { opacity: 1; transform: translateX(0) scale(1.04); background: #ffffff; }
-    .sidebar-trigger-btn svg { transition: transform 0.35s ease; color: var(--metal-text-primary); pointer-events: none; }
-    .sidebar-trigger-btn:hover svg { transform: rotate(35deg); }
-    .sidebar-trigger-btn.open svg { transform: rotate(90deg); }
+    .sidebar-trigger-btn.dock-left:hover { opacity: 1; transform: translateX(0); background: #ffffff; }
+    .sidebar-trigger-btn svg { color: var(--metal-text-primary); pointer-events: none; }
 
     .sidebar-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -273,7 +230,7 @@
       position: fixed; top: 0; bottom: 0; width: 330px;
       background: rgba(246, 248, 250, 0.92); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
       box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14); z-index: 105; padding: 24px 18px;
-      display: flex; flex-direction: column; gap: 20px; overflow-y: auto; transition: all 0.35s var(--sf-spring);
+      display: flex; flex-direction: column; gap: 20px; overflow-y: auto; transition: right 0.35s ease, left 0.35s ease;
     }
     .sidebar-panel.panel-right { right: -350px; left: auto; border-left: 1px solid var(--metal-border); }
     .sidebar-panel.panel-right.open { right: 0; }
@@ -288,9 +245,8 @@
     .close-btn {
       background: rgba(0, 0, 0, 0.06); border: none; font-size: 14px; color: var(--metal-text-secondary);
       cursor: pointer; width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; transition: all 0.2s var(--sf-spring);
+      display: flex; align-items: center; justify-content: center;
     }
-    .close-btn:hover { transform: scale(1.1); background: rgba(0, 0, 0, 0.12); }
 
     .section-label {
       font-size: 11px; font-weight: 600; color: var(--metal-text-tertiary);
@@ -317,9 +273,8 @@
     .palette-group-card {
       background: #ffffff; border: 1px solid var(--metal-border); border-radius: 14px;
       padding: 10px 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;
-      box-shadow: var(--metal-bevel-light); transition: all 0.25s var(--sf-spring);
+      box-shadow: var(--metal-bevel-light);
     }
-    .palette-group-card:hover { transform: translateY(-1.5px); }
     .palette-group-card.active-group { border-color: var(--metal-blue); box-shadow: 0 0 0 1px var(--metal-blue); }
     .palette-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .palette-name { font-size: 12.5px; font-weight: 600; }
@@ -329,9 +284,8 @@
     .swatch-chip {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-height: 48px; border-radius: 10px; border: 1.5px solid transparent;
-      background: rgba(0, 0, 0, 0.04); cursor: pointer; transition: all 0.2s var(--sf-spring); padding: 4px;
+      background: rgba(0, 0, 0, 0.04); cursor: pointer; padding: 4px;
     }
-    .swatch-chip:hover { transform: scale(1.08); }
     .swatch-chip.active-chip { border-color: var(--metal-text-primary); background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
     .swatch-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.22); }
     .swatch-label { font-size: 10px; font-weight: 600; margin-top: 3px; }
@@ -340,9 +294,8 @@
     .wood-card {
       border: 1px solid var(--metal-border); border-radius: 12px; padding: 10px 12px;
       background: #ffffff; cursor: pointer; display: flex; align-items: center; gap: 12px;
-      transition: all 0.22s var(--sf-spring); box-shadow: var(--metal-bevel-light);
+      box-shadow: var(--metal-bevel-light);
     }
-    .wood-card:hover { transform: translateY(-1.5px); border-color: #a0a6b2; }
     .wood-card.active { border-color: var(--metal-blue); box-shadow: 0 0 0 1px var(--metal-blue); }
     .wood-preview { width: 50px; height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
     .wood-meta { display: flex; flex-direction: column; gap: 2px; }
@@ -351,21 +304,21 @@
 
     @media (max-width: 768px) {
       body { justify-content: flex-start; padding-bottom: 140px; }
-      .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 14px 14px 6px; width: 100%; }
+      .top-status-bar { position: relative; top: 0; left: 0; right: 0; padding: 12px 14px 4px; width: 100%; }
       .brand-title { font-size: 13px; }
-      .board-attached-toolbar { padding: 4px 8px; gap: 6px; }
-      .quick-shape-btn { width: 24px; height: 24px; }
-      .quick-shape-btn svg { width: 14px; height: 14px; }
-      .quick-color-btn { width: 18px; height: 18px; font-size: 8.5px; }
-      .root-tag-label { font-size: 9px; }
 
-      .stage-container { padding: 4px 0 20px; width: 100vw; }
-      .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 18px 0 14px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
+      .stage-container { padding: 8px 0 20px; width: 100vw; gap: 8px; }
+      .board-attached-toolbar { padding: 3px 6px; gap: 5px; }
+      .quick-shape-btn { width: 23px; height: 23px; }
+      .quick-shape-btn svg { width: 13px; height: 13px; }
+      .quick-color-btn { width: 18px; height: 18px; font-size: 9px; }
+
+      .fretboard-card { border-radius: 0; border-left: none; border-right: none; padding: 16px 0 12px; background: rgba(248, 249, 251, 0.7); box-shadow: none; width: 100%; }
       svg { margin-left: 12px; }
 
       .floating-dock {
         bottom: 14px; left: 10px; right: 10px; width: auto; max-width: none;
-        padding: 9px 10px; border-radius: 22px; flex-direction: column; gap: 7px;
+        padding: 8px 10px; border-radius: 22px; flex-direction: column; gap: 7px;
       }
       .dock-divider { display: none; }
       .dock-row-primary, .dock-row-secondary { width: 100%; justify-content: space-between; }
@@ -383,7 +336,7 @@
         top: auto !important; bottom: -100% !important; left: 0 !important; right: 0 !important;
         width: 100% !important; height: 75vh !important; border-radius: 24px 24px 0 0 !important;
         border-left: none !important; border-right: none !important; border-top: 1px solid var(--metal-border) !important;
-        transition: bottom 0.35s var(--sf-spring) !important; padding: 20px 18px 36px !important;
+        transition: bottom 0.35s ease !important; padding: 20px 18px 36px !important;
       }
       .sidebar-panel.open { bottom: 0 !important; }
     }
@@ -400,7 +353,7 @@
     </div>
   </header>
 
-  <!-- 指板主舞台：輕量化畫筆列緊貼指板正上方 -->
+  <!-- 指板主舞台 (上移，畫筆列貼緊上方且不晃動) -->
   <main class="stage-container">
     <div class="board-attached-toolbar">
       <div class="quick-shape-group">
@@ -483,7 +436,7 @@
 
       <button class="dock-btn-mute" id="btn-mute-toggle" onclick="toggleMute()" title="靜音切換">
         <svg id="icon-sound" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/></svg>
+        <svg id="icon-mute" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
       </button>
 
       <button class="dock-btn-export" onclick="exportFretboardPNG()" title="匯出完整指板木紋 PNG">📷 匯出 PNG</button>
@@ -491,7 +444,7 @@
   </footer>
 
   <button class="sidebar-trigger-btn dock-right" id="sidebar-trigger-btn" title="拖曳位置 / 點擊設定">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
 
   <aside class="sidebar-panel panel-right" id="sidebar-panel">
@@ -827,7 +780,6 @@
       svg.appendChild(c);
     }
 
-    // 點擊琴格 (記錄 colorKey，切換色彩庫時能全部自動變色)
     function toggleMarker(s, f) {
       const midi = currentTuningMIDI[s] + f;
       playGuitarTone(midi);
@@ -857,7 +809,7 @@
       renderBoard();
     }
 
-    // 渲染上方畫筆 4 色 (第一顆特製 Root 標籤與 R 字)
+    // 渲染上方畫筆 4 色 (只在第 1 顆圈內標註 R，去掉後面多餘文字)
     function renderQuickColorBar() {
       const container = document.getElementById('quick-color-container');
       const pal = PALETTE_GROUPS[currentActivePalette];
@@ -869,10 +821,6 @@
       ];
       container.innerHTML = '';
       colors.forEach(item => {
-        const chip = document.createElement('div');
-        chip.className = 'quick-color-chip';
-        chip.onclick = () => pickColor(currentActivePalette, item.key);
-
         const btn = document.createElement('button');
         btn.className = 'quick-color-btn' + (currentBrushType === item.key ? ' active' : '');
         btn.style.backgroundColor = item.hex;
@@ -880,17 +828,8 @@
         if (item.isRoot) {
           btn.textContent = 'R';
         }
-
-        chip.appendChild(btn);
-
-        if (item.isRoot) {
-          const label = document.createElement('span');
-          label.className = 'root-tag-label';
-          label.textContent = 'Root';
-          chip.appendChild(label);
-        }
-
-        container.appendChild(chip);
+        btn.onclick = () => pickColor(currentActivePalette, item.key);
+        container.appendChild(btn);
       });
     }
 
@@ -1106,7 +1045,6 @@
 
       const style = FRETBOARD_STYLES[currentFretboardStyle];
 
-      // 1. 指板木質實體漸層
       const woodGrad = ctx.createLinearGradient(0, startY - 10, 0, startY - 10 + boardH);
       style.bg.forEach((c, i) => woodGrad.addColorStop(i / (style.bg.length - 1), c));
       ctx.fillStyle = woodGrad;
@@ -1115,7 +1053,6 @@
       ctx.strokeStyle = style.binding; ctx.lineWidth = 1.6;
       ctx.strokeRect(startX, startY - 10, boardW, boardH);
 
-      // 2. 琴枕
       const nutW = style.nut.width;
       const nutGrad = ctx.createLinearGradient(startX - nutW, 0, startX, 0);
       style.nut.fill.forEach((c, i) => nutGrad.addColorStop(i / (style.nut.fill.length - 1), c));
@@ -1124,7 +1061,6 @@
       ctx.strokeStyle = style.nut.stroke; ctx.lineWidth = 1.2;
       ctx.strokeRect(startX - nutW, startY - 10, nutW, boardH);
 
-      // 3. 把位點
       [3, 5, 7, 9, 12, 15].forEach(f => {
         if (f > FRETS) return;
         const ix = startX + (f - 0.5) * fretWidth;
@@ -1139,7 +1075,6 @@
         ctx.globalAlpha = 1.0;
       });
 
-      // 4. 品絲與數字
       ctx.font = '500 11.5px "JetBrains Mono", monospace';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (let f = 1; f <= FRETS; f++) {
@@ -1154,7 +1089,6 @@
         ctx.fillText(f, fx - fretWidth / 2, startY + boardH + 16);
       }
 
-      // 5. 琴弦
       for (let s = 0; s < numStrings; s++) {
         const sy = startY + s * stringSpacing;
         const thick = 0.95 + (s * (2.4 / (numStrings - 1 || 1)));
@@ -1163,7 +1097,6 @@
         ctx.beginPath(); ctx.moveTo(startX - nutW - 10, sy); ctx.lineTo(startX + boardW, sy); ctx.stroke();
       }
 
-      // 6. 幾何標記與文字
       ctx.font = '600 11px "JetBrains Mono", monospace';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       const curPal = PALETTE_GROUPS[currentActivePalette];
