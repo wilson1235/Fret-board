@@ -63,8 +63,8 @@
     }
 
     .stage-container {
-      width: 100%; max-width: 1240px;
-      padding: 10px 20px 105px;
+      width: 100%; max-width: 1480px;
+      padding: 10px 28px 105px;
       display: flex; flex-direction: column; align-items: center; gap: 8px;
     }
 
@@ -153,6 +153,7 @@
       box-shadow: var(--metal-bevel-light), var(--metal-shadow-float);
       overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch;
     }
+    @media(min-width:769px) { #fretboard { width:min(1080px, calc(100vw - 120px)); height:auto; } }
 
     .chord-detector-badge {
       position: absolute;
@@ -784,6 +785,138 @@
       .tempo-control { min-width: 78px; }
       .progression-tools .chord-pill-select { min-width: 132px; }
     }
+    /* Standalone practice metronome */
+    .metronome-panel { width:100%; max-width:1030px; }
+    .metronome-panel { padding:22px; border:1px solid rgba(147,126,99,.2); border-radius:24px; background:rgba(250,248,242,.97); box-shadow:0 14px 38px rgba(74,59,39,.07); color:#403b32; }
+    .metro-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
+    .metro-head h2 { margin:2px 0 0; font-size:18px; }
+    .metro-kicker,.metro-subtitle { color:#938875; font-size:10px; letter-spacing:.12em; }
+    .metro-subtitle { letter-spacing:0; }
+    .metro-main { display:grid; grid-template-columns:minmax(260px,1fr) minmax(300px,1.1fr); gap:20px; }
+    .metro-tempo-card,.metro-settings-card { padding:17px; border:1px solid rgba(147,126,99,.17); border-radius:18px; background:rgba(255,254,250,.84); }
+    .metro-tempo { display:flex; align-items:baseline; justify-content:center; gap:7px; margin:12px 0 5px; }
+    .metro-tempo strong { font:600 38px/1 'JetBrains Mono',monospace; letter-spacing:-.07em; color:#6a6c5e; }
+    .metro-tempo span { font-size:11px; color:#9a9182; }
+    .metro-tempo .metro-italian { margin-right:auto; margin-left:0; color:#9a8e7b; font-size:10px; }
+    .metro-speed-slider { height:4px; opacity:.62; }
+    .metro-buttons,.metro-row { display:flex; align-items:center; gap:8px; }
+    .metro-button { min-height:36px; padding:7px 12px; border:1px solid rgba(147,126,99,.23); border-radius:11px; color:#59634f; background:#faf8f2; font:inherit; font-size:12px; cursor:pointer; }
+    .metro-button:hover { background:#eef0e8; }
+    .metro-button.primary { border-color:#75856b; color:white; background:#75856b; }
+    .metro-button.primary.playing { background:#a66b54; border-color:#a66b54; }
+    .metro-button.small { min-width:34px; padding:5px 9px; }
+    .metro-slider { width:100%; accent-color:#75856b; }
+    .metro-tap-zone { display:flex; align-items:center; justify-content:center; min-height:42px; margin:3px 0 4px; border:1px dashed rgba(147,126,99,.17); border-radius:12px; color:#a09788; background:rgba(241,239,230,.16); font-size:10px; letter-spacing:.1em; cursor:pointer; user-select:none; touch-action:manipulation; transition:background .15s,border-color .15s; }
+    .metro-tap-zone:hover,.metro-tap-zone:focus-visible { border-color:rgba(147,126,99,.42); background:rgba(241,239,230,.5); outline:none; }
+    .metro-transport-row { display:flex; align-items:center; justify-content:center; gap:12px; margin:10px 0 2px; }
+    .metro-stepper { display:flex; align-items:center; gap:5px; padding:4px; border:1px solid rgba(147,126,99,.2); border-radius:15px; background:rgba(241,239,230,.45); }
+    .metro-stepper .metro-button { width:44px; height:44px; min-height:44px; padding:0; border:0; border-radius:11px; background:transparent; font-size:21px; }
+    .metro-stepper .metro-button:hover { background:#fffefa; }
+    .metro-button.primary.metro-start { min-width:164px; min-height:54px; padding:10px 20px; border-radius:15px; font-size:15px; font-weight:650; box-shadow:0 5px 12px rgba(90,108,79,.16); }
+    .metro-beats { display:flex; justify-content:center; flex-wrap:wrap; gap:4px; min-height:88px; padding:10px 0 8px; margin:8px 0 5px; }
+    .metro-beat { position:relative; display:grid; place-items:center; flex:0 0 72px; width:72px; height:72px; padding:0; border:0; border-radius:50%; color:#875638; background:transparent; font:700 29px/1 'JetBrains Mono',monospace; cursor:pointer; touch-action:manipulation; }
+    .metro-beat::before { content:""; position:absolute; z-index:0; width:62px; height:62px; border:1px solid rgba(159,104,62,.22); border-radius:50%; background:#d7a16f; box-shadow:0 1px 3px rgba(74,59,39,.07); transition:transform .12s,background .12s,box-shadow .12s; }
+    .metro-beat span { position:relative; z-index:1; pointer-events:none; }
+    .metro-beat[data-level="accent"]::before,.metro-beat[data-level="secondary"]::before { background:#d7a16f; border-color:rgba(159,104,62,.22); }
+    .metro-beat[data-level="normal"]::before { background:#d7a16f; border-color:rgba(159,104,62,.22); }
+    .metro-beat[data-level="mute"]::before { background:rgba(215,161,111,.15); border:2px solid #c68c59; box-shadow:none; }
+    .metro-beat.active::before { background:#d19a67; box-shadow:0 0 0 4px rgba(183,125,80,.14); transform:scale(1.08); }
+    .metro-beat[data-level="mute"].active::before { background:rgba(215,161,111,.24); box-shadow:0 0 0 4px rgba(183,125,80,.12); }
+    .metro-beat:focus-visible { outline:2px solid #536e7b; outline-offset:-1px; }
+    .metro-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .metro-field { display:flex; flex-direction:column; gap:5px; color:#8e8576; font-size:10px; }
+    .metro-field select,.metro-field input[type="number"] { width:100%; min-height:35px; padding:6px 9px; border:1px solid rgba(147,126,99,.23); border-radius:10px; color:#494438; background:#fffefa; font:inherit; font-size:12px; }
+    .metro-extras { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(147,126,99,.14); }
+    .metro-check { display:flex; align-items:center; gap:6px; color:#776e5f; font-size:11px; }
+    .metro-check input { accent-color:#75856b; }
+    .metro-footer { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:13px; color:#918675; font-size:11px; }
+    .metro-counter { font:12px 'JetBrains Mono',monospace; color:#5d6654; }
+    .leadsheet-panel[hidden] { display:none !important; }
+    .metronome-panel[hidden] { display:none !important; }
+    .feature-switchboard { width:100%; max-width:1030px; padding:15px 16px; border:1px solid rgba(147,126,99,.17); border-radius:20px; background:rgba(250,248,242,.88); box-shadow:0 5px 18px rgba(74,59,39,.035); }
+    .feature-switchboard-head { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin:0 2px 11px; }
+    .feature-switchboard-head strong { color:#4c493f; font-size:13px; }
+    .feature-switchboard-head span { color:#9a907f; font-size:10px; }
+    .feature-switch-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:9px; }
+    .feature-toggle,.feature-reserved { position:relative; display:flex; align-items:center; gap:10px; min-height:58px; padding:10px 12px; border:1px solid rgba(147,126,99,.18); border-radius:14px; text-align:left; font:inherit; background:rgba(255,254,250,.8); }
+    .feature-toggle { color:#575247; cursor:pointer; transition:border-color .15s,background .15s,transform .15s; }
+    .feature-toggle:hover { transform:translateY(-1px); border-color:rgba(113,129,106,.4); }
+    .feature-toggle.is-on { background:#f5f5ed; border-color:rgba(113,129,106,.5); }
+    .feature-icon { display:grid; place-items:center; flex:0 0 34px; width:34px; height:34px; border-radius:11px; color:#879078; background:#eceee5; font-size:17px; }
+    .feature-toggle-copy { display:flex; flex:1; flex-direction:column; gap:3px; }
+    .feature-toggle-copy strong { font-size:12px; font-weight:650; }
+    .feature-toggle-copy small { color:#9a907f; font-size:10px; }
+    .feature-state { padding:4px 8px; border-radius:999px; color:#948b7c; background:#f0eee8; font-size:9px; }
+    .feature-toggle.is-on .feature-state { color:#64715b; background:#e6eadf; }
+    .feature-reserved { justify-content:center; border-style:dashed; color:#aaa292; background:rgba(255,254,250,.38); }
+    .feature-reserved .feature-icon { color:#aaa292; background:rgba(235,231,222,.6); }
+    .feature-reserved .feature-toggle-copy small { color:#aaa292; }
+    @media(min-width:769px) {
+      .stage-container { display:grid; grid-template-columns:210px minmax(0,1fr); align-items:start; column-gap:16px; row-gap:10px; transform:scale(1.04); transform-origin:center top; }
+      .stage-container > * { min-width:0; }
+      .board-attached-toolbar { grid-column:1 / -1; grid-row:1; justify-self:center; max-width:100%; }
+      .fretboard-card { grid-column:1 / -1; grid-row:2; justify-self:center; width:fit-content; max-width:100%; }
+      .feature-switchboard { grid-column:1; grid-row:3 / span 2; position:sticky; top:16px; width:100%; max-width:none; padding:16px 14px; }
+      .metronome-panel { grid-column:2; grid-row:3; }
+      .leadsheet-panel { grid-column:2; grid-row:4; }
+      .feature-switchboard-head { align-items:flex-start; flex-direction:column; gap:4px; margin-bottom:12px; }
+      .feature-switchboard-head span { line-height:1.5; }
+      .feature-switch-grid { grid-template-columns:1fr; }
+    }
+    @media(max-width:700px) { .metro-main { grid-template-columns:1fr; gap:10px; } .metronome-panel { padding:14px; } .metro-extras { grid-template-columns:1fr 1fr; } .metro-head { align-items:flex-start; } }
+    @media(max-width:768px) { .stage-container { display:flex; flex-direction:column; align-items:center; } .feature-switchboard { width:calc(100% - 20px); padding:12px; } .feature-switchboard-head { align-items:flex-start; flex-direction:column; gap:4px; } .feature-switch-grid { grid-template-columns:1fr; } }
+    @media(max-width:390px) { .metro-transport-row { gap:8px; } .metro-button.primary.metro-start { min-width:138px; } .metro-stepper .metro-button { width:40px; } }
+    .progression-playback { gap: 12px; }
+    .tempo-control { min-width: 238px; gap: 5px; }
+    .tempo-topline, .tempo-adjust-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .tempo-readout { flex: 0 0 72px; }
+    .tempo-presets { display: inline-flex; gap: 2px; padding: 2px; background: rgba(117,92,67,.075); border-radius: 999px; }
+    .tempo-presets button {
+      min-width: 28px; padding: 3px 7px; border: 0; border-radius: 999px;
+      background: transparent; color: #857968; font: inherit; font-size: 10px; cursor: pointer;
+    }
+    .tempo-presets button.active { color: #596b51; background: #fffefa; box-shadow: 0 1px 4px rgba(74,59,39,.1); }
+    .tempo-step-btn {
+      flex: 0 0 23px; width: 23px; height: 23px; padding: 0;
+      border: 1px solid rgba(147,126,99,.2); border-radius: 50%;
+      background: rgba(255,254,250,.8); color: #71816a; font: inherit; cursor: pointer;
+    }
+    .tempo-adjust-row .bpm-slider { flex: 1; min-width: 55px; margin: 0; }
+    .tap-tempo-btn {
+      flex: 0 0 auto; padding: 5px 9px; border: 1px solid rgba(113,129,106,.28);
+      border-radius: 999px; background: rgba(233,236,225,.6); color: #596b51;
+      font: inherit; font-size: 10px; font-weight: 650; cursor: pointer; white-space: nowrap;
+    }
+    .tap-tempo-btn:active { transform: scale(.97); background: rgba(216,225,205,.8); }
+    .practice-options {
+      display: flex; align-items: center; gap: 9px; min-height: 28px;
+      padding-top: 9px; border-top: 1px solid rgba(147,126,99,.14);
+    }
+    .count-in-toggle { display: inline-flex; align-items: center; gap: 6px; color: #625b50; font-size: 11px; cursor: pointer; }
+    .count-in-toggle input { width: 14px; height: 14px; margin: 0; accent-color: #71816a; }
+    .count-in-length {
+      padding: 4px 22px 4px 8px; border: 1px solid rgba(147,126,99,.22);
+      border-radius: 999px; background: rgba(255,254,250,.84); color: #625b50;
+      font: inherit; font-size: 10px;
+    }
+    .practice-status { margin-left: auto; color: #938978; font-size: 10px; font-variant-numeric: tabular-nums; }
+    .practice-status.counting-in { color: #9b694c; font-weight: 700; }
+    .practice-status.playing { color: #65765c; font-weight: 650; }
+    .chord-chart-card.count-in-active { border-color: rgba(189,121,94,.72); box-shadow: 0 0 0 1px rgba(189,121,94,.18), 0 6px 15px rgba(189,121,94,.1); }
+    .chord-chart-card.count-in-active::before { background: #bd795e; opacity: 1; }
+    @media (max-width: 768px) {
+      .progression-playback { grid-column: 1 / -1; grid-row: 3; display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; }
+      .progression-playback .play-btn { grid-row: 1 / 3; align-self: center; }
+      .tempo-control { min-width: 0; width: 100%; }
+      .tempo-readout { flex-basis: 58px; }
+      .practice-options { flex-wrap: wrap; }
+    }
+    @media (max-width: 390px) {
+      .progression-playback { grid-template-columns: 1fr; }
+      .progression-playback .play-btn { grid-row: auto; justify-self: start; }
+      .tempo-readout { flex-basis: 58px; }
+      .practice-status { flex-basis: 100%; margin-left: 0; }
+    }
   </style>
 </head>
 <body>
@@ -893,8 +1026,57 @@
       <svg id="fretboard" width="1030" height="210"></svg>
     </div>
 
-    <!-- 和弦進行與節拍器 -->
-    <div class="leadsheet-panel">
+    <!-- 可擴充的功能開關 -->
+    <section class="feature-switchboard" aria-label="練習功能開關">
+      <div class="feature-switchboard-head"><strong>練習功能</strong><span>開啟需要的工具；新功能可接續加入</span></div>
+      <div class="feature-switch-grid">
+        <button id="feature-toggle-metronome" class="feature-toggle is-on" type="button" aria-pressed="true" aria-controls="metronome-panel" onclick="toggleFeature('metronome')">
+          <span class="feature-icon" aria-hidden="true">◉</span><span class="feature-toggle-copy"><strong>節拍器</strong><small>速度與節奏練習</small></span><span class="feature-state">開啟</span>
+        </button>
+        <button id="feature-toggle-progression" class="feature-toggle" type="button" aria-pressed="false" aria-controls="progression-panel" onclick="toggleFeature('progression')">
+          <span class="feature-icon" aria-hidden="true">♫</span><span class="feature-toggle-copy"><strong>和弦進行</strong><small>編輯和弦與練習播放</small></span><span class="feature-state">關閉</span>
+        </button>
+        <div class="feature-reserved" aria-label="新功能預留位置">
+          <span class="feature-icon" aria-hidden="true">＋</span><span class="feature-toggle-copy"><strong>新增功能</strong><small>預留擴充位置</small></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 獨立節拍器 -->
+    <section class="metronome-panel" id="metronome-panel" aria-labelledby="metro-title">
+      <div class="metro-head"><div><span class="metro-kicker">TEMPO STUDIO</span><h2 id="metro-title">節拍器</h2></div><span class="metro-subtitle">Λ 重音・&gt; 次重音・實心一般拍・空心靜音；點擊循環切換</span></div>
+      <div class="metro-main">
+        <div class="metro-tempo-card">
+          <div id="metro-beats" class="metro-beats" aria-label="每拍重音設定"></div>
+          <div class="metro-transport-row">
+            <div class="metro-stepper" aria-label="微調速度"><button class="metro-button" type="button" onclick="adjustMetroBpm(-1)" aria-label="速度減一">−</button><button class="metro-button" type="button" onclick="adjustMetroBpm(1)" aria-label="速度加一">＋</button></div>
+            <button id="metro-play" class="metro-button primary metro-start" onclick="toggleMetronome()">▶ 開始</button>
+          </div>
+          <div id="metro-tap-zone" class="metro-tap-zone" role="button" tabindex="0" aria-label="點擊測速，可連續點擊測出速度" onclick="tapMetroTempo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();tapMetroTempo();}">TAP TEMPO　·　點擊空白區測速</div>
+          <div class="metro-tempo"><span class="metro-italian" id="metro-italian">Andante</span><strong id="metro-bpm-display">80</strong><span>BPM</span></div>
+          <input class="metro-slider metro-speed-slider" id="metro-bpm-slider" type="range" min="10" max="400" value="80" oninput="setMetroBpm(this.value)" aria-label="節拍速度">
+        </div>
+        <div class="metro-settings-card">
+          <div class="metro-fields">
+            <label class="metro-field">拍號<select id="metro-meter" onchange="metroMeterChanged()"></select></label>
+            <label class="metro-field">節奏型<select id="metro-pattern" onchange="metroSettingsChanged()"><option value="quarter">四分音符</option><option value="eighth">八分音符</option><option value="triplet">三連音</option><option value="sixteenth">十六分音符</option><option value="offbeat">八分切分</option><option value="swing">搖擺長短</option></select></label>
+            <label class="metro-field">音色<select id="metro-sound" onchange="metroSettingsChanged()"><option value="wood">木質</option><option value="digital">數位</option><option value="analog">類比</option><option value="blip">Blip</option></select></label>
+            <label class="metro-field">音量 <span id="metro-volume-label">100%</span><input id="metro-volume" type="range" min="0" max="100" value="100" oninput="setMetroVolume(this.value)" class="metro-slider"></label>
+          </div>
+          <div class="metro-extras">
+            <label class="metro-check"><input type="checkbox" id="metro-mute"> 靜音練習</label>
+            <label class="metro-field">預備拍<select id="metro-countin"><option value="0">關閉</option><option value="1">1 小節</option><option value="2">2 小節</option></select></label>
+            <label class="metro-field">教練模式<select id="metro-coach"><option value="off">關閉</option><option value="1:1">1 小節響／1 小節靜</option><option value="2:2">2 小節響／2 小節靜</option></select></label>
+            <label class="metro-field">自動停止<select id="metro-limit-type"><option value="none">不停止</option><option value="bars">小節數</option><option value="minutes">分鐘</option></select></label>
+            <label class="metro-field">停止目標<input id="metro-limit" type="number" min="1" max="999" value="20"></label>
+            <label class="metro-field">自動變速<select id="metro-auto"><option value="off">關閉</option><option value="up">每 4 小節加 2 BPM</option><option value="down">每 4 小節減 2 BPM</option></select></label>
+          </div>
+          <div class="metro-footer"><span id="metro-status" role="status" aria-live="polite">準備就緒</span><span class="metro-counter"><span id="metro-bar-count">0</span> 小節 · <span id="metro-elapsed">00:00</span></span><button class="metro-button small" onclick="stopMetronome()">重設</button></div>
+        </div>
+      </div>
+    </section>
+    <!-- 和弦進行獨立收合 -->
+    <div class="leadsheet-panel" id="progression-panel" hidden>
       <div class="leadsheet-topbar">
         <div class="progression-heading">
           <span class="progression-kicker">PLAY & PRACTICE</span>
@@ -916,10 +1098,31 @@
             <span>▶</span><span>開始練習</span>
           </button>
           <div class="tempo-control">
-            <div class="tempo-readout"><span>速度</span><strong><span id="bpm-display">80</span><small> BPM</small></strong></div>
-            <input type="range" id="progression-bpm" class="bpm-slider" min="40" max="180" value="80" oninput="updateBPM(this.value)" aria-label="節拍速度">
+            <div class="tempo-topline">
+              <div class="tempo-readout"><span>速度</span><strong><span id="bpm-display">80</span><small> BPM</small></strong></div>
+              <div class="tempo-presets" aria-label="速度預設">
+                <button type="button" data-bpm="60" onclick="setBPMPreset(60)">慢</button>
+                <button type="button" data-bpm="80" class="active" onclick="setBPMPreset(80)">中</button>
+                <button type="button" data-bpm="120" onclick="setBPMPreset(120)">快</button>
+              </div>
+            </div>
+            <div class="tempo-adjust-row">
+              <button class="tempo-step-btn" type="button" onclick="adjustBPM(-1)" aria-label="速度減 1 BPM">−</button>
+              <input type="range" id="progression-bpm" class="bpm-slider" min="40" max="180" value="80" oninput="updateBPM(this.value)" aria-label="節拍速度">
+              <button class="tempo-step-btn" type="button" onclick="adjustBPM(1)" aria-label="速度加 1 BPM">＋</button>
+              <button class="tap-tempo-btn" type="button" onclick="tapTempo()" title="跟著節奏連點幾下">點擊測速</button>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div class="practice-options">
+        <label class="count-in-toggle"><input type="checkbox" id="count-in-enabled" checked><span class="toggle-track"><i></i></span><span>預備拍</span></label>
+        <select class="count-in-length" id="count-in-length" aria-label="預備拍長度">
+          <option value="1">1 小節</option>
+          <option value="2">2 小節</option>
+        </select>
+        <span class="practice-status" id="practice-status" role="status" aria-live="polite">準備就緒</span>
       </div>
 
       <input type="hidden" id="progression-input" value="Dm7, G7, Cmaj7, Cmaj7">
@@ -1255,10 +1458,39 @@
     // 🎸 錄音室等級溫暖吉他音色合成器 (Dual-Osc + Pluck Attack)
     // ========================================================
     let audioCtx = null, isMuted = false;
+    let metroOutputBus = null, metroOutputContext = null;
+
+    function createLowLatencyAudioContext() {
+      const AudioContextType = window.AudioContext || window.webkitAudioContext;
+      try { return new AudioContextType({ latencyHint: 0.005 }); }
+      catch (_) { return new AudioContextType({ latencyHint: 'interactive' }); }
+    }
+
+    function getMetronomeOutput() {
+      if (!metroOutputBus || metroOutputContext !== audioCtx) {
+        const compressor = audioCtx.createDynamicsCompressor();
+        compressor.threshold.value = -4;
+        compressor.knee.value = 3;
+        compressor.ratio.value = 16;
+        compressor.attack.value = 0.003;
+        compressor.release.value = 0.08;
+        metroOutputBus = audioCtx.createGain();
+        metroOutputBus.gain.value = 2.2;
+        const outputGain = audioCtx.createGain();
+        // Post-compressor makeup gain: brings the full 0–100% control range up
+        // to a more useful listening level while the compressor limits peaks.
+        outputGain.gain.value = 1.5;
+        metroOutputBus.connect(compressor);
+        compressor.connect(outputGain);
+        outputGain.connect(audioCtx.destination);
+        metroOutputContext = audioCtx;
+      }
+      return metroOutputBus;
+    }
 
     function playGuitarTone(midiNote, delay = 0) {
       if (isMuted) return;
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtx) audioCtx = createLowLatencyAudioContext();
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
       const startTime = audioCtx.currentTime + delay;
@@ -1341,7 +1573,7 @@
 
     function playMetronomeTick(isDownbeat = false) {
       if (isMuted) return;
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtx) audioCtx = createLowLatencyAudioContext();
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const startTime = audioCtx.currentTime;
       const oscillator = audioCtx.createOscillator();
@@ -1689,6 +1921,11 @@
     let progressionIndex = 0;
     let progressionBeat = 0;
     let progressionBPM = 80;
+    let isCountingIn = false;
+    let countInTimer = null;
+    let countInBeatIndex = 0;
+    let countInTotalBeats = 0;
+    let tapTempoTimestamps = [];
 
     function parseChordSymbol(symbol) {
       const trimmed = symbol.trim();
@@ -1815,28 +2052,69 @@
 
     function applyProgressionPreset(val) {
       if (val === 'custom') return;
+      const wasActive = isProgressionPlaying || isCountingIn;
       document.getElementById('progression-input').value = val;
       progressionIndex = 0;
       progressionBeat = 0;
       renderLeadSheetCards();
-      if (isProgressionPlaying) {
+      if (wasActive) {
         stopProgressionPlayback();
         startProgressionPlayback();
       }
     }
 
     function updateBPM(val) {
-      progressionBPM = parseInt(val, 10);
-      document.getElementById('bpm-display').textContent = val;
+      progressionBPM = Math.max(40, Math.min(180, parseInt(val, 10) || 80));
+      document.getElementById('progression-bpm').value = progressionBPM;
+      document.getElementById('bpm-display').textContent = progressionBPM;
+      document.querySelectorAll('.tempo-presets button').forEach(button => {
+        button.classList.toggle('active', parseInt(button.dataset.bpm, 10) === progressionBPM);
+      });
       if (isProgressionPlaying) {
         clearInterval(progressionTimer);
         const intervalMs = (60 / progressionBPM) * 1000;
         progressionTimer = setInterval(stepProgression, intervalMs);
       }
+      if (isCountingIn) {
+        clearTimeout(countInTimer);
+        countInTimer = setTimeout(countInStep, (60 / progressionBPM) * 1000);
+      }
+    }
+
+    function setBPMPreset(value) {
+      updateBPM(value);
+    }
+
+    function adjustBPM(change) {
+      updateBPM(progressionBPM + change);
+    }
+
+    function tapTempo() {
+      const now = performance.now();
+      const previous = tapTempoTimestamps[tapTempoTimestamps.length - 1];
+      if (previous && now - previous > 2000) tapTempoTimestamps = [];
+      tapTempoTimestamps.push(now);
+      tapTempoTimestamps = tapTempoTimestamps.slice(-6);
+      if (tapTempoTimestamps.length < 3) {
+        document.getElementById('practice-status').textContent = '再點幾下測出速度';
+        return;
+      }
+      const intervals = tapTempoTimestamps.slice(1).map((time, index) => time - tapTempoTimestamps[index]).sort((a, b) => a - b);
+      const median = intervals[Math.floor(intervals.length / 2)];
+      const measuredBPM = Math.max(40, Math.min(180, Math.round(60000 / median)));
+      updateBPM(measuredBPM);
+      document.getElementById('practice-status').textContent = `測得 ${measuredBPM} BPM`;
+    }
+
+    function setPracticeStatus(message, state = '') {
+      const status = document.getElementById('practice-status');
+      status.textContent = message;
+      status.classList.toggle('counting-in', state === 'counting-in');
+      status.classList.toggle('playing', state === 'playing');
     }
 
     function toggleProgressionPlayback() {
-      if (isProgressionPlaying) {
+      if (isProgressionPlaying || isCountingIn) {
         stopProgressionPlayback();
       } else {
         startProgressionPlayback();
@@ -1847,6 +2125,50 @@
       const entries = getProgressionEntries();
       if (!entries.some(symbol => parseChordSymbol(symbol))) return;
 
+      const countInEnabled = document.getElementById('count-in-enabled').checked;
+      if (countInEnabled) {
+        startCountIn();
+        return;
+      }
+      beginProgressionPlayback();
+    }
+
+    function startCountIn() {
+      isCountingIn = true;
+      countInBeatIndex = 0;
+      countInTotalBeats = parseInt(document.getElementById('count-in-length').value, 10) * 4;
+      progressionIndex = 0;
+      progressionBeat = 0;
+      const playBtn = document.getElementById('btn-progression-play');
+      playBtn.classList.add('playing');
+      playBtn.innerHTML = '<span>Ⅱ</span><span>停止預備</span>';
+      updateProgressionBeatDisplay(0, true);
+      countInStep();
+    }
+
+    function countInStep() {
+      if (!isCountingIn) return;
+      const beat = countInBeatIndex % 4;
+      const countInBar = Math.floor(countInBeatIndex / 4) + 1;
+      const countInBars = countInTotalBeats / 4;
+      setPracticeStatus(`預備拍 ${countInBar}/${countInBars} · 第 ${beat + 1} 拍`, 'counting-in');
+      playMetronomeTick(beat === 0);
+      updateProgressionBeatDisplay(beat, true);
+      countInBeatIndex++;
+
+      if (countInBeatIndex >= countInTotalBeats) {
+        setPracticeStatus('準備開始…', 'counting-in');
+        countInTimer = setTimeout(() => {
+          isCountingIn = false;
+          countInTimer = null;
+          beginProgressionPlayback();
+        }, (60 / progressionBPM) * 1000);
+      } else {
+        countInTimer = setTimeout(countInStep, (60 / progressionBPM) * 1000);
+      }
+    }
+
+    function beginProgressionPlayback() {
       isProgressionPlaying = true;
       progressionIndex = 0;
       progressionBeat = 0;
@@ -1862,14 +2184,19 @@
 
     function stopProgressionPlayback() {
       isProgressionPlaying = false;
+      isCountingIn = false;
       if (progressionTimer) clearInterval(progressionTimer);
+      if (countInTimer) clearTimeout(countInTimer);
       progressionTimer = null;
+      countInTimer = null;
       progressionBeat = 0;
       const playBtn = document.getElementById('btn-progression-play');
       playBtn.classList.remove('playing');
       playBtn.innerHTML = '<span>▶</span><span>開始練習</span>';
       highlightActiveBar(-1);
-      updateProgressionBeatDisplay(-1);
+      document.querySelectorAll('.chord-chart-card').forEach(card => card.classList.remove('count-in-active'));
+      updateProgressionBeatDisplay(-1, false);
+      setPracticeStatus('準備就緒');
     }
 
     function stepProgression() {
@@ -1889,16 +2216,18 @@
         }
         highlightActiveBar(barIdx);
       }
+      setPracticeStatus(`第 ${barIdx + 1} 小節 · 第 ${progressionBeat + 1} 拍`, 'playing');
       playMetronomeTick(progressionBeat === 0);
       updateProgressionBeatDisplay(progressionBeat);
       progressionBeat = (progressionBeat + 1) % 4;
       if (progressionBeat === 0) progressionIndex = (barIdx + 1) % entries.length;
     }
 
-    function updateProgressionBeatDisplay(activeBeat) {
+    function updateProgressionBeatDisplay(activeBeat, countIn = false) {
       document.querySelectorAll('.chord-chart-card').forEach((card, barIndex) => {
+        card.classList.toggle('count-in-active', countIn && barIndex === 0);
         card.querySelectorAll('.measure-beat').forEach((beat, index) => {
-          beat.classList.toggle('active', isProgressionPlaying && barIndex === progressionIndex && index === activeBeat);
+          beat.classList.toggle('active', (isProgressionPlaying && barIndex === progressionIndex || countIn && barIndex === 0) && index === activeBeat);
         });
       });
     }
@@ -2505,6 +2834,122 @@
     renderTuningControls();
     renderLeadSheetCards();
     renderBoard();
+    // ========================================================
+    // 獨立節拍器：Web Audio look-ahead 排程，節奏穩定且不依賴和弦播放器
+    // ========================================================
+    const metro = { bpm:80, numerator:4, denominator:4, levels:[], running:false, starting:false, startGeneration:0, timer:null, nextTime:0, beat:0, bar:0, startedAt:0, countIn:0, elapsedTimer:null, taps:[] };
+    const metroPatternOffsets = { quarter:[0], eighth:[0,.5], triplet:[0,1/3,2/3], sixteenth:[0,.25,.5,.75], offbeat:[0,.5], swing:[0,2/3] };
+    function initMetronome() {
+      const meter = document.getElementById('metro-meter');
+      for (let n=1;n<=13;n++) for (const d of [2,4]) meter.add(new Option(`${n}/${d}`,`${n}/${d}`));
+      [['3/8','3/8'],['5/8','5/8'],['6/8','6/8'],['7/8（2+2+3）','7/8a'],['7/8（2+3+2）','7/8b'],['7/8（3+2+2）','7/8c'],['9/8','9/8'],['12/8','12/8']].forEach(([label,value])=>meter.add(new Option(label,value)));
+      meter.value='4/4'; metroMeterChanged(); renderMetroBeats(); updateMetroTempoDisplay();
+    }
+    function toggleFeature(feature) {
+      const panels={metronome:'metronome-panel',progression:'progression-panel'};
+      const buttons={metronome:'feature-toggle-metronome',progression:'feature-toggle-progression'};
+      const panel=document.getElementById(panels[feature]);
+      const button=document.getElementById(buttons[feature]);
+      if(!panel||!button)return;
+      const enabled=panel.hidden;
+      panel.hidden=!enabled;
+      button.classList.toggle('is-on',enabled);
+      button.setAttribute('aria-pressed',String(enabled));
+      button.querySelector('.feature-state').textContent=enabled?'開啟':'關閉';
+      if(!enabled&&feature==='metronome'&&(metro.running||metro.starting))stopMetronome();
+      if(!enabled&&feature==='progression'&&(isProgressionPlaying||isCountingIn))stopProgressionPlayback();
+    }
+    function metroMeterChanged() {
+      const value=document.getElementById('metro-meter').value;
+      const match=value.match(/^(\d+)\/(\d+)/); if (!match) return;
+      metro.numerator=Number(match[1]); metro.denominator=Number(match[2]);
+      const grouped=value==='6/8'?[0,3]:value==='9/8'?[0,3,6]:value==='12/8'?[0,3,6,9]:value==='7/8a'?[0,2,4]:value==='7/8b'?[0,2,5]:value==='7/8c'?[0,3,5]:metro.denominator===4&&metro.numerator===4?[0,2]:[0];
+      metro.levels=Array.from({length:metro.numerator},(_,i)=>i===0?'accent':grouped.includes(i)?'secondary':'normal');
+      renderMetroBeats(); if (metro.running) restartMetroSchedule();
+    }
+    function renderMetroBeats() {
+      const host=document.getElementById('metro-beats'); if(!host) return; host.innerHTML='';
+      metro.levels.forEach((level,index)=>{const b=document.createElement('button');b.type='button';b.className='metro-beat';b.dataset.level=level;const names={accent:'重音',secondary:'次重音',normal:'一般拍',mute:'靜音'};const marks={accent:'Λ',secondary:'>',normal:'',mute:''};b.title=`第 ${index+1} 拍：${names[level]}（點擊切換）`;b.setAttribute('aria-label',b.title);b.innerHTML=marks[level]?`<span aria-hidden="true">${marks[level]}</span>`:'';b.onclick=()=>{metro.levels[index]=({accent:'secondary',secondary:'normal',normal:'mute',mute:'accent'})[metro.levels[index]];renderMetroBeats();};host.appendChild(b);});
+    }
+    function updateMetroTempoDisplay() {
+      const names=[[20,'Larghissimo'],[40,'Largo'],[60,'Adagio'],[76,'Andante'],[108,'Moderato'],[120,'Allegro'],[156,'Vivace'],[176,'Presto'],[200,'Prestissimo']];
+      let name=names[0][1]; for(const [limit,label] of names) if(metro.bpm>=limit) name=label;
+      const display=document.getElementById('metro-bpm-display'); if(display) display.textContent=metro.bpm;
+      const italian=document.getElementById('metro-italian'); if(italian) italian.textContent=name;
+      const slider=document.getElementById('metro-bpm-slider'); if(slider) slider.value=metro.bpm;
+    }
+    function setMetroBpm(value) { metro.bpm=Math.max(10,Math.min(400,Math.round(Number(value)||80))); updateMetroTempoDisplay(); }
+    function adjustMetroBpm(delta) { setMetroBpm(metro.bpm+delta); }
+    function setMetroVolume(value) { document.getElementById('metro-volume-label').textContent=`${value}%`; }
+    function metroSettingsChanged() { if(metro.running) restartMetroSchedule(); }
+    function restartMetroSchedule() { if(metro.timer) clearInterval(metro.timer); metro.nextTime=audioCtx ? audioCtx.currentTime+.04 : 0; metro.timer=setInterval(scheduleMetro,25); }
+    function ensureAudio() {
+      if(!audioCtx) audioCtx=createLowLatencyAudioContext();
+      return audioCtx.state==='suspended' ? audioCtx.resume() : Promise.resolve();
+    }
+    function metroTick(when, level, subdivision, audible) {
+      if(!audible || level==='mute' || document.getElementById('metro-mute').checked) return;
+      const levelGain={accent:1,secondary:.82,normal:.62,mute:0};
+      const vol=(Number(document.getElementById('metro-volume').value)/100)*(subdivision===0?(levelGain[level]??.62):.36);
+      if(vol<=0)return;
+      const sound=document.getElementById('metro-sound').value, osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+      const profiles={
+        wood:{type:'sine',freq:level==='accent'?620:level==='secondary'?520:440,peak:.40,decay:.095,drop:.64},
+        digital:{type:'square',freq:level==='accent'?1550:level==='secondary'?1360:1180,peak:.24,decay:.024,drop:1},
+        analog:{type:'triangle',freq:level==='accent'?820:level==='secondary'?690:580,peak:.36,decay:.12,drop:.88},
+        blip:{type:'sine',freq:level==='accent'?2050:level==='secondary'?1840:1680,peak:.28,decay:.032,drop:.56}
+      };
+      const voice=profiles[sound]||profiles.wood; osc.type=voice.type; osc.frequency.setValueAtTime(voice.freq,when);
+      if(voice.drop!==1) osc.frequency.exponentialRampToValueAtTime(voice.freq*voice.drop,when+voice.decay*.7);
+      gain.gain.setValueAtTime(.0001,when);gain.gain.linearRampToValueAtTime(voice.peak*vol,when+.002);gain.gain.exponentialRampToValueAtTime(.0001,when+voice.decay);
+      osc.connect(gain);gain.connect(getMetronomeOutput());osc.start(when);osc.stop(when+voice.decay+.01);
+    }
+    function scheduleMetro() {
+      if(!metro.running)return; const now=audioCtx.currentTime;
+      while(metro.nextTime<now+.12 && metro.running) {
+        const beat=metro.beat, inCount=metro.countIn>0, beatDuration=60/metro.bpm*(4/metro.denominator);
+        const coach=document.getElementById('metro-coach').value;
+        const [soundBars,silentBars]=coach==='off'?[Infinity,0]:coach.split(':').map(Number);
+        const audible=inCount || coach==='off' || (Math.floor(metro.bar/(soundBars+silentBars))*(soundBars+silentBars)+soundBars>metro.bar);
+        const level=metro.levels[beat]||'normal';
+        metroTick(metro.nextTime,level,0,audible);
+        const beatEl=document.querySelectorAll('.metro-beat')[beat];
+        if(beatEl){const delay=Math.max(0,(metro.nextTime-now)*1000);setTimeout(()=>{document.querySelectorAll('.metro-beat').forEach(e=>e.classList.remove('active')); if(metro.running)beatEl.classList.add('active');},delay);}
+        const pattern=metroPatternOffsets[document.getElementById('metro-pattern').value]||[0];
+        pattern.slice(1).forEach(offset=>metroTick(metro.nextTime+beatDuration*offset,'normal',1,audible));
+        metro.nextTime+=beatDuration; metro.beat++;
+        if(metro.beat>=metro.numerator){metro.beat=0;if(inCount){metro.countIn--;if(metro.countIn===0){metro.bar=0;metro.startedAt=Date.now();document.getElementById('metro-status').textContent='播放中';}}else{metro.bar++;document.getElementById('metro-bar-count').textContent=metro.bar;advanceMetroTempo();}}
+        if(!inCount && metro.bar===0 && metro.countIn===0 && metro.startedAt===0) metro.startedAt=Date.now();
+        if(!inCount && metro.bar>0 && shouldStopMetro()){stopMetronome(false);return;}
+      }
+    }
+    function advanceMetroTempo(){const mode=document.getElementById('metro-auto').value;if(mode!=='off'&&metro.bar%4===0)setMetroBpm(metro.bpm+(mode==='up'?2:-2));}
+    function shouldStopMetro(){const type=document.getElementById('metro-limit-type').value, target=Math.max(1,Number(document.getElementById('metro-limit').value)||1);return type==='bars'?metro.bar>=target:type==='minutes'?(Date.now()-metro.startedAt)>=target*60000:false;}
+    function toggleMetronome(){metro.running||metro.starting?stopMetronome():startMetronome();}
+    async function startMetronome(){
+      if(metro.running||metro.starting)return;
+      metro.starting=true;
+      const generation=++metro.startGeneration;
+      const button=document.getElementById('metro-play');
+      document.getElementById('metro-status').textContent='啟動中…';
+      button.classList.add('playing');button.textContent='Ⅱ 停止';
+      try { await ensureAudio(); }
+      catch(error) { if(generation===metro.startGeneration){metro.starting=false;button.classList.remove('playing');button.textContent='▶ 開始';document.getElementById('metro-status').textContent='音訊尚未就緒，請再按一次';} return; }
+      if(generation!==metro.startGeneration)return;
+      metro.starting=false;metro.running=true;metro.beat=0;metro.bar=0;
+      metro.countIn=Number(document.getElementById('metro-countin').value);
+      metro.startedAt=metro.countIn?0:Date.now();
+      document.getElementById('metro-bar-count').textContent='0';
+      document.getElementById('metro-status').textContent=metro.countIn?'預備拍中':'播放中';
+      metro.nextTime=audioCtx.currentTime+.001;
+      metro.timer=setInterval(scheduleMetro,25);scheduleMetro();
+      metro.elapsedTimer=setInterval(updateMetroElapsed,250);
+    }
+    function stopMetronome(reset=true){metro.startGeneration++;metro.starting=false;metro.running=false;if(metro.timer)clearInterval(metro.timer);if(metro.elapsedTimer)clearInterval(metro.elapsedTimer);metro.timer=null;metro.elapsedTimer=null;metro.beat=0;metro.countIn=0;document.getElementById('metro-play').classList.remove('playing');document.getElementById('metro-play').textContent='▶ 開始';document.querySelectorAll('.metro-beat').forEach(e=>e.classList.remove('active'));document.getElementById('metro-status').textContent=reset?'準備就緒':'練習完成';if(reset){metro.bar=0;metro.startedAt=0;document.getElementById('metro-bar-count').textContent='0';document.getElementById('metro-elapsed').textContent='00:00';}}
+    function updateMetroElapsed(){if(!metro.startedAt)return;const sec=Math.floor((Date.now()-metro.startedAt)/1000);document.getElementById('metro-elapsed').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;}
+    function tapMetroTempo(){const now=performance.now(),last=metro.taps.at(-1);if(last&&now-last>2200)metro.taps=[];metro.taps.push(now);metro.taps=metro.taps.slice(-6);if(metro.taps.length<3){document.getElementById('metro-status').textContent='再點幾下測出速度';return;}const gaps=metro.taps.slice(1).map((t,i)=>t-metro.taps[i]).sort((a,b)=>a-b);setMetroBpm(Math.round(60000/gaps[Math.floor(gaps.length/2)]));document.getElementById('metro-status').textContent=`測得 ${metro.bpm} BPM`;}
+
+    initMetronome();
   </script>
 </body>
 </html>
